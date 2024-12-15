@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+// 必填
+.required {
+  &::after {
+    content: " * ";
+    color: red;
+    font-size: 1.2rem;
+    line-height: 1rem;
+  }
+}
+
+.cell-content {
+  max-height: 100px; /* 設定最大高度 */
+  overflow-wrap: break-word; /* 啟用單詞折行 */
+  word-wrap: break-word; /* 支援 IE */
+  white-space: normal; /* 允許折行 */
+  overflow: auto; /* 隱藏超出內容 */
+}

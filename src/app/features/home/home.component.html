@@ -1,0 +1,141 @@
+<p>Hello Welcome</p>
+
+<p-panel header="RABC 權限控制流程">
+  <div class="card" #contentElement>
+    <div class="grid p-fluid flex justify-content-center">
+      <!-- <div class="card flex justify-content-center"> -->
+      <p-stepper>
+        <p-stepperPanel header="登入帳號">
+          <ng-template
+            pTemplate="content"
+            let-nextCallback="nextCallback"
+            let-index="index"
+          >
+            <div class="flex flex-column h-12rem">
+              <div
+                [style]="{
+                  'word-wrap': 'break-word',
+                  'max-width': '900px !important'
+                }"
+                class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
+              >
+                用戶進行登入動作，取得攜帶該用戶資訊的 JWToken，如:
+                群組(GROUP)、角色(ROLE) 等 ，在後續進行動作時會根據其 Token
+                記錄的群組 (GROUP) 資料以及個人角色 (ROLE) 資料進行功能
+                (FUNCTION) 權限檢查。
+              </div>
+            </div>
+            <div class="flex pt-3 justify-content-end">
+              <p-button
+                label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="nextCallback.emit()"
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="群組權限">
+          <ng-template
+            pTemplate="content"
+            let-prevCallback="prevCallback"
+            let-nextCallback="nextCallback"
+            let-index="index"
+          >
+            <div class="flex flex-column h-12rem">
+              <div
+                [style]="{
+                  'word-wrap': 'break-word',
+                  'max-width': '900px !important'
+                }"
+                class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
+              >
+                使用者所屬的群組擁有一組"預設"的權限，該權限是透過群組角色
+                (GROUP_ROLE) 與群組功能 (ROLE_FUNCTION)
+                的設定，讓使用者能根據其設定來獲得該群組所設定的功能權限。
+              </div>
+            </div>
+            <div class="flex pt-4 justify-content-between">
+              <p-button
+                label="Back"
+                icon="pi pi-arrow-left"
+                (onClick)="prevCallback.emit()"
+              />
+              <p-button
+                label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="nextCallback.emit()"
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="個人角色權限">
+          <ng-template
+            pTemplate="content"
+            let-prevCallback="prevCallback"
+            let-nextCallback="nextCallback"
+            let-index="index"
+          >
+            <div class="flex flex-column h-12rem">
+              <div
+                [style]="{
+                  'word-wrap': 'break-word',
+                  'max-width': '900px !important'
+                }"
+                class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
+              >
+                除了群組角色權限，使用者也能設定個人的角色權限，這些權限是由使用者與角色的關聯表
+                (USER_ROLE)
+                來進行設定，這些個人角色權限會在群組權限基礎上進行"再擴展"。
+              </div>
+            </div>
+            <div class="flex pt-4 justify-content-between">
+              <p-button
+                label="Back"
+                icon="pi pi-arrow-left"
+                (onClick)="prevCallback.emit()"
+              />
+              <p-button
+                label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="nextCallback.emit()"
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="權限合併">
+          <ng-template
+            pTemplate="content"
+            let-prevCallback="prevCallback"
+            let-index="index"
+          >
+            <div class="flex flex-column h-12rem">
+              <div
+                [style]="{
+                  'word-wrap': 'break-word',
+                  'max-width': '900px !important'
+                }"
+                class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
+              >
+                登錄系統後，系統會檢查用戶所屬的群組 (GROUP)
+                及其對應的角色權限(ROLE)，然後再檢查用戶的個人角色 (ROLE)
+                權限。最後，使用者的權限由群組角色 (GROUP_ROLE) 權限和個人角色
+                (ROLE) 權限所設定的功能 (FUNCTION) 權限合併形成。
+              </div>
+            </div>
+            <div class="flex pt-4 justify-content-start">
+              <p-button
+                label="Back"
+                icon="pi pi-arrow-left"
+                (onClick)="prevCallback.emit()"
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+      </p-stepper>
+      <!-- </div> -->
+    </div>
+  </div>
+</p-panel>

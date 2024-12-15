@@ -1,0 +1,15 @@
+.toolbar-white {
+  background-color: white; /* 工具列背景為白色 */
+  border-radius: 0; /* 工具列的邊角取消圓角，可根據需求調整 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 可選陰影效果 */
+}
+
+button.p-link {
+  background-color: white; /* 按鈕背景為白色 */
+  // border: 1px solid black; /* 黑色邊框 */
+  color: black; /* 按鈕內的圖示或文字為黑色 */
+}
+
+button.p-link:hover {
+  background-color: #e0e0e0; /* 滑鼠懸停時按鈕變為灰色 */
+}

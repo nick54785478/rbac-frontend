@@ -1,0 +1,118 @@
+<form [formGroup]="formGroup">
+  <p-panel header="註冊使用者資料">
+    <div class="card" #contentElement>
+      <div class="grid p-fluid">
+        <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">使用者名稱</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="username"
+            [ngClass]="{ 'ng-dirty': formControlInvalid('username') }"
+          />
+          <div *ngIf="formControlInvalid('username')">
+            <small class="p-error"> 資料不能為空 </small>
+          </div>
+        </div>
+        <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">密碼</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="password"
+            [ngClass]="{ 'ng-dirty': formControlInvalid('password') }"
+          />
+          <div *ngIf="formControlInvalid('password')">
+            <small class="p-error"> 不能為空 </small>
+          </div>
+        </div>
+      </div>
+      <div class="grid p-fluid">
+        <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">姓名</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="name"
+            [ngClass]="{ 'ng-dirty': formControlInvalid('name') }"
+          />
+          <div *ngIf="formControlInvalid('name')">
+            <small class="p-error"> 資料不能為空 </small>
+          </div>
+        </div>
+        <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">身分證字號</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="nationalId"
+            [ngClass]="{ 'ng-dirty': formControlInvalid('nationalId') }"
+          />
+          <div *ngIf="formControlInvalid('nationalId')">
+            <small class="p-error"> 資料不能為空 </small>
+          </div>
+        </div>
+        <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">Email</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="email"
+            [ngClass]="{ 'ng-dirty': formControlInvalid('email') }"
+          />
+          <div *ngIf="formControlInvalid('email')">
+            <small class="p-error"> Email 格式有誤 </small>
+          </div>
+        </div>
+
+        <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">出生年/月/日</label>
+          <p-calendar
+            [showIcon]="true"
+            appendTo="body"
+            formControlName="birthday"
+            dateFormat="yy-mm-dd"
+            dataType="string"
+            placeholder="yyyy-MM-dd"
+          >
+          </p-calendar>
+          <div *ngIf="formControlInvalid('birthday')">
+            <small class="p-error"> 不能為空 </small>
+          </div>
+        </div>
+      </div>
+      <div class="grid p-fluid">
+        <div class="col-12 md:col-7 lg:col-7">
+          <label>地址</label>
+          <input type="text" pInputText formControlName="address" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex mb-2 gap-2 justify-content-end">
+        <button
+          type="button"
+          pButton
+          label="提交"
+          (click)="onSubmit()"
+        ></button>
+        <button
+          type="button"
+          class="p-button-secondary p-button-outlined"
+          pButton
+          label="清除"
+          [disabled]="formAction === 'edit'"
+          (click)="clear()"
+        ></button>
+        <button
+          type="button"
+          class="p-button-secondary p-button-outlined"
+          pButton
+          label="取消"
+          (click)="onCloseForm()"
+        ></button>
+      </div>
+    </div>
+  </p-panel>
+</form>

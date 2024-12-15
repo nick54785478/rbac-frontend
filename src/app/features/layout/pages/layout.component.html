@@ -1,0 +1,18 @@
+<div class="layout">
+  <!-- Topbar -->
+  <app-layout-topbar
+    (visibleEmit)="onChangeSidebarVisible($event)"
+  ></app-layout-topbar>
+
+  <div class="content-wrapper">
+    <div [ngClass]="{ hidden: !sidebarVisible }">
+      <!-- Sidebar -->
+      <app-layout-sidebar></app-layout-sidebar>
+    </div>
+
+    <!-- 路由內容 -->
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

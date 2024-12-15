@@ -1,0 +1,91 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <p-panel header="新增配置資料">
+    <div class="card" #contentElement></div>
+    <div class="grid p-fluid">
+      <div class="col-12 md:col-4 lg:col-4">
+        <label>配置種類</label>
+        <p-dropdown
+          [options]="dataTypes"
+          optionValue="value"
+          placeholder="請選擇"
+          [showClear]="true"
+          appendTo="body"
+          formControlName="dataType"
+        >
+        </p-dropdown>
+      </div>
+      <div class="col-12 md:col-4 lg:col-4">
+        <label class="required">類別</label>
+        <input
+          type="text"
+          [ngClass]="{ 'ng-dirty': formControlInvalid('type') }"
+          pInputText
+          formControlName="type"
+        />
+        <div *ngIf="formControlInvalid('type')">
+          <small
+            class="p-error"
+            *ngIf="formControl('type').errors?.['required']"
+          >
+            資料不能為空
+          </small>
+        </div>
+      </div>
+
+      <div class="col-12 md:col-4 lg:col-4">
+        <label class="required">名稱</label>
+        <input type="text" pInputText formControlName="name" />
+        <div *ngIf="formControlInvalid('type')">
+          <small
+            class="p-error"
+            *ngIf="formControl('type').errors?.['required']"
+          >
+            資料不能為空
+          </small>
+        </div>
+      </div>
+      <div class="col-12 md:col-4 lg:col-4">
+        <label>敘述</label>
+        <input type="text" pInputText formControlName="description" />
+      </div>
+      <div class="col-12 md:col-4 lg:col-4">
+        <label>排序</label>
+        <p-inputNumber
+          formControlName="priorityNo"
+          [showButtons]="true"
+          [min]="0"
+          [max]="100"
+        />
+      </div>
+      <div class="col-12 md:col-4 lg:col-4">
+        <label>是否生效</label>
+        <p-dropdown
+          [options]="activeFlags"
+          optionValue="value"
+          placeholder="請選擇"
+          [showClear]="true"
+          appendTo="body"
+          formControlName="activeFlag"
+        />
+      </div>
+    </div>
+    <div class="flex mb-2 gap-2 justify-content-end">
+      <button type="button" pButton label="提交" (click)="onSubmit()"></button>
+      <button
+        type="button"
+        class="p-button-secondary p-button-outlined"
+        pButton
+        label="清除"
+        [disabled]="formAction === 'edit'"
+        (click)="clear()"
+      ></button>
+      <button
+        type="button"
+        class="p-button-secondary p-button-outlined"
+        pButton
+        label="取消"
+        (click)="onCloseForm()"
+      ></button>
+    </div>
+  </p-panel>
+</form>

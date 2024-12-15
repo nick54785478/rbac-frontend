@@ -1,0 +1,158 @@
+<form [formGroup]="formGroup">
+  <p-panel header="查詢使用者資料">
+    <div class="card" #contentElement>
+      <div class="grid p-fluid">
+        <!-- <div class="col-12 md:col-3 lg:col-3">
+        <label>Email</label>
+        <input type="text" pInputText formControlName="email" />
+      </div> -->
+        <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">使用者</label>
+          <p-autoComplete
+            formControlName="userInfo"
+            [suggestions]="userinfos"
+            [forceSelection]="true"
+            [dropdown]="true"
+            [completeOnFocus]="true"
+            appendTo="body"
+            showClear="true"
+            (onClear)="clear()"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [showEmptyMessage]="true"
+            (completeMethod)="getUserInfos($event)"
+            emptyMessage="查無資料"
+            field="displayName"
+          >
+            <ng-template let-userinfo pTemplate="item">
+              <span style="font-size: 18px"
+                >{{ userinfo.name }} ({{ userinfo.username }})
+              </span>
+            </ng-template>
+          </p-autoComplete>
+          <div *ngIf="formControlInvalid('userInfo')">
+            <small class="p-error"> 資料不能為空 </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex mb-2 gap-2 justify-content-end">
+        <button type="button" pButton label="查詢" (click)="query()"></button>
+
+        <button
+          type="button"
+          class="p-button-secondary p-button-outlined"
+          pButton
+          label="角色"
+          (click)="onStartUserConfig('roles')"
+        ></button>
+        <button
+          type="button"
+          class="p-button-secondary p-button-outlined"
+          pButton
+          label="群組"
+          [disabled]=""
+          (click)="onStartUserConfig('groups')"
+        ></button>
+
+        <button
+          type="button"
+          class="p-button-secondary p-button-outlined"
+          pButton
+          label="清除"
+          (click)="clear()"
+        ></button>
+      </div>
+    </div>
+  </p-panel>
+</form>
+
+<p-panel [showHeader]="false">
+  <p-tabMenu
+    #detailTabMenuComponent
+    [model]="detailTabs"
+    styleClass="table-tabmenu"
+  >
+  </p-tabMenu>
+
+  <div class="card">
+    <ng-container *ngIf="pageContents[activeField] as currentPage">
+      <p-table
+        #dt
+        responsiveLayout="stack"
+        [tableStyle]="{ 'min-width': '10rem', 'word-wrap': 'break-word' }"
+        [rowsPerPageOptions]="[2, 5, 10]"
+        styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
+        selectionMode="multiple"
+        [resizableColumns]="true"
+        [value]="tableData"
+        [columns]="pageContents[activeField].cols"
+        [(selection)]="selectedData"
+        [scrollable]="true"
+        scrollDirection="both"
+        scrollHeight="500px"
+        [paginator]="true"
+        [rows]="10"
+      >
+        <!-- 標題 -->
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+              {{ col.header }} <p-sortIcon [field]="col.field" />
+            </th>
+            <th
+              alignFrozen="right"
+              pFrozenColumn
+              style="
+                min-width: 70px !important;
+                max-width: 70px !important;
+                width: 70px !important;
+              "
+            >
+              Actions
+            </th>
+          </tr>
+        </ng-template>
+        <!-- 內容 -->
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr [pSelectableRow]="rowData">
+            <td
+              *ngFor="let col of columns"
+              [ngStyle]="{ 'word-break': 'break-all' }"
+            >
+              <ng-container>
+                {{ rowData[col.field] }}
+              </ng-container>
+            </td>
+            <!-- <td alignFrozen="right" pFrozenColumn style="text-align: center">
+          <div>
+            <p-menu
+              #menu
+              [popup]="true"
+              [model]="rowActionMenu"
+              appendTo="body"
+            ></p-menu>
+            <button
+              pButton
+              type="button"
+              class="p-button-outlined p-button-secondary"
+              style="color: rgb(1, 155, 70)"
+              icon="pi pi-pencil"
+              (click)="clickRowActionMenu(rowData); menu.toggle($event)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="p-button-outlined p-button-secondary"
+              icon="pi pi-trash"
+              style="color: red"
+              (click)="delete(rowData.id); menu.toggle($event)"
+            ></button>
+          </div>
+        </td> -->
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-container>
+  </div>
+</p-panel>

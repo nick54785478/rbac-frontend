@@ -1,0 +1,36 @@
+<!-- <div class="card flex justify-content-center custom-sidebar-container"> -->
+<p-sidebar
+  class="custom-sidebar"
+  [(visible)]="sidebarVisible"
+  [closeOnEscape]="false"
+  [dismissible]="true"
+  [modal]="false"
+>
+  <ng-container>
+    <div class="text-right">
+      <!-- <p-button
+          (onClick)="toggleSidebar()"
+          styleClass="p-button-text p-button-lg "
+          [icon]="sidebarVisible ? 'pi pi-arrow-left' : 'pi pi-arrow-right'"
+        ></p-button> -->
+    </div>
+    <!-- 內容 -->
+    <p-menu [model]="items">
+      <ng-template #item let-item>
+        <ng-container *ngIf="item.route; else elseBlock">
+          <a [routerLink]="item.routerLink" class="p-menu-item-link">
+            <span [class]="item.icon"></span>
+            <span class="ml-2">{{ item.label }}</span>
+          </a>
+        </ng-container>
+        <ng-template #elseBlock>
+          <a [routerLink]="item.routerLink" class="p-menu-item-link">
+            <span [class]="item.icon"></span>
+            <span class="ml-2">{{ item.label }}</span>
+          </a>
+        </ng-template>
+      </ng-template>
+    </p-menu>
+  </ng-container>
+</p-sidebar>
+<!-- </div> -->

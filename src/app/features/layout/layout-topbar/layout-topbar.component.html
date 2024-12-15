@@ -1,0 +1,41 @@
+<div class="card">
+  <p-toolbar class="toolbar-white">
+    <ng-template pTemplate="start">
+      <!-- 最左 -->
+      <button
+        class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
+        (click)="toggleSidebar()"
+      >
+        <i class="pi pi-bars text-xl"></i>
+      </button>
+    </ng-template>
+    <ng-template pTemplate="center">
+      <div class="flex flex-wrap align-items-center gap-3">
+        <button
+          class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
+          (click)="redirectHome()"
+        >
+          <i class="pi pi-home text-xl"></i>
+        </button>
+        <button
+          class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
+        >
+          <i class="pi pi-user text-xl"></i>
+        </button>
+        <button
+          class=""
+          (click)="tLanguageMenu.toggle($event)"
+          class="pi pi-globe text-xl p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
+        >
+          <!-- <i class="pi pi-globe text-xl"></i> -->
+          <p-menu
+            #tLanguageMenu
+            [popup]="true"
+            [model]="languages"
+            styleClass="bpaas-toolbar-menu-sticky"
+          ></p-menu>
+        </button>
+      </div>
+    </ng-template>
+  </p-toolbar>
+</div>

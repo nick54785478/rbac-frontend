@@ -1,0 +1,52 @@
+<!-- 表格 -->
+<p-panel [showHeader]="false">
+  <p-tabMenu
+    #detailTabMenuComponent
+    [model]="detailTabs"
+    styleClass="table-tabmenu"
+  >
+  </p-tabMenu>
+  <!--PickList  -->
+  <p-card role="region">
+    <div class="card">
+      <p-pickList
+        [source]="sourceList"
+        [target]="targetList"
+        filterBy="displayName"
+        [responsive]="true"
+        sourceHeader="Available"
+        targetHeader="Selected"
+        [dragdrop]="true"
+        [responsive]="true"
+        (onMoveToTarget)="onMoveToTarget($event)"
+        (onMoveToSource)="onMoveToSource($event)"
+        [sourceStyle]="{ height: '30rem' }"
+        [targetStyle]="{ height: '30rem' }"
+        sourceFilterPlaceholder="Search by name"
+        targetFilterPlaceholder="Search by name"
+        breakpoint="1400px"
+      >
+        <ng-template
+          let-data
+          pTemplate="item"
+          let-selected="selected"
+          pTemplate="option"
+        >
+          <div class="flex flex-wrap p-2 align-items-center gap-3">
+            <div class="flex-1 flex flex-col">
+              <span
+                [ngClass]="{
+                        'text-surface-500': !selected,
+                        'dark:text-surface-400': !selected,
+                        'text-inherit': selected,
+                    }"
+              >
+                {{ data.displayName }}</span
+              >
+            </div>
+          </div>
+        </ng-template>
+      </p-pickList>
+    </div>
+  </p-card>
+</p-panel>

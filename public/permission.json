@@ -1,0 +1,58 @@
+[
+  {
+    "label": "首頁",
+    "icon": "",
+    "routerLink": "/",
+    "visible": true
+  },
+  {
+    "label": "註冊",
+    "icon": "",
+    "url": "/users/register",
+    "routerLink": "/users/register",
+    "visible": true
+  },
+  {
+    "label": "使用者維護",
+    "icon": "",
+    "routerLink": "/users",
+    "visible": true
+  },
+  {
+    "label": "角色維護",
+    "icon": "",
+    "routerLink": "/roles",
+    "visible": true
+  },
+  {
+    "label": "功能維護",
+    "icon": "",
+    "routerLink": "/functions",
+    "visible": true
+  },
+  {
+    "label": "群組維護",
+    "icon": "",
+    "routerLink": "/groups",
+    "visible": true
+  },
+  {
+    "label": "角色功能配置",
+    "icon": "",
+    "routerLink": "/roles/functions",
+    "visible": true
+  },
+
+  {
+    "label": "群組角色配置",
+    "icon": "",
+    "routerLink": "/groups/roles",
+    "visible": true
+  },
+  {
+    "label": "自定義設定",
+    "icon": "",
+    "routerLink": "/setting",
+    "visible": true
+  }
+]

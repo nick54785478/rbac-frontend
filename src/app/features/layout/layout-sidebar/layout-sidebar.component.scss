@@ -1,0 +1,65 @@
+html {
+  font-size: 14px;
+}
+
+body {
+  font-family: var(--font-family);
+  font-weight: normal;
+  background: var(--surface-ground);
+  color: var(--text-color);
+  padding: 1rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+:host {
+  ::ng-deep .p-sidebar-left {
+    position: static;
+    // width: $sidebarWidth;
+    // height: calc(100vh - $toolbarHeight);
+    // color: $sidebarColor;
+    // background-color: $sidebarBackgroundColor;
+    // background: #0088ff;
+    border: 0;
+    box-shadow: none;
+  }
+
+  ::ng-deep .p-sidebar {
+    .p-sidebar-header {
+      //   background: #116fbf;
+      padding: 0;
+      display: none;
+
+      .p-sidebar-icon {
+        color: var(--surface-a);
+
+        &:enabled:hover {
+          background: #0088ff;
+          color: var(--surface-a);
+        }
+      }
+    }
+
+    .p-sidebar-content {
+      //   background: #0088ff;
+      padding: 1rem 0;
+      height: 100%;
+    }
+  }
+}
+
+// /* Media query for hiding sidebar on small screens */
+// @media (max-width: 768px) {
+//   :host {
+//     ::ng-deep .p-sidebar {
+//       display: none !important;
+//     }
+//   }
+// }

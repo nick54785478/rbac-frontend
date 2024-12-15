@@ -1,0 +1,42 @@
+[
+  {
+    "id": "",
+    "label": "角色",
+    "value": "ROLE",
+    "labelTw": "角色",
+    "labelCn": "角色",
+    "labelUs": "Role"
+  },
+  {
+    "id": "",
+    "label": "功能",
+    "value": "FUNCTION",
+    "labelTw": "功能",
+    "labelCn": "功能",
+    "labelUs": "Function"
+  },
+  {
+    "id": "",
+    "label": "群組",
+    "value": "GROUP",
+    "labelTw": "群組",
+    "labelCn": "群组",
+    "labelUs": "Group"
+  },
+  {
+    "id": "",
+    "label": "功能動作類別",
+    "value": "ACTION_TYPE",
+    "labelTw": "動作類別",
+    "labelCn": "动作类别",
+    "labelUs": "Action Type"
+  },
+  {
+    "id": "",
+    "label": "語系",
+    "value": "LANGUAGE",
+    "labelTw": "語系",
+    "labelCn": "语系",
+    "labelUs": "Language"
+  }
+]

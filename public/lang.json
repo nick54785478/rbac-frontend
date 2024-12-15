@@ -1,0 +1,26 @@
+[
+  {
+    "id": "",
+    "label": "EN",
+    "value": "ENGLISH",
+    "labelTw": "",
+    "labelCn": "",
+    "labelUs": ""
+  },
+  {
+    "id": "",
+    "label": "ZH_TW",
+    "value": "中文-台灣",
+    "labelTw": "",
+    "labelCn": "",
+    "labelUs": ""
+  },
+  {
+    "id": "",
+    "label": "ZH_CH",
+    "value": "中文-簡體",
+    "labelTw": "",
+    "labelCn": "",
+    "labelUs": ""
+  }
+]
