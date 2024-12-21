@@ -30,7 +30,16 @@
               </span>
             </ng-template>
           </p-autoComplete>
-          <div *ngIf="formControlInvalid('userInfo')">
+          <!-- 點擊按鈕時，要顯示
+           * 值為空但要開啟Dialog 時顯示
+           * 點擊查詢但值為空
+            -->
+          <div
+            *ngIf="
+              formControlInvalid('userInfo') ||
+              (dialogOpened && !formControlInvalid('userInfo'))
+            "
+          >
             <small class="p-error"> 資料不能為空 </small>
           </div>
         </div>

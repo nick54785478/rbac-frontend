@@ -8,6 +8,8 @@ import { UserQueried } from '../models/user-query.model';
 import { UserRoleQueried } from '../models/user-roles-query.model';
 import { UserGroupQueried } from '../models/user-group-query.model';
 import { UserDetailQueried } from '../models/user-detail-query.model';
+import { UserPersonalityQueried } from '../models/user-personality-query.model';
+import { map } from 'rxjs/internal/operators/map';
 
 @Injectable({
   providedIn: 'root',
@@ -52,5 +54,18 @@ export class UsersService {
   queryRoles(username: string): Observable<UserRoleQueried[]> {
     const url = this.baseApiUrl + '/users' + '/' + username + '/roles';
     return this.http.get<UserRoleQueried[]>(url);
+  }
+
+  /**
+   * 取得該使用者資料
+   * @returns
+   */
+  public getPersonality(username: string) {
+    //TODO
+    return this.http.get<UserDetailQueried>('/user-data.json').pipe(
+      map((response) => {
+        return response;
+      })
+    );
   }
 }

@@ -1,0 +1,205 @@
+<form [formGroup]="formGroup">
+  <p-tabMenu
+    #detailTabMenuComponent
+    [model]="detailTabs"
+    styleClass="table-tabmenu"
+  >
+  </p-tabMenu>
+  <p-panel header="基本資料" [toggleable]="true">
+    <div class="grid flex justify-content-center">
+      <div
+        class="col-5 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        使用者姓名
+      </div>
+
+      <div
+        class="col-7 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        <ng-container *ngIf="editingMode">
+          <input
+            [(ngModel)]="userInfo.name"
+            formControlName="name"
+            type="text"
+            [style]="{ width: '60%' }"
+            appAutofocus
+            class="p-inputtext"
+            pInputText
+          />
+        </ng-container>
+        <ng-container *ngIf="!editingMode">
+          <div>
+            {{ userInfo.name }}
+          </div>
+        </ng-container>
+      </div>
+
+      <div
+        class="col-5 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        使用者帳號
+      </div>
+
+      <div
+        class="col-7 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        <ng-container *ngIf="editingMode">
+          <input
+            [(ngModel)]="userInfo.username"
+            formControlName="username"
+            type="text"
+            appAutofocus
+            class="p-inputtext"
+            pInputText
+            [style]="{ width: '60%' }"
+          />
+        </ng-container>
+        <ng-container *ngIf="!editingMode">
+          <div>
+            {{ userInfo.username }}
+          </div>
+        </ng-container>
+      </div>
+      <div
+        class="col-5 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        身分證字號
+      </div>
+      <div
+        class="col-7 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        <ng-container *ngIf="editingMode">
+          <input
+            [(ngModel)]="userInfo.nationalIdNo"
+            formControlName="nationalIdNo"
+            type="text"
+            appAutofocus
+            class="p-inputtext"
+            pInputText
+            [style]="{ width: '60%' }"
+          />
+        </ng-container>
+        <ng-container *ngIf="!editingMode">
+          <div>
+            {{ userInfo.nationalIdNo }}
+          </div>
+        </ng-container>
+      </div>
+      <div
+        class="col-5 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        信箱
+      </div>
+      <div
+        class="col-7 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        <ng-container *ngIf="editingMode">
+          <input
+            [(ngModel)]="userInfo.email"
+            formControlName="email"
+            type="text"
+            appAutofocus
+            class="p-inputtext"
+            pInputText
+            [style]="{ width: '60%' }"
+          />
+        </ng-container>
+        <ng-container *ngIf="!editingMode">
+          <div>
+            {{ userInfo.email }}
+          </div>
+        </ng-container>
+      </div>
+      <div
+        class="col-5 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        生日
+      </div>
+      <div class="col-7 text-center p-3 border-round-sm font-bold">
+        <ng-container *ngIf="editingMode">
+          <p-calendar
+            [showIcon]="true"
+            appendTo="body"
+            [style]="{ width: '60%' }"
+            formControlName="birthday"
+            dateFormat="yy-mm-dd"
+            dataType="string"
+            [(ngModel)]="userInfo.birthday"
+            placeholder="yyyy-MM-dd"
+          ></p-calendar>
+        </ng-container>
+        <ng-container *ngIf="!editingMode">
+          <div>
+            {{ userInfo.birthday }}
+          </div>
+        </ng-container>
+      </div>
+      <div
+        class="col-5 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        地址
+      </div>
+      <div
+        class="col-7 flex align-items-center justify-content-center text-center p-3 border-round-sm font-bold"
+      >
+        <ng-container *ngIf="editingMode">
+          <input
+            [(ngModel)]="userInfo.address"
+            formControlName="address"
+            type="text"
+            [style]="{ width: '60%' }"
+            appAutofocus
+            class="p-inputtext"
+            pInputText
+          />
+        </ng-container>
+        <ng-container *ngIf="!editingMode">
+          <div>
+            {{ userInfo.address }}
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </p-panel>
+
+  <div class="grid">
+    <!-- 群組資料區域 -->
+    <div class="col-12 md:col-3 lg:col-6">
+      <p-panel
+        header="群組資料"
+        [style]="{ 'max-width': '1000px' }"
+        [toggleable]="true"
+      >
+        <div class="grid flex justify-content-start">
+          <!-- 遍歷Group資料 -->
+          @for (group of groups; track group.id) {
+          <div
+            class="flex align-items-center justify-content-center w-10rem h-10rem font-bold border-round m-2"
+          >
+            <li>{{ group.name }}</li>
+          </div>
+          }
+        </div>
+      </p-panel>
+    </div>
+    <!-- 角色資料區域 -->
+    <div class="col-12 md:col-3 lg:col-6">
+      <p-panel
+        header="角色資料"
+        [style]="{ 'max-width': '1000px' }"
+        [toggleable]="true"
+      >
+        <div class="flex justify-content-start flex-wrap">
+          <!-- 遍歷Role資料 -->
+          @for (role of roles; track role.id) {
+          <div
+            class="flex align-items-center justify-content-center w-10rem h-10rem font-bold border-round m-2"
+          >
+            <li>{{ role.name }}</li>
+          </div>
+          }
+        </div>
+      </p-panel>
+    </div>
+  </div>
+</form>

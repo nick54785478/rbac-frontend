@@ -9,6 +9,8 @@ export class UserDetailQueried {
   email!: string; // 種類
   username!: string; // 名稱
   address!: string; // 敘述
+  nationalIdNo!: string;
+  birthday!: string;
   groups!: UserGroupQueried[];
   roles!: UserRoleQueried[];
   functions!: UserFunctionQueried[];

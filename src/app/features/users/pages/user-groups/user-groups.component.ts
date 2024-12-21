@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { BasePickListCompoent } from '../../../../shared/component/base/base-pickList.component';
 import { CoreModule } from '../../../../core/core.module';
 import { SystemMessageService } from '../../../../core/services/system-message.service';
-import { CommonService } from '../../../../shared/services/common.service';
 import { SharedModule } from '../../../../shared/shared.module';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { UserGroupsService } from '../../services/user-groups.service';

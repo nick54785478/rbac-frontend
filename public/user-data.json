@@ -1,0 +1,236 @@
+{
+  "id": 1,
+  "name": "張麥斯",
+  "email": "max123@example.com",
+  "username": "max123@example.com",
+  "address": "台北市南港區",
+  "birthday": "1969-09-01",
+  "nationalIdNo": "A123456789",
+  "groups": [
+    {
+      "id": 1,
+      "type": "ADMIN",
+      "name": "管理者群組",
+      "code": "ADMIN_GROUP ",
+      "description": "管理者群組",
+      "activeFlag": "Y"
+    },
+
+    {
+      "id": 2,
+      "type": "GROUP1",
+      "name": "群組1",
+      "code": "GROUP1",
+      "description": "群組1",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 3,
+      "type": "GROUP2",
+      "name": "群組2",
+      "code": "GROUP2",
+      "description": "群組2",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 4,
+      "type": "GROUP3",
+      "name": "群組3",
+      "code": "GROUP3",
+      "description": "群組3",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 5,
+      "type": "GROUP4",
+      "name": "群組4",
+      "code": "GROUP4",
+      "description": "群組4",
+      "activeFlag": "Y"
+    }
+  ],
+  "roles": [
+    {
+      "id": 1,
+      "code": "ADMIN",
+      "name": "Admin",
+      "type": "ADMIN",
+      "description": "管理者，具有管理者權限。",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 2,
+      "code": "ROLE1",
+      "name": "角色1",
+      "type": "ROLE1",
+      "description": "角色1",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 3,
+      "code": "ROLE2",
+      "name": "角色2",
+      "type": "ROLE2",
+      "description": "角色2",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 4,
+      "code": "ROLE3",
+      "name": "角色3",
+      "type": "ROLE3",
+      "description": "角色3",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 5,
+      "code": "ROLE4",
+      "name": "角色4",
+      "type": "ROLE4",
+      "description": "角色4",
+      "activeFlag": "Y"
+    }
+  ],
+  "functions": [
+    {
+      "id": 1,
+      "type": "DASHBOARD",
+      "code": "VIEW_DASHBOARD",
+      "name": "ViewDashboard",
+      "actionType": "B",
+      "description": "查詢 DashBoard 資料",
+      "label": "PERSONALITY",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 3,
+      "type": "USER",
+      "code": "QUERY_USER_DATA",
+      "name": "QueryUserData",
+      "actionType": "B",
+      "description": "查詢使用者資料",
+      "label": "PERSONALITY",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 4,
+      "type": "ROLE",
+      "code": "QUERY_ROLE_DATA",
+      "name": "QueryRoleData",
+      "actionType": "B",
+      "description": "查詢角色資料",
+      "label": "PERSONALITY",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 5,
+      "type": "USER",
+      "code": "ADD_USER_DATA",
+      "name": "AddUserData",
+      "actionType": "A",
+      "description": "新增使用者資料",
+      "label": "PERSONALITY",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 6,
+      "type": "USER",
+      "code": "DELETE_USER_DATA",
+      "name": "DeleteUserData",
+      "actionType": "D",
+      "description": "刪除使用者資料",
+      "label": "PERSONALITY",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 7,
+      "type": "USER",
+      "code": "EDIT_USER_DATA",
+      "name": "EditUserData",
+      "actionType": "E",
+      "description": "編輯使用者資料",
+      "label": "PERSONALITY",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 8,
+      "type": "USER",
+      "code": "SEARCH_USER_DATA",
+      "name": "SearchUserData",
+      "actionType": "S",
+      "description": "搜尋使用者資料",
+      "label": "PERSONALITY",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 1,
+      "type": "DASHBOARD",
+      "code": "VIEW_DASHBOARD",
+      "name": "ViewDashboard",
+      "actionType": "B",
+      "description": "查詢 DashBoard 資料",
+      "label": "GROUP",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 3,
+      "type": "USER",
+      "code": "QUERY_USER_DATA",
+      "name": "QueryUserData",
+      "actionType": "B",
+      "description": "查詢使用者資料",
+      "label": "GROUP",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 4,
+      "type": "ROLE",
+      "code": "QUERY_ROLE_DATA",
+      "name": "QueryRoleData",
+      "actionType": "B",
+      "description": "查詢角色資料",
+      "label": "GROUP",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 5,
+      "type": "USER",
+      "code": "ADD_USER_DATA",
+      "name": "AddUserData",
+      "actionType": "A",
+      "description": "新增使用者資料",
+      "label": "GROUP",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 6,
+      "type": "USER",
+      "code": "DELETE_USER_DATA",
+      "name": "DeleteUserData",
+      "actionType": "D",
+      "description": "刪除使用者資料",
+      "label": "GROUP",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 7,
+      "type": "USER",
+      "code": "EDIT_USER_DATA",
+      "name": "EditUserData",
+      "actionType": "E",
+      "description": "編輯使用者資料",
+      "label": "GROUP",
+      "activeFlag": "Y"
+    },
+    {
+      "id": 8,
+      "type": "USER",
+      "code": "SEARCH_USER_DATA",
+      "name": "SearchUserData",
+      "actionType": "S",
+      "description": "搜尋使用者資料",
+      "label": "GROUP",
+      "activeFlag": "Y"
+    }
+  ]
+}

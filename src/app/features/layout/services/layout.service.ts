@@ -4,6 +4,8 @@ import { MenuItem } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Observable } from 'rxjs/internal/Observable';
 import { map } from 'rxjs/internal/operators/map';
+import { UserQueried } from '../../users/models/user-query.model';
+import { UserPersonalityQueried } from '../../users/models/user-personality-query.model';
 
 @Injectable({
   providedIn: 'root',

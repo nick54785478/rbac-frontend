@@ -1,2 +1,78 @@
 <!-- 登入頁面 -->
-<p>login works!</p>
+<form [formGroup]="formGroup">
+  <div class="login">
+    <div class="card">
+      <div
+        class="flex flex-column align-items-center justify-content-center card-container h-screen"
+      >
+        <p-card class="xl:max-w-25rem md:max-w-25rem sm:max-w-screen">
+          <div class="grid p-fluid" pFocusTrap>
+            <div class="col-12 text-2xl font-medium">Sign in</div>
+            <div class="col-12">
+              <label for="username">Username</label>
+              <input
+                type="text"
+                pInputText
+                formControlName="username"
+                [ngClass]="{ 'ng-dirty': formControlInvalid('username') }"
+              />
+              <div *ngIf="formControlInvalid('username')">
+                <!-- <small
+                  class="p-error"
+                  *ngIf="formControl('username').errors?.['required']"
+                >
+                  {{ "message.validation.required" | translate }}
+                </small> -->
+              </div>
+            </div>
+            <div class="col-12">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                pPassword
+                [feedback]="false"
+                formControlName="password"
+                [ngClass]="{ 'ng-dirty': formControlInvalid('password') }"
+              />
+              <div *ngIf="formControlInvalid('password')">
+                <!-- <small
+                  class="p-error"
+                  *ngIf="formControl('password').errors?.['required']"
+                >
+                  {{ "message.validation.required" | translate }}
+                </small> -->
+              </div>
+            </div>
+            <div class="col-12">
+              <button
+                type="button"
+                pButton
+                pRipple
+                label="Sign in"
+                (click)="signIn()"
+              ></button>
+            </div>
+          </div>
+          <div class="grid p-fluid">
+            <div class="col-12">
+              <p-divider align="center">
+                <b>or</b>
+              </p-divider>
+            </div>
+            <div class="col-12">
+              <button
+                type="button"
+                pButton
+                pRipple
+                class="p-button-outlined"
+                icon="pi pi-microsoft"
+                label="Sign in with Microsoft"
+                (click)="signIn()"
+              ></button>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</form>

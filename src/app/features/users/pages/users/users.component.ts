@@ -1,31 +1,19 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   DialogService,
   DynamicDialogConfig,
   DynamicDialogRef,
 } from 'primeng/dynamicdialog';
-import { Password } from 'primeng/password';
-import { RegisterComponent } from '../register/register.component';
 import { SharedModule } from '../../../../shared/shared.module';
 import { BaseFormCompoent } from '../../../../shared/component/base/base-form.component';
 import { DialogFormComponent } from '../../../../shared/component/dialog-form/dialog-form.component';
 import { CoreModule } from '../../../../core/core.module';
-import { FormAction } from '../../../../core/enums/form-action.enum';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs/internal/Subject';
-import { userInfo } from 'os';
 import { UserInfoOption } from '../../../../shared/models/userinfo-option.model';
 import { OptionService } from '../../../../shared/services/option.service';
-import {
-  debounceTime,
-  finalize,
-  map,
-  Observable,
-  of,
-  switchMap,
-  take,
-} from 'rxjs';
+import { debounceTime, finalize, switchMap } from 'rxjs';
 import { UsersService } from '../../services/users.service';
 import { SystemMessageService } from '../../../../core/services/system-message.service';
 import { LoadingMaskService } from '../../../../core/services/loading-mask.service';
@@ -51,7 +39,7 @@ export class UsersComponent
   implements OnInit, OnDestroy
 {
   ref!: DynamicDialogRef; // dialog
-  dialogOpened: boolean = false;
+  dialogOpened!: boolean;
   userinfos: UserInfoOption[] = []; // AutoComplete 下拉式選單資料
   selectedData!: any;
   cols: any[] = [];
@@ -169,7 +157,11 @@ export class UsersComponent
     ];
   }
 
-  // 切換 Tab 時執行
+  /**
+   * 切換 Tab 時執行顯示下方表格資料
+   * @param event
+   * @param  field
+   * */
   onTabChange(event: any, field: string) {
     console.log('Tab changed:', event, field);
     this.activeField = field;
@@ -202,6 +194,8 @@ export class UsersComponent
    */
   onStartUserConfig(action: string) {
     this.dialogOpened = true;
+    console.log(this.formControlInvalid('userInfo'));
+
     if (!this.dialogOpened || !this.formGroup.valid) {
       return;
     }
@@ -290,6 +284,7 @@ export class UsersComponent
       )
       .subscribe({
         next: (res) => {
+          console.log(res);
           this.messageService.success('查詢成功');
           this.userQueridData = res;
 
