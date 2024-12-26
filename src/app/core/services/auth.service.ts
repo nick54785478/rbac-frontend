@@ -1,0 +1,81 @@
+import { Injectable, OnDestroy } from '@angular/core';
+import { StorageService } from './storage.service';
+import { SystemStorageKey } from '../enums/system-storage.enum';
+import { Observable } from 'rxjs/internal/Observable';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { of } from 'rxjs/internal/observable/of';
+import { BehaviorSubject, Subject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  private readonly baseApiUrl = environment.apiEndpoint;
+
+  tokenSubject$ = new BehaviorSubject<string>('');
+
+  constructor(
+    private storageService: StorageService,
+    private http: HttpClient
+  ) {}
+
+  /**
+   * 取得 JwtToken
+   * @returns token
+   */
+  getJwtToken(): Observable<any> {
+    const token =
+      this.storageService.getLocalStorageItem(SystemStorageKey.JWT_TOKEN) ||
+      this.storageService.getSessionStorageItem(SystemStorageKey.JWT_TOKEN);
+    return of(token);
+  }
+
+  /**
+   * 刷新 Token
+   * */
+  refreshToken(): Observable<string> {
+    // TODO
+    const url = this.baseApiUrl + '/login';
+    return this.http.post<string>('/api/auth/refresh', {});
+  }
+
+  /**
+   * 確定是否已登入
+   * @param token
+   * @returns boolean
+   */
+  isAuthenticated(token: string): boolean {
+    if (token || token) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * 清除 Token
+   */
+  clearToken() {
+    this.storageService.removeLocalStorageItem(SystemStorageKey.JWT_TOKEN);
+    this.storageService.removeSessionStorageItem(SystemStorageKey.JWT_TOKEN);
+  }
+
+  /**
+   * 檢測 Token 是否過期
+   * @param token
+   * @returns boolean
+   */
+  checkExpired(token: string): boolean {
+    if (!token) {
+      return true;
+    }
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1])); // 解碼 payload
+      const currentTime = Math.floor(Date.now() / 1000); // 當前時間（秒）
+      return payload.exp < currentTime; // 是否過期
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return true; // 如果無法解析，視為過期
+    }
+  }
+}

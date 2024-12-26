@@ -151,16 +151,6 @@ export class PersonalityComponent
   cancelEdit() {}
 
   /**
-   * 確認修改
-   *
-   * @param target FormControlName 的 key
-   * @param value 值
-   */
-  confirm(target: any, value: any) {
-    this.editingMode = false;
-  }
-
-  /**
    * 取消修改
    */
   cancel() {

@@ -15,6 +15,9 @@ import { Menu } from 'primeng/menu';
 import { OptionService } from '../../../shared/services/option.service';
 import { SettingType } from '../../../core/enums/setting-type.enum';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
+import { AuthService } from '../../../core/services/auth.service';
+import { StorageService } from '../../../core/services/storage.service';
+import { SystemStorageKey } from '../../../core/enums/system-storage.enum';
 
 @Component({
   selector: 'app-layout-topbar',
@@ -22,7 +25,7 @@ import { MenuItem, PrimeNGConfig } from 'primeng/api';
   imports: [CommonModule, SharedModule],
   templateUrl: './layout-topbar.component.html',
   styleUrl: './layout-topbar.component.scss',
-  providers: [LayoutService],
+  providers: [LayoutService, StorageService, AuthService],
 })
 export class LayoutTopbarComponent implements OnInit {
   @Output() visibleEmit = new EventEmitter<boolean>();
@@ -36,7 +39,8 @@ export class LayoutTopbarComponent implements OnInit {
   constructor(
     private windowRef: WindowRefService,
     private router: Router,
-    private optionService: OptionService,
+    private storageService: StorageService,
+    private authService: AuthService,
     private primengConfig: PrimeNGConfig
   ) {}
 
@@ -107,5 +111,15 @@ export class LayoutTopbarComponent implements OnInit {
    */
   redirectPersonality() {
     this.router.navigate(['/users/personality']);
+  }
+
+  /**
+   * 使用者登出
+   */
+  logout() {
+    this.authService.clearToken();
+    this.storageService.removeSessionStorageItem(SystemStorageKey.QUERY_PARAMS);
+    this.storageService.removeSessionStorageItem(SystemStorageKey.REDIRECT_URL);
+    this.router.navigate(['/login']);
   }
 }

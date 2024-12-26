@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   DialogService,
@@ -36,7 +36,7 @@ import { UserRolesComponent } from '../user-roles/user-roles.component';
 })
 export class UsersComponent
   extends BaseFormCompoent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, DoCheck
 {
   ref!: DynamicDialogRef; // dialog
   dialogOpened!: boolean;
@@ -45,7 +45,7 @@ export class UsersComponent
   cols: any[] = [];
   tableData: any[] = [];
   detailTabs: any[] = [];
-  activeField: string = 'info'; // 用以激活當前的頁面
+  activeField: string = ''; // 用以激活當前的頁面
   pageContents: any; // 當前頁面內容配置
   userQueridData!: any; // 後端查詢使用者資料
 
@@ -67,6 +67,7 @@ export class UsersComponent
   ) {
     super();
   }
+
   ngOnDestroy(): void {
     this.autoCompleteDataSubject$.unsubscribe;
   }
@@ -130,21 +131,21 @@ export class UsersComponent
         field: 'info',
         icon: '',
         command: (event: any) => this.onTabChange(event, 'info'),
-        disabled: false,
+        disabled: this.activeField === '',
       },
       {
         label: '群組',
         field: 'groups',
         icon: '',
         command: (event: any) => this.onTabChange(event, 'groups'),
-        disabled: false,
+        disabled: this.activeField === '',
       },
       {
         label: '角色',
         field: 'roles',
         icon: '',
         command: (event: any) => this.onTabChange(event, 'roles'),
-        disabled: false,
+        disabled: this.activeField === '',
       },
       ,
       {
@@ -152,7 +153,42 @@ export class UsersComponent
         field: 'functions',
         icon: '',
         command: (event: any) => this.onTabChange(event, 'functions'),
-        disabled: false,
+        disabled: this.activeField === '',
+      },
+    ];
+  }
+
+  ngDoCheck(): void {
+    // 初始化上方 Tab 按鈕
+    this.detailTabs = [
+      {
+        label: '使用者資料',
+        field: 'info',
+        icon: '',
+        command: (event: any) => this.onTabChange(event, 'info'),
+        disabled: this.activeField === '',
+      },
+      {
+        label: '群組',
+        field: 'groups',
+        icon: '',
+        command: (event: any) => this.onTabChange(event, 'groups'),
+        disabled: this.activeField === '',
+      },
+      {
+        label: '角色',
+        field: 'roles',
+        icon: '',
+        command: (event: any) => this.onTabChange(event, 'roles'),
+        disabled: this.activeField === '',
+      },
+      ,
+      {
+        label: '功能',
+        field: 'functions',
+        icon: '',
+        command: (event: any) => this.onTabChange(event, 'functions'),
+        disabled: this.activeField === '',
       },
     ];
   }
@@ -260,6 +296,7 @@ export class UsersComponent
     this.formGroup.reset();
     this.userQueridData = null;
     this.tableData = [];
+    this.activeField = '';
   }
 
   /**
@@ -272,6 +309,7 @@ export class UsersComponent
     if (!this.formGroup.valid || !this.submitted) {
       return;
     }
+    this.activeField = 'info';
     this.loadingMaskService.show();
     this.userService
       .query(userInfo.username)
