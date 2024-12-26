@@ -35,7 +35,7 @@ export const routes: Routes = [
       },
     ],
     // 目前先拿掉 登入，尚待完成
-    // canActivate: [AuthGuard], // 要透過 AuthGuard 驗證過後才能進入
+    canActivate: [AuthGuard], // 要透過 AuthGuard 驗證過後才能進入
   },
   // 預設 '' 重導向到 /features
   { path: '', redirectTo: '/features', pathMatch: 'full' },

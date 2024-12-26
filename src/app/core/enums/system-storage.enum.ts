@@ -3,6 +3,7 @@
  */
 export enum SystemStorageKey {
   JWT_TOKEN = 'token',
+  REFRESH_TOKEN = 'refreshToken',
   REDIRECT_URL = 'redirectUrl',
   QUERY_PARAMS = 'queryParams',
 }

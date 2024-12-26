@@ -120,6 +120,7 @@ export class LayoutTopbarComponent implements OnInit {
     this.authService.clearToken();
     this.storageService.removeSessionStorageItem(SystemStorageKey.QUERY_PARAMS);
     this.storageService.removeSessionStorageItem(SystemStorageKey.REDIRECT_URL);
+    this.storageService.removeLocalStorageItem(SystemStorageKey.REFRESH_TOKEN);
     this.router.navigate(['/login']);
   }
 }

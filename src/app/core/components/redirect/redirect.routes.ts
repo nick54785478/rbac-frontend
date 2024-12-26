@@ -11,9 +11,4 @@ export const routes: Routes = [
     path: '',
     component: RedirectComponent,
   },
-  // 預設路徑顯示 RedirectComponent
-  {
-    path: 'login',
-    component: LoginComponent,
-  },
 ];

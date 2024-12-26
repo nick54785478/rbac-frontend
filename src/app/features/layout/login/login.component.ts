@@ -102,6 +102,13 @@ export class LoginComponent
               res.token
             );
 
+            // 設置 Refresh Token
+            this.storageService.setLocalStorageItem(
+              SystemStorageKey.REFRESH_TOKEN,
+              res?.refreshToken
+            );
+
+            // 設置 Token
             this.authService.tokenSubject$.next(res.token);
 
             console.log('有取得已登入的結果');

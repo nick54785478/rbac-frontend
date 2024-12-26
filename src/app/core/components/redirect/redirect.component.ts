@@ -43,7 +43,7 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('這是重導向頁面');
-    this.redirect();
+    // this.redirect();
   }
 
   ngAfterViewInit(): void {
@@ -56,7 +56,6 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
   redirect() {
     this.authService.tokenSubject$
       .pipe(
-        startWith(this.authService.tokenSubject$.getValue()),
         tap((token) => {
           if (!token) {
             // 如果沒有 Token，可以進行登出或重新導向邏輯
