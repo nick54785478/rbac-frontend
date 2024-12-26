@@ -34,7 +34,8 @@ export const routes: Routes = [
           import('./features/features.module').then((m) => m.FeaturesModule),
       },
     ],
-    canActivate: [AuthGuard], // 要透過 AuthGuard 驗證過後才能進入
+    // 目前先拿掉 登入，尚待完成
+    // canActivate: [AuthGuard], // 要透過 AuthGuard 驗證過後才能進入
   },
   // 預設 '' 重導向到 /features
   { path: '', redirectTo: '/features', pathMatch: 'full' },

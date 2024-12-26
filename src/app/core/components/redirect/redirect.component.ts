@@ -43,11 +43,11 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('這是重導向頁面');
-    // this.redirect();
+    this.redirect();
   }
 
   ngAfterViewInit(): void {
-    this.redirect();
+    // this.redirect();
   }
 
   /**
