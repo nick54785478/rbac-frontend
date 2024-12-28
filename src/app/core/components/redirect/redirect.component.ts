@@ -15,7 +15,17 @@ import { SystemStorageKey } from '../../enums/system-storage.enum';
 import { Subject } from 'rxjs/internal/Subject';
 import { Router, RouterModule } from '@angular/router';
 import { NavigateService } from '../../services/navigate.service';
-import { delay, startWith, takeUntil, tap } from 'rxjs';
+import {
+  async,
+  defaultIfEmpty,
+  delay,
+  firstValueFrom,
+  lastValueFrom,
+  startWith,
+  takeUntil,
+  tap,
+  timer,
+} from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../../../features/layout/login/login.component';
 
@@ -25,10 +35,12 @@ import { LoginComponent } from '../../../features/layout/login/login.component';
   imports: [SharedModule, CoreModule],
   templateUrl: './redirect.component.html',
   styleUrl: './redirect.component.scss',
-  providers: [Router],
+  providers: [],
 })
 export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly _destroying$ = new Subject<void>();
+
+  private token: string = '';
 
   constructor(
     private router: Router,
@@ -41,9 +53,10 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
     this._destroying$.complete();
   }
 
-  ngOnInit(): void {
-    console.log('這是重導向頁面');
-    // this.redirect();
+  async ngOnInit(): Promise<void> {
+    this.token = await lastValueFrom(this.authService.getJwtToken());
+    console.log(this.token);
+    this.redirect();
   }
 
   ngAfterViewInit(): void {
@@ -51,42 +64,28 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * 檢查重導向方向
+   * 重導向
    */
   redirect() {
-    this.authService.tokenSubject$
-      .pipe(
-        tap((token) => {
-          if (!token) {
-            // 如果沒有 Token，可以進行登出或重新導向邏輯
-            console.log('未取得 Token，重導向到登入頁面');
-            this.router.navigateByUrl('/login');
-          }
-        })
-      )
-      .subscribe((token) => {
-        // 有 Token 的情況
-        if (this.authService.isAuthenticated(token)) {
-          // 把網址導到原本進入時的網址 ( 在 AuthGuard 寫入 sessionStorage 的 )
-          const redirectUrl = this.storageService.getSessionStorageItem(
-            SystemStorageKey.REDIRECT_URL
-          )
-            ? this.storageService.getSessionStorageItem(
-                SystemStorageKey.REDIRECT_URL
-              )
-            : '/';
-          const queryParams = this.storageService.getSessionStorageItem(
-            SystemStorageKey.QUERY_PARAMS
-          );
-          if (queryParams) {
-            this.router.navigate([redirectUrl], {
-              queryParams: JSON.parse(queryParams),
-            });
-          } else {
-            console.log(redirectUrl);
-            this.router.navigate([redirectUrl]);
-          }
-        }
+    // 把網址導到原本進入時的網址 ( 在 AuthGuard 寫入 sessionStorage 的 )
+    const redirectUrl = this.storageService.getSessionStorageItem(
+      SystemStorageKey.REDIRECT_URL
+    )
+      ? this.storageService.getSessionStorageItem(SystemStorageKey.REDIRECT_URL)
+      : '/';
+    // 取得 query params
+    const queryParams = this.storageService.getSessionStorageItem(
+      SystemStorageKey.QUERY_PARAMS
+    );
+    if (queryParams) {
+      // 有取得使用該 param 導向
+      this.router.navigate([redirectUrl], {
+        queryParams: JSON.parse(queryParams),
       });
+    } else {
+      // 未取得則不帶 params
+      console.log(redirectUrl);
+      this.router.navigate([redirectUrl]);
+    }
   }
 }

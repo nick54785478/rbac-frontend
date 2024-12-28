@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { RedirectComponent } from './redirect.component';
-import { LoginComponent } from '../../../features/layout/login/login.component';
 
 /**
  * 定義 Redirect 子路由配置的檔案

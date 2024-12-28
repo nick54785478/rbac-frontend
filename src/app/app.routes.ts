@@ -33,6 +33,14 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/features.module').then((m) => m.FeaturesModule),
       },
+      {
+        path: 'redirect',
+        loadChildren: () =>
+          import('./core/components/redirect/redirect.module').then(
+            (m) => m.RedirectModule
+          ),
+        // canActivate: [MsalGuard], // 要透過 MsalGuard 驗證過後才能進入
+      },
     ],
     // 目前先拿掉 登入，尚待完成
     canActivate: [AuthGuard], // 要透過 AuthGuard 驗證過後才能進入

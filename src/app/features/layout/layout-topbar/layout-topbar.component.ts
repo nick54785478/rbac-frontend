@@ -12,8 +12,6 @@ import { LayoutService } from '../services/layout.service';
 import { WindowRefService } from '../services/window-ref.service';
 import { Router } from '@angular/router';
 import { Menu } from 'primeng/menu';
-import { OptionService } from '../../../shared/services/option.service';
-import { SettingType } from '../../../core/enums/setting-type.enum';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 import { StorageService } from '../../../core/services/storage.service';
