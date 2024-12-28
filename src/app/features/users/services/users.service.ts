@@ -10,6 +10,8 @@ import { UserGroupQueried } from '../models/user-group-query.model';
 import { UserDetailQueried } from '../models/user-detail-query.model';
 import { UserPersonalityQueried } from '../models/user-personality-query.model';
 import { map } from 'rxjs/internal/operators/map';
+import { StorageService } from '../../../core/services/storage.service';
+import { SystemStorageKey } from '../../../core/enums/system-storage.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +19,10 @@ import { map } from 'rxjs/internal/operators/map';
 export class UsersService {
   private readonly baseApiUrl = environment.apiEndpoint;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private storageService: StorageService
+  ) {}
 
   /**
    * 進行註冊動作
@@ -58,11 +63,22 @@ export class UsersService {
 
   /**
    * 取得該使用者資料
-   * @returns
+   *  @param username
    */
-  public getPersonality(username: string) {
-    //TODO
-    return this.http.get<UserDetailQueried>('/user-data.json').pipe(
+  public getPersonality() {
+    const username =
+      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME) ||
+      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME);
+    const url = this.baseApiUrl + '/users/' + username + '/details';
+
+    if (environment.apiMock) {
+      return this.http.get<UserDetailQueried>('/user-data.json').pipe(
+        map((response) => {
+          return response;
+        })
+      );
+    }
+    return this.http.get<UserDetailQueried>(url).pipe(
       map((response) => {
         return response;
       })

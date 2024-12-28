@@ -49,7 +49,7 @@ export class PersonalityComponent
   }
 
   ngOnInit(): void {
-    this.userService.getPersonality('').subscribe({
+    this.userService.getPersonality().subscribe({
       next: (res) => {
         console.log(res);
         this.groups = res.groups;
@@ -128,7 +128,7 @@ export class PersonalityComponent
    */
   toggleEdit() {
     this.editingMode = true;
-    // 存取修改前的值
+    // 存取修改前的值，寫法同下
     this.previousValue = { ...this.userInfo };
 
     // this.previousValue = {

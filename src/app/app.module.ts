@@ -5,9 +5,7 @@ import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { SystemMessageService } from './core/services/system-message.service';
 import { ToastModule } from 'primeng/toast';
-import { AppComponent } from './app.component';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 

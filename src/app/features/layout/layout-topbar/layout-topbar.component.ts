@@ -50,6 +50,9 @@ export class LayoutTopbarComponent implements OnInit {
       this.checkScreenSize();
     }
 
+    /**
+     * Languages 語系，可新增(用於以後若要實作 i18n)
+     */
     this.languages = [
       {
         items: [
@@ -79,6 +82,10 @@ export class LayoutTopbarComponent implements OnInit {
     this.visibleEmit.emit(this.sidebarVisible); // 將狀態傳遞給 Layout
   }
 
+  /**
+   * 監測螢幕 Size
+   * @param event
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
     const win = this.windowRef.nativeWindow;
@@ -87,6 +94,9 @@ export class LayoutTopbarComponent implements OnInit {
     }
   }
 
+  /**
+   * 檢查螢幕 Size 自動關閉左側欄
+   */
   private checkScreenSize(): void {
     const win = this.windowRef.nativeWindow;
     if (win && win.innerWidth < 768) {

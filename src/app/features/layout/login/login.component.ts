@@ -81,21 +81,11 @@ export class LoginComponent
           } else {
             this.messageService.success('使用者登入成功');
 
-            // 先將 Token 清除，再設置進去
-            this.storageService.removeSessionStorageItem(
-              SystemStorageKey.JWT_TOKEN
-            );
+            // 設置 Token 進 LocalStorage 和 SessionStorage
+            this.setJwToken(res.token);
 
-            // 設置 Token 進 SessionStorage
-            this.storageService.setSessionStorageItem(
-              SystemStorageKey.JWT_TOKEN,
-              res.token
-            );
-            // 設置 Token 進 LocalStorage
-            this.storageService.setLocalStorageItem(
-              SystemStorageKey.JWT_TOKEN,
-              res.token
-            );
+            // 設置使用者名稱進 LocalStorage 和 SessionStorage
+            this.setUsername(formData.username);
 
             // 設置 Refresh Token
             this.storageService.setLocalStorageItem(
@@ -103,7 +93,7 @@ export class LoginComponent
               res?.refreshToken
             );
 
-            // 設置 Token
+            // 設置 Token 進 AuthService Subject 訂閱
             this.authService.tokenSubject$.next(res.token);
 
             console.log('有取得已登入的結果');
@@ -120,5 +110,38 @@ export class LoginComponent
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
+  }
+
+  /**
+   * 設置使用者名稱進 LocalStorage 和 SessionStorage
+   * @param username
+   */
+  setUsername(username: string) {
+    // 設置 username
+    this.storageService.setSessionStorageItem(
+      SystemStorageKey.USERNAME,
+      username
+    );
+    // 設置 username
+    this.storageService.setLocalStorageItem(
+      SystemStorageKey.USERNAME,
+      username
+    );
+  }
+
+  /**
+   * 設置 Token 進 LocalStorage 和 SessionStorage
+   * @param token
+   */
+  setJwToken(token: string) {
+    // 先將 Token 清除，再設置進去
+    this.storageService.removeSessionStorageItem(SystemStorageKey.JWT_TOKEN);
+    // 設置 Token 進 SessionStorage
+    this.storageService.setSessionStorageItem(
+      SystemStorageKey.JWT_TOKEN,
+      token
+    );
+    // 設置 Token 進 LocalStorage
+    this.storageService.setLocalStorageItem(SystemStorageKey.JWT_TOKEN, token);
   }
 }
