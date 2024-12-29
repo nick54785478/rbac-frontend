@@ -20,6 +20,7 @@ import { LoadingMaskService } from '../../../../core/services/loading-mask.servi
 import { UserConfigureAction } from '../../../../core/enums/user-config-action.enum';
 import { UserGroupsComponent } from '../user-groups/user-groups.component';
 import { UserRolesComponent } from '../user-roles/user-roles.component';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-users',
@@ -58,6 +59,7 @@ export class UsersComponent
   readonly _destroying$ = new Subject<void>();
 
   constructor(
+    private location: Location,
     private loadingMaskService: LoadingMaskService,
     private messageService: SystemMessageService,
     private userService: UsersService,
@@ -73,6 +75,11 @@ export class UsersComponent
   }
 
   ngOnInit(): void {
+    // 監聽上一頁切換，關閉 Dialog
+    this.location.onUrlChange(() => {
+      this.closeFormDialog();
+    });
+
     this.formGroup = new FormGroup({
       userInfo: new FormControl('', [Validators.required]),
     });

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SharedModule } from '../../shared.module';
 import { CoreModule } from '../../../core/core.module';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog-form',

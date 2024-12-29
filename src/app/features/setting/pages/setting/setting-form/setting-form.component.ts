@@ -14,6 +14,7 @@ import { finalize } from 'rxjs';
 import { SettingQueried } from '../../../models/setting-query.model';
 import { UpdateSetting } from '../../../models/update-setting-request.model';
 import { SettingType } from '../../../../../core/enums/setting-type.enum';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-setting-form',
@@ -30,6 +31,7 @@ export class SettingFormComponent
   activeFlags: Option[] = [];
 
   constructor(
+    private location: Location,
     private dialogConfig: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private settingService: SettingService,
@@ -40,6 +42,11 @@ export class SettingFormComponent
   }
 
   ngOnInit(): void {
+    // 監聽上一頁切換，關閉 Dialog
+    this.location.onUrlChange(() => {
+      this.onCloseForm();
+    });
+
     this.formAction = this.dialogConfig.data['action'];
 
     this.formGroup = new FormGroup({

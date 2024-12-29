@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   DialogService,
@@ -20,6 +20,8 @@ import { FormAction } from '../../../../core/enums/form-action.enum';
 import { SettingFormComponent } from './setting-form/setting-form.component';
 import { DialogConfirmService } from '../../../../core/services/dialog-confirm.service';
 import { SettingType } from '../../../../core/enums/setting-type.enum';
+import { NavigationStart, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-setting',
@@ -36,7 +38,7 @@ import { SettingType } from '../../../../core/enums/setting-type.enum';
   templateUrl: './setting.component.html',
   styleUrl: './setting.component.scss',
 })
-export class SettingComponent implements OnInit {
+export class SettingComponent implements OnInit, OnDestroy {
   dataTypes: Option[] = [];
   activeFlags: Option[] = [];
   //Table Row Actions 選單。
@@ -66,6 +68,13 @@ export class SettingComponent implements OnInit {
     private settingService: SettingService,
     public messageService: SystemMessageService
   ) {}
+
+  ngOnDestroy(): void {
+    // 保證組件銷毀時關閉 Dialog
+    if (this.dynamicDialogRef) {
+      this.dynamicDialogRef.close();
+    }
+  }
 
   formGroup!: FormGroup;
 

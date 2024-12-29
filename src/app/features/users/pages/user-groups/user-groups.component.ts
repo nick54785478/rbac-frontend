@@ -9,6 +9,7 @@ import { finalize } from 'rxjs';
 import { UsersService } from '../../services/users.service';
 import { LoadingMaskService } from '../../../../core/services/loading-mask.service';
 import { UpdateUserGroups } from '../../models/update-user-groups-request.model';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-user-group',
@@ -25,6 +26,7 @@ export class UserGroupsComponent
   username: string = '';
 
   constructor(
+    private location: Location,
     private userGroupService: UserGroupsService,
     private loadMaskService: LoadingMaskService,
     private userService: UsersService,
@@ -62,6 +64,11 @@ export class UserGroupsComponent
         disabled: false,
       },
     ];
+
+    // 監聽上一頁切換，關閉 Dialog
+    this.location.onUrlChange(() => {
+      this.onCloseForm();
+    });
   }
 
   /**

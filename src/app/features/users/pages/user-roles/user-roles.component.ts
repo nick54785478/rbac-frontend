@@ -9,6 +9,7 @@ import { UsersService } from '../../services/users.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { UserRolesService } from '../../services/user-roles.service';
 import { UpdateUserRoles } from '../../models/update-user-roles-request.model';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-user-roles',
@@ -22,7 +23,7 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
   username: string = '';
 
   constructor(
-    // private userGroupService: UserGroupsService,
+    private location: Location,
     private loadMaskService: LoadingMaskService,
     private userService: UsersService,
     private userRoleService: UserRolesService,
@@ -60,6 +61,11 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
         disabled: false,
       },
     ];
+
+    // 監聽上一頁切換，關閉 Dialog
+    this.location.onUrlChange(() => {
+      this.onCloseForm();
+    });
   }
 
   /**
