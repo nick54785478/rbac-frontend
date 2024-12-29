@@ -34,6 +34,9 @@ export class LayoutTopbarComponent implements OnInit {
 
   sidebarVisible: boolean = false; // 本地變數，監聽 SideBar 狀態
 
+  username: string = '';
+  name: string = '';
+
   constructor(
     private windowRef: WindowRefService,
     private router: Router,
@@ -44,6 +47,14 @@ export class LayoutTopbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.primengConfig.ripple = true;
+
+    // TODO 後面從 JWToken 來
+    this.username =
+      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME);
+    this.name =
+      this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
+      this.storageService.getSessionStorageItem(SystemStorageKey.NAME);
 
     const win = this.windowRef.nativeWindow;
     if (win) {
@@ -129,6 +140,10 @@ export class LayoutTopbarComponent implements OnInit {
     this.storageService.removeSessionStorageItem(SystemStorageKey.QUERY_PARAMS);
     this.storageService.removeSessionStorageItem(SystemStorageKey.REDIRECT_URL);
     this.storageService.removeLocalStorageItem(SystemStorageKey.REFRESH_TOKEN);
+    this.storageService.removeLocalStorageItem(SystemStorageKey.NAME);
+    this.storageService.removeSessionStorageItem(SystemStorageKey.NAME);
+    this.storageService.removeLocalStorageItem(SystemStorageKey.USERNAME);
+    this.storageService.removeSessionStorageItem(SystemStorageKey.USERNAME);
     this.router.navigate(['/login']);
   }
 }
