@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RegisterUser } from '../models/register-user-request.model';
+import { RegisterUser } from '../../register/models/register-user-request.model';
 import { Observable } from 'rxjs/internal/Observable';
 import { BaseResponse } from '../../../shared/models/base-response.model';
 import { environment } from '../../../../environments/environment';
@@ -23,15 +23,6 @@ export class UsersService {
     private http: HttpClient,
     private storageService: StorageService
   ) {}
-
-  /**
-   * 進行註冊動作
-   * @param request
-   */
-  create(request: RegisterUser): Observable<BaseResponse> {
-    const url = this.baseApiUrl + '/users/register';
-    return this.http.post<BaseResponse>(url, request);
-  }
 
   /**
    * 查詢使用者詳細資訊

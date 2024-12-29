@@ -5,6 +5,7 @@ import { AccessDeniedComponent } from './features/layout/access-denied/access-de
 import { ErrorComponent } from './features/layout/error/error.component';
 import { LayoutComponent } from './features/layout/pages/layout.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { RegisterComponent } from './features/register/pages/register.component';
 
 /**
  * 定義根路由配置的檔案

@@ -8,8 +8,8 @@
   {
     "label": "註冊",
     "icon": "",
-    "url": "/users/register",
-    "routerLink": "/users/register",
+    "url": "/register",
+    "routerLink": "/register",
     "visible": true
   },
   {

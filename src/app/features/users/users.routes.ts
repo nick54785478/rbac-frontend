@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { UsersComponent } from './pages/users/users.component';
-import { RegisterComponent } from './pages/register/register.component';
+import { RegisterComponent } from '../register/pages/register.component';
 import { PersonalityComponent } from './pages/personality/personality.component';
 
 /**
@@ -12,14 +12,14 @@ export const routes: Routes = [
     path: '',
     component: UsersComponent,
   },
-  // register 導向 註冊頁面
-  {
-    path: 'register',
-    component: RegisterComponent,
-  },
   // personality 導向個人頁面
   {
     path: 'personality',
     component: PersonalityComponent,
   },
+  // // register 導向 註冊頁面
+  // {
+  //   path: 'register',
+  //   component: RegisterComponent,
+  // },
 ];

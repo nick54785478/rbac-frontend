@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SharedModule } from '../../../../shared/shared.module';
-import { BaseFormCompoent } from '../../../../shared/component/base/base-form.component';
-import { CoreModule } from '../../../../core/core.module';
-import { SystemMessageService } from '../../../../core/services/system-message.service';
-import { environment } from '../../../../../environments/environment';
-import { RegisterUser } from '../../models/register-user-request.model';
+import { SharedModule } from '../../../shared/shared.module';
+import { BaseFormCompoent } from '../../../shared/component/base/base-form.component';
+import { CoreModule } from '../../../core/core.module';
+import { SystemMessageService } from '../../../core/services/system-message.service';
+import { environment } from '../../../../environments/environment';
+import { RegisterUser } from '../models/register-user-request.model';
 import { finalize } from 'rxjs';
-import { LoadingMaskService } from '../../../../core/services/loading-mask.service';
-import { UsersService } from '../../services/users.service';
+import { LoadingMaskService } from '../../../core/services/loading-mask.service';
+import { UsersService } from '../../users/services/users.service';
+import { RegisterService } from '../services/register.service';
 
 @Component({
   selector: 'app-register',
@@ -22,7 +23,7 @@ export class RegisterComponent extends BaseFormCompoent implements OnInit {
   constructor(
     private systemMessageService: SystemMessageService,
     private loadMaskService: LoadingMaskService,
-    private userService: UsersService
+    private registerService: RegisterService
   ) {
     super();
   }
@@ -52,7 +53,7 @@ export class RegisterComponent extends BaseFormCompoent implements OnInit {
         this.loadMaskService.show();
         // 將表單資料設置進 CreateSetting
         const request: RegisterUser = { ...this.formGroup.value };
-        this.userService
+        this.registerService
           .create(request)
           .pipe(
             finalize(() => {

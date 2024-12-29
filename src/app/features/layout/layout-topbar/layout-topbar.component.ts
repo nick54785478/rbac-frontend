@@ -16,6 +16,7 @@ import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 import { StorageService } from '../../../core/services/storage.service';
 import { SystemStorageKey } from '../../../core/enums/system-storage.enum';
+import { defaultIfEmpty, firstValueFrom, of } from 'rxjs';
 
 @Component({
   selector: 'app-layout-topbar',
@@ -26,6 +27,8 @@ import { SystemStorageKey } from '../../../core/enums/system-storage.enum';
   providers: [LayoutService, StorageService, AuthService],
 })
 export class LayoutTopbarComponent implements OnInit {
+  islogin: boolean = false; // 是否為登入狀態
+
   @Output() visibleEmit = new EventEmitter<boolean>();
 
   @ViewChild('tLanguageMenu') tLanguageMenu!: Menu; // 語系切換，目前尚未實作
@@ -34,8 +37,8 @@ export class LayoutTopbarComponent implements OnInit {
 
   sidebarVisible: boolean = false; // 本地變數，監聽 SideBar 狀態
 
-  username: string = '';
-  name: string = '';
+  username!: string | null;
+  name!: string | null;
 
   constructor(
     private windowRef: WindowRefService,
@@ -45,16 +48,25 @@ export class LayoutTopbarComponent implements OnInit {
     private primengConfig: PrimeNGConfig
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.primengConfig.ripple = true;
 
+    // 有取得 Token
+
     // TODO 後面從 JWToken 來
-    this.username =
-      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
-      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME);
-    this.name =
-      this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
-      this.storageService.getSessionStorageItem(SystemStorageKey.NAME);
+    this.username = await firstValueFrom(
+      of(
+        this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+          this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
+      ).pipe(defaultIfEmpty(null))
+    );
+
+    this.name = await firstValueFrom(
+      of(
+        this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
+          this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
+      ).pipe(defaultIfEmpty(null))
+    );
 
     const win = this.windowRef.nativeWindow;
     if (win) {
