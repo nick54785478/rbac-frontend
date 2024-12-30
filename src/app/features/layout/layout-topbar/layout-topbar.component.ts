@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DoCheck,
   EventEmitter,
   HostListener,
   OnInit,
@@ -16,7 +17,8 @@ import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 import { StorageService } from '../../../core/services/storage.service';
 import { SystemStorageKey } from '../../../core/enums/system-storage.enum';
-import { defaultIfEmpty, firstValueFrom, of } from 'rxjs';
+import { defaultIfEmpty, firstValueFrom, of, tap } from 'rxjs';
+import { UserProfile } from '../models/user-profile.model';
 
 @Component({
   selector: 'app-layout-topbar',
@@ -37,8 +39,10 @@ export class LayoutTopbarComponent implements OnInit {
 
   sidebarVisible: boolean = false; // 本地變數，監聽 SideBar 狀態
 
-  username!: string | null;
-  name!: string | null;
+  userProfile!: UserProfile;
+
+  // username!: string | null;
+  // name!: string | null;
 
   constructor(
     private windowRef: WindowRefService,
@@ -51,22 +55,42 @@ export class LayoutTopbarComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.primengConfig.ripple = true;
 
-    // 有取得 Token
+    // 從 LocalStorage 或 SessionStorage 獲取使用者資訊
+    const [username, name] = await Promise.all([
+      firstValueFrom(
+        of(
+          this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+            this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
+        ).pipe(
+          tap((value) => console.log('name value:', value)),
+          defaultIfEmpty(null)
+        )
+      ),
+      firstValueFrom(
+        of(
+          this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
+            this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
+        ).pipe(
+          tap((value) => console.log('name value:', value)),
+          defaultIfEmpty(null)
+        )
+      ),
+    ]);
+    // 將結果整合到 UserProfile
+    this.userProfile = {
+      username: username ?? '',
+      name: name ?? '',
+    };
 
-    // TODO 後面從 JWToken 來
-    this.username = await firstValueFrom(
-      of(
-        this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
-          this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
-      ).pipe(defaultIfEmpty(null))
+    console.log(
+      'name:',
+      this.userProfile.name,
+      'username:',
+      this.userProfile.username
     );
-
-    this.name = await firstValueFrom(
-      of(
-        this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
-          this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
-      ).pipe(defaultIfEmpty(null))
-    );
+    if (this.userProfile.name && this.userProfile.username) {
+      this.islogin = true;
+    }
 
     const win = this.windowRef.nativeWindow;
     if (win) {

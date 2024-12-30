@@ -78,7 +78,10 @@ export class RegisterComponent extends BaseFormCompoent implements OnInit {
     }
   }
 
-  clear() {}
-
-  onCloseForm() {}
+  /**
+   * 清空 Form 表單
+   */
+  clear() {
+    this.formGroup.reset();
+  }
 }

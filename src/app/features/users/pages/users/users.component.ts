@@ -293,7 +293,6 @@ export class UsersComponent
   closeFormDialog() {
     this.dialogOpened = false;
     this.dynamicDialogRef.close();
-    console.log('關閉 Dialog 表單');
   }
 
   /**
