@@ -53,9 +53,9 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
     this._destroying$.complete();
   }
 
-  async ngOnInit(): Promise<void> {
-    this.token = await lastValueFrom(this.authService.getJwtToken());
-    console.log(this.token);
+  ngOnInit(): void {
+    // this.token = await lastValueFrom(this.authService.getJwtToken());
+    // console.log(this.token);
     this.redirect();
   }
 
@@ -72,7 +72,9 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
       SystemStorageKey.REDIRECT_URL
     )
       ? this.storageService.getSessionStorageItem(SystemStorageKey.REDIRECT_URL)
-      : '/';
+      : '/redirect';
+    // 若此處不選擇 redirect 會導致重新整理時一瞬間出現該選擇頁面
+
     // 取得 query params
     const queryParams = this.storageService.getSessionStorageItem(
       SystemStorageKey.QUERY_PARAMS

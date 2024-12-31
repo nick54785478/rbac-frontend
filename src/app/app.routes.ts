@@ -11,11 +11,6 @@ import { RegisterComponent } from './features/register/pages/register.component'
  * 定義根路由配置的檔案
  */
 export const routes: Routes = [
-  // 登入頁面
-  {
-    path: 'login',
-    component: LoginComponent,
-  },
   {
     path: 'redirect',
     loadChildren: () =>
@@ -45,6 +40,11 @@ export const routes: Routes = [
     ],
     // 目前先拿掉 登入，尚待完成
     canActivate: [AuthGuard], // 要透過 AuthGuard 驗證過後才能進入
+  },
+  // 登入頁面
+  {
+    path: 'login',
+    component: LoginComponent,
   },
   // 預設 '' 重導向到 /features
   { path: '', redirectTo: '/features', pathMatch: 'full' },

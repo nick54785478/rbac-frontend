@@ -12,6 +12,7 @@ import { StorageService } from '../services/storage.service';
 import { SystemStorageKey } from '../enums/system-storage.enum';
 import { tap } from 'rxjs/internal/operators/tap';
 import { map } from 'rxjs/internal/operators/map';
+import { of } from 'rxjs/internal/observable/of';
 
 @Injectable({
   providedIn: 'root',
@@ -52,38 +53,25 @@ export class AuthGuard implements CanActivate {
     // 如果當前路徑是公開路徑，直接放行
     if (this.publicPaths.includes(currentPath)) {
       console.log();
-      return true;
+      return of(true);
     }
 
     // 確認是否已登入
     return this.authService.getJwtToken().pipe(
-      tap((token) => {
-        if (!token) {
-          // 如果沒有 Token，可以進行登出或重新導向邏輯
-          console.log('未取得 Token，進入重導向頁面');
-          // 設置重導向路徑為 login 登入頁面
-          this.storageService.setSessionStorageItem(
-            SystemStorageKey.REDIRECT_URL,
-            '/login'
-          );
-          this.router.navigateByUrl('/redirect');
-        }
-      }),
       // 檢查 Token 狀態，返回 true 或 UrlTree
       map((token) => {
         if (token && !this.authService.checkExpired(token)) {
           return true; // 放行
         } else {
+          // 設置重導向路徑為 login 登入頁面
+          this.storageService.setSessionStorageItem(
+            SystemStorageKey.REDIRECT_URL,
+            '/login'
+          );
           // 返回 UrlTree 進行重導向
           return this.router.createUrlTree(['/redirect']);
         }
       })
     );
-    //   .subscribe((res) => {
-    //     // 有 Token 放行
-    //     this.isAuthenticated = true;
-    //   });
-    // // 返回 UrlTree 進行重導向
-    // return this.router.createUrlTree(['/redirect']);
   }
 }
