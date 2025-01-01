@@ -17,6 +17,7 @@
         <button
           class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
           (click)="redirectPersonality()"
+          [disabled]="!islogin"
         >
           <i class="pi pi-user text-xl"></i>
         </button>

@@ -1,20 +1,8 @@
-import {
-  AfterContentChecked,
-  Component,
-  DoCheck,
-  HostListener,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SharedModule } from '../../../shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from '../services/layout.service';
-import { WindowRefService } from '../services/window-ref.service';
 import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Router } from '@angular/router';

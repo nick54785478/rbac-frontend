@@ -39,10 +39,7 @@ export class LayoutTopbarComponent implements OnInit {
 
   sidebarVisible: boolean = false; // 本地變數，監聽 SideBar 狀態
 
-  userProfile!: UserProfile;
-
-  // username!: string | null;
-  // name!: string | null;
+  userProfile: UserProfile = new UserProfile(); // 使用者資訊
 
   constructor(
     private windowRef: WindowRefService,
@@ -55,40 +52,27 @@ export class LayoutTopbarComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.primengConfig.ripple = true;
 
-    // 從 LocalStorage 或 SessionStorage 獲取使用者資訊
-    const [username, name] = await Promise.all([
-      firstValueFrom(
-        of(
-          this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
-            this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
-        ).pipe(
-          tap((value) => console.log('name value:', value)),
-          defaultIfEmpty(null)
-        )
-      ),
-      firstValueFrom(
-        of(
-          this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
-            this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
-        ).pipe(
-          tap((value) => console.log('name value:', value)),
-          defaultIfEmpty(null)
-        )
-      ),
-    ]);
-    // 將結果整合到 UserProfile
-    this.userProfile = {
-      username: username ?? '',
-      name: name ?? '',
-    };
-
-    console.log(
-      'name:',
-      this.userProfile.name,
-      'username:',
-      this.userProfile.username
+    this.userProfile.username = await firstValueFrom(
+      of(
+        this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+          this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
+      ).pipe(
+        tap((value) => console.log('username value:', value)),
+        defaultIfEmpty('')
+      )
     );
-    if (this.userProfile.name && this.userProfile.username) {
+
+    this.userProfile.name = await firstValueFrom(
+      of(
+        this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
+          this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
+      ).pipe(
+        tap((value) => console.log('name value:', value)),
+        defaultIfEmpty('')
+      )
+    );
+
+    if (this.userProfile.name || this.userProfile.username) {
       this.islogin = true;
     }
 
