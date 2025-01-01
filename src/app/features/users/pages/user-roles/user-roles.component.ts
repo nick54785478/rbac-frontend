@@ -166,6 +166,7 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
           this.loadMaskService.hide();
           this.submitted = false;
           this.query();
+          this.queryOthers();
         })
       )
       .subscribe({
