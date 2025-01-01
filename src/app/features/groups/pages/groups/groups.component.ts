@@ -69,7 +69,7 @@ export class GroupsComponent
         command: () => {
           this.addNewRow();
         },
-        disabled: !(this.mode === '') || this.tableData.length === 0,
+        disabled: !(this.mode === ''),
       },
       {
         label: '提交',
@@ -156,7 +156,7 @@ export class GroupsComponent
         label: '新增',
         icon: 'pi pi-plus',
         // 當沒有表單資料，不能新增
-        disabled: !(this.mode === '') || this.tableData.length === 0,
+        disabled: !(this.mode === ''),
         command: () => {
           this.addNewRow();
         },
@@ -436,7 +436,9 @@ export class GroupsComponent
     this.newRow = {
       id: null,
       name: '',
-      type: '',
+      type: this.formGroup.get('type')?.value
+        ? this.formGroup.get('type')?.value
+        : '',
       description: '',
       givenIndex: this.tableData.length, // 前端給予的編號資料
     };

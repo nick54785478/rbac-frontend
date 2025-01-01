@@ -44,7 +44,7 @@ export class FunctionsComponent
         command: () => {
           this.addNewRow();
         },
-        disabled: !(this.mode === '') || this.tableData.length === 0,
+        disabled: !(this.mode === ''),
       },
       {
         label: '提交',
@@ -155,7 +155,7 @@ export class FunctionsComponent
         label: '新增',
         icon: 'pi pi-plus',
         // 當沒有表單資料，不能新增
-        disabled: !(this.mode === '') || this.tableData.length === 0,
+        disabled: !(this.mode === ''),
         command: () => {
           this.addNewRow();
         },
@@ -396,6 +396,8 @@ export class FunctionsComponent
    * @param rowIndex 當前 row 的 Index
    * */
   confirm(rowIndex: number) {
+    console.log(this.newRow);
+
     // 當新增模式會將資料更新為最新的空資料，因為前面進新增模式時未 select
     if (this.mode === 'add') {
       // 更新為該筆資料
@@ -446,7 +448,9 @@ export class FunctionsComponent
       id: null,
       actionType: '',
       name: '',
-      type: '',
+      type: this.formGroup.get('type')?.value
+        ? this.formGroup.get('type')?.value
+        : '',
       description: '',
       givenIndex: this.tableData.length, // 前端給予的編號資料
     };

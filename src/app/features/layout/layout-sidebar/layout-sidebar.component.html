@@ -18,7 +18,11 @@
     <p-menu [model]="items">
       <ng-template #item let-item>
         <ng-container *ngIf="item.route; else elseBlock">
-          <a [routerLink]="item.routerLink" class="p-menu-item-link">
+          <a
+            [routerLink]="item.routerLink"
+            class="p-menu-item-link"
+            *ngIf="permissions.includes(item.id)"
+          >
             <!-- (click)="redirect(item.url)" -->
             <span [class]="item.icon"></span>
             <span class="ml-2">{{ item.label }}</span>

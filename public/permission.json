@@ -1,11 +1,13 @@
 [
   {
+    "id": "",
     "label": "首頁",
     "icon": "",
     "routerLink": "/",
     "visible": true
   },
   {
+    "id": "",
     "label": "註冊",
     "icon": "",
     "url": "/register",
@@ -13,46 +15,53 @@
     "visible": true
   },
   {
+    "id": "USER_MAINTAIN",
     "label": "使用者維護",
     "icon": "",
     "routerLink": "/users",
-    "visible": true
+    "visible": false
   },
   {
+    "id": "ROLE_MAINTAIN",
     "label": "角色維護",
     "icon": "",
     "routerLink": "/roles",
-    "visible": true
+    "visible": false
   },
   {
+    "id": "FUNCTION_MAITAIN",
     "label": "功能維護",
     "icon": "",
     "routerLink": "/functions",
-    "visible": true
+    "visible": false
   },
   {
+    "id": "GROUP_MAITAIN",
     "label": "群組維護",
     "icon": "",
     "routerLink": "/groups",
-    "visible": true
+    "visible": false
   },
   {
+    "id": "ROLE_FUNCTION_MAINTAIN",
     "label": "角色功能配置",
     "icon": "",
     "routerLink": "/roles/functions",
-    "visible": true
+    "visible": false
   },
 
   {
+    "id": "ROLE_FUNCTION_MAINTAIN",
     "label": "群組角色配置",
     "icon": "",
     "routerLink": "/groups/roles",
-    "visible": true
+    "visible": false
   },
   {
+    "id": "SETTING_MAINTAIN",
     "label": "自定義設定",
     "icon": "",
     "routerLink": "/setting",
-    "visible": true
+    "visible": false
   }
 ]
