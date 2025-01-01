@@ -29,14 +29,14 @@
     "visible": false
   },
   {
-    "id": "FUNCTION_MAITAIN",
+    "id": "FUNCTION_MAINTAIN",
     "label": "功能維護",
     "icon": "",
     "routerLink": "/functions",
     "visible": false
   },
   {
-    "id": "GROUP_MAITAIN",
+    "id": "GROUP_MAINTAIN",
     "label": "群組維護",
     "icon": "",
     "routerLink": "/groups",
@@ -51,7 +51,7 @@
   },
 
   {
-    "id": "ROLE_FUNCTION_MAINTAIN",
+    "id": "GROUP_ROLE_MAINTAIN",
     "label": "群組角色配置",
     "icon": "",
     "routerLink": "/groups/roles",

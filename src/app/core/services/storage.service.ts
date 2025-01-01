@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { SystemStorageKey } from '../enums/system-storage.enum';
 
 /**
  * StorageService
@@ -72,6 +73,36 @@ export class StorageService {
       return value ? value : '';
     }
     return '';
+  }
+
+  /**
+   * 設置權限清單
+   * @returns string[]
+   */
+  setPermissionList(permissions: string[]) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.setSessionStorageItem(
+        SystemStorageKey.PERMISSIONS,
+        permissions.join(',')
+      );
+    }
+  }
+
+  /**
+   * 取得權限清單
+   * @returns string[]
+   */
+  getPermissionList(): string[] {
+    if (isPlatformBrowser(this.platformId)) {
+      let permissions = this.getSessionStorageItem(SystemStorageKey.PERMISSIONS)
+        ? this.getSessionStorageItem(SystemStorageKey.PERMISSIONS)
+        : '';
+      if (permissions) {
+        return permissions.split(',');
+      }
+      return [];
+    }
+    return [];
   }
 
   /**

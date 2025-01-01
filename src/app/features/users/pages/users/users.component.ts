@@ -21,6 +21,9 @@ import { UserConfigureAction } from '../../../../core/enums/user-config-action.e
 import { UserGroupsComponent } from '../user-groups/user-groups.component';
 import { UserRolesComponent } from '../user-roles/user-roles.component';
 import { Location } from '@angular/common';
+import { StorageService } from '../../../../core/services/storage.service';
+import { SystemStorageKey } from '../../../../core/enums/system-storage.enum';
+import { MaintainPermission } from '../../../../core/enums/maintain-permission.enum';
 
 @Component({
   selector: 'app-users',
@@ -65,7 +68,8 @@ export class UsersComponent
     private userService: UsersService,
     private dynamicDialogRef: DynamicDialogRef,
     public dialogService: DialogService,
-    private optionService: OptionService
+    private optionService: OptionService,
+    private storageService: StorageService
   ) {
     super();
   }
@@ -253,10 +257,15 @@ export class UsersComponent
    */
   openFormDialog(action: string, data: any): DynamicDialogRef {
     let userInfo = data.userInfo;
+
+    let permissions = this.storageService.getPermissionList();
+
+    // Component
     let page: any =
       action === UserConfigureAction.GROUPS
         ? UserGroupsComponent
         : UserRolesComponent;
+    // 標題
     let header: string =
       action === UserConfigureAction.GROUPS
         ? '使用者群組配置'

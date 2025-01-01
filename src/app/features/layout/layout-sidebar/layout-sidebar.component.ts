@@ -60,6 +60,9 @@ export class LayoutSidebarComponent implements OnInit, OnDestroy {
         .pipe(map((res) => res.permissionList))
     );
 
+    // 放置進 SessionStorage 供其他頁面取用
+    this.storageService.setPermissionList(this.permissions);
+
     // 初始化 側邊的超連結
     this.items = await lastValueFrom(
       this.layoutService.getPermissions().pipe(

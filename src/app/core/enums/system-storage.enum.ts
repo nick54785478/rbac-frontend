@@ -8,4 +8,5 @@ export enum SystemStorageKey {
   REFRESH_TOKEN = 'refreshToken',
   REDIRECT_URL = 'redirectUrl',
   QUERY_PARAMS = 'queryParams',
+  PERMISSIONS = 'permissions',
 }
