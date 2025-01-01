@@ -8,6 +8,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 /**
  * 根模組 (Root Module)
@@ -25,7 +27,16 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     BrowserAnimationsModule,
     AppRoutingModule, // 僅匯入 AppRoutingModule
   ],
-  providers: [ConfirmationService, MessageService, DialogService],
+  providers: [
+    ConfirmationService,
+    MessageService,
+    DialogService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [],
 })
 export class AppModule {}

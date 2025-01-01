@@ -95,6 +95,7 @@ export class UserGroupsComponent
           this.loadMaskService.hide();
           this.submitted = false;
           this.query();
+          this.queryOthers();
         })
       )
       .subscribe({
