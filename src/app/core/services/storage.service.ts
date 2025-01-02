@@ -12,6 +12,9 @@ import { SystemStorageKey } from '../enums/system-storage.enum';
   providedIn: 'root',
 })
 export class StorageService {
+  static getLocalStorageItem(REFRESH_TOKEN: SystemStorageKey): any {
+    throw new Error('Method not implemented.');
+  }
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   /**

@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { of } from 'rxjs/internal/observable/of';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { RefreshTokenResponse } from '../models/refresh-token.response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,9 +35,9 @@ export class AuthService {
   /**
    * 刷新 Token
    * */
-  refreshToken(refreshToken:string): Observable<any> {
+  refreshToken(refreshToken: string): Observable<RefreshTokenResponse> {
     const url = this.baseApiUrl + '/refresh';
-    return this.http.post<any>(url, { token: refreshToken });
+    return this.http.post<RefreshTokenResponse>(url, { token: refreshToken });
   }
 
   /**
