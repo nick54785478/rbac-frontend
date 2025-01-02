@@ -34,9 +34,9 @@ export class AuthService {
   /**
    * 刷新 Token
    * */
-  refreshToken(): Observable<any> {
+  refreshToken(refreshToken:string): Observable<any> {
     const url = this.baseApiUrl + '/refresh';
-    return this.http.post<any>(url, { token: this.refreshToken });
+    return this.http.post<any>(url, { token: refreshToken });
   }
 
   /**

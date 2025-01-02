@@ -9,13 +9,14 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { LayoutService } from './features/layout/services/layout.service';
 import { SharedModule } from './shared/shared.module';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { MessageService } from 'primeng/api';
 import { SystemMessageService } from './core/services/system-message.service';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 /**
  * 用於集中管理應用程序配置的檔案。這種設計模式有助於將應用程序的設置與邏輯分離，並提高可維護性和靈活性。
@@ -33,7 +34,8 @@ export const appConfig: ApplicationConfig = {
       SharedModule,
       MessageModule,
     ]),
-    provideHttpClient(), // 注入 provideHttpClient 以供應用層使用 HttpClient
+    
+    provideHttpClient(withFetch(), withInterceptors([jwtInterceptor])), // 注入 provideHttpClient 以供應用層使用 HttpClient
     LayoutService, // 提供 LayoutService
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
