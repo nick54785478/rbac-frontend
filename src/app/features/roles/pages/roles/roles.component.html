@@ -126,7 +126,8 @@
                   [options]="loadDropdownData(col)"
                   [style]="{
                     'word-wrap': 'break-word',
-                    'max-width': '400px !important'
+                    'max-width': '100% !important',
+                    'min-width': '100%  !important'
                   }"
                   optionLabel="label"
                   optionValue="value"
@@ -140,7 +141,11 @@
                   appAutofocus
                   rows="5"
                   cols="100"
-                  [style]="{ 'max-width': '700px !important' }"
+                  [style]="{
+                    'word-wrap': 'break-word',
+                    'max-width': '100% !important',
+                    'min-width': '100%  !important'
+                  }"
                   pInputTextarea
                   [autoResize]="true"
                   [disabled]="isFieldDisabled(rowData, col.field)"
@@ -152,6 +157,11 @@
                   [(ngModel)]="rowData[col.field]"
                   type="text"
                   appAutofocus
+                  [style]="{
+                    'word-wrap': 'break-word',
+                    'max-width': '100% !important',
+                    'min-width': '100%  !important'
+                  }"
                   class="p-inputtext"
                   pInputText
                   [disabled]="isFieldDisabled(rowData, col.field)"

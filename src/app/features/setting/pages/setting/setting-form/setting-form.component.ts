@@ -90,13 +90,15 @@ export class SettingFormComponent
       this.systemMessageService.success('新增資料成功');
     } else {
       this.submitted = true;
-      if (this.formGroup.valid) {
-        // 透過 FormAction 判斷'新增'或'編輯'
-        if (this.formAction === 'add') {
-          this.onAddSetting();
-        } else {
-          this.onUpdateSetting();
-        }
+      if (!this.formGroup.valid || this.submitted) {
+        return;
+      }
+
+      // 透過 FormAction 判斷'新增'或'編輯'
+      if (this.formAction === 'add') {
+        this.onAddSetting();
+      } else {
+        this.onUpdateSetting();
       }
     }
   }
