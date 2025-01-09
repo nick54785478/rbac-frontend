@@ -324,7 +324,10 @@ export class GroupsComponent
     }
     // 透過 editingRow 回覆上次修改的資料
     this.tableData.forEach((e) => {
-      if (e.id === this.editingRow.id) {
+      if (
+        e.id === this.editingRow.id &&
+        e.givenIndex === this.editingRow.givenIndex
+      ) {
         e.type = this.editingRow.type;
         e.name = this.editingRow.name;
         e.code = this.editingRow.code;

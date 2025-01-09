@@ -319,8 +319,16 @@ export class FunctionsComponent
       // 被編輯的 row 資料
       this.editingIndex = rowIndex;
     }
+
     this.selectedData = this.tableData[rowIndex];
     this.editingRow = { ...this.selectedData }; // 深拷貝選中的行資料，避免直接修改原始數據
+  }
+
+  /**
+   * 判斷是否為編輯模式
+   * */
+  isEditing(rowIndex: any): boolean {
+    return this.editingIndex === rowIndex;
   }
 
   /**
@@ -332,7 +340,10 @@ export class FunctionsComponent
     }
     // 透過 editingRow 回覆上次修改的資料
     this.tableData.forEach((e) => {
-      if (e.id === this.editingRow.id) {
+      if (
+        e.id === this.editingRow.id &&
+        e.givenIndex === this.editingRow.givenIndex
+      ) {
         e.type = this.editingRow.type;
         e.name = this.editingRow.name;
         e.code = this.editingRow.code;
@@ -349,6 +360,8 @@ export class FunctionsComponent
    * 取消編輯/新增
    * */
   cancel(rowIndex?: number) {
+    console.log(rowIndex);
+    console.log(this.editingIndex);
     if (this.mode === 'edit') {
       this.cancelEdit();
     } else if (this.mode === 'add' && rowIndex) {
@@ -372,23 +385,6 @@ export class FunctionsComponent
     this.editingIndex = -1;
     this.editingRow = [];
     this.tableData = this.tableData.filter((data) => data.id !== null);
-  }
-
-  /**
-   * 判斷是否為編輯模式
-   * */
-  isEditing(rowIndex: any): boolean {
-    return this.editingIndex === rowIndex;
-  }
-
-  /**
-   * 判斷是否為新增模式
-   * @param rowData 當前的 row 資料
-   * */
-  isAdding(rowData: any) {
-    // 這裡要使用 givenIndex ，因 Table 的 index 會隨資料數量改變
-    return !rowData.id && this.newRowIndexes.includes(rowData.givenIndex);
-    // rowIndex !== rowData.givenIndex;
   }
 
   /**
@@ -454,11 +450,22 @@ export class FunctionsComponent
       description: '',
       givenIndex: this.tableData.length, // 前端給予的編號資料
     };
+    console.log(this.newRow);
 
     // 將 index 加入 newRowIndexes，用以紀錄更新資料的 index
     this.newRowIndexes.push(this.newRow.givenIndex);
     // 將此資料推入 tableData
     this.tableData.push(this.newRow);
+  }
+
+  /**
+   * 判斷是否為新增模式
+   * @param rowData 當前的 row 資料
+   * */
+  isAdding(rowData: any) {
+    // 這裡要使用 givenIndex ，因 Table 的 index 會隨資料數量改變
+    return !rowData.id && this.newRowIndexes.includes(rowData.givenIndex);
+    // rowIndex !== rowData.givenIndex;
   }
 
   /**
