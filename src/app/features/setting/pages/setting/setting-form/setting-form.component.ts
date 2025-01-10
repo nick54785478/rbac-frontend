@@ -90,7 +90,7 @@ export class SettingFormComponent
       this.systemMessageService.success('新增資料成功');
     } else {
       this.submitted = true;
-      if (!this.formGroup.valid || this.submitted) {
+      if (!this.formGroup.valid || !this.submitted) {
         return;
       }
 
