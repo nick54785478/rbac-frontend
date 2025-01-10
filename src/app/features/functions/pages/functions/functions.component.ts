@@ -292,7 +292,7 @@ export class FunctionsComponent
           this.messageService.success('查詢成功');
           this.tableData = res;
           // 對所有資料進行編號
-          for (var i=0; i<this.tableData.length; i++) {
+          for (var i = 0; i < this.tableData.length; i++) {
             this.tableData[i].givenIndex = i;
           }
 
@@ -369,7 +369,11 @@ export class FunctionsComponent
     console.log(this.editingIndex);
     if (this.mode === 'edit') {
       this.cancelEdit();
-    } else if (this.mode === 'add' && rowIndex!==-1 && rowIndex !== undefined) {
+    } else if (
+      this.mode === 'add' &&
+      rowIndex !== -1 &&
+      rowIndex !== undefined
+    ) {
       this.cancelAdd(rowIndex);
     }
 
@@ -458,17 +462,17 @@ export class FunctionsComponent
     };
     console.log(this.newRow);
 
-     // 所有編號往後推一號
-     this.tableData.forEach(e => {
+    // 所有編號往後推一號
+    this.tableData.forEach((e) => {
       e.givenIndex += 1;
-    })
+    });
 
     // 將 index 加入 newRowIndexes，用以紀錄更新資料的 index
     this.newRowIndexes.push(this.newRow.givenIndex);
     // 將此資料推入 tableData
     this.tableData.push(this.newRow);
-     // 根據 givenIndex 重排序
-     this.tableData.sort((a, b) => {
+    // 根據 givenIndex 重排序
+    this.tableData.sort((a, b) => {
       if (a.givenIndex < b.givenIndex) {
         return -1; // a 排在 b 前
       } else if (a.givenIndex > b.givenIndex) {

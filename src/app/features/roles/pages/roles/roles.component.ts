@@ -287,7 +287,7 @@ export class RolesComponent
           this.messageService.success('查詢成功');
           this.tableData = res;
           // 對所有資料進行編號
-          for (var i=0; i<this.tableData.length; i++) {
+          for (var i = 0; i < this.tableData.length; i++) {
             this.tableData[i].givenIndex = i;
           }
 
@@ -354,7 +354,11 @@ export class RolesComponent
   cancel(rowIndex?: number) {
     if (this.mode === 'edit') {
       this.cancelEdit();
-    } else if (this.mode === 'add' && rowIndex!==-1 && rowIndex !== undefined) {
+    } else if (
+      this.mode === 'add' &&
+      rowIndex !== -1 &&
+      rowIndex !== undefined
+    ) {
       this.cancelAdd(rowIndex);
     }
 
@@ -457,9 +461,9 @@ export class RolesComponent
     };
 
     // 所有編號往後推一號
-    this.tableData.forEach(e => {
+    this.tableData.forEach((e) => {
       e.givenIndex += 1;
-    })
+    });
 
     // 將 index 加入 newRowIndexes，用以紀錄更新資料的 index
     this.newRowIndexes.push(this.newRow.givenIndex);
@@ -475,7 +479,7 @@ export class RolesComponent
         return 0; // 保持順序
       }
     });
-    console.log(this.tableData)
+    console.log(this.tableData);
   }
 
   /**
