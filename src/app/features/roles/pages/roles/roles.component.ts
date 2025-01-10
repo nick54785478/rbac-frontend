@@ -286,6 +286,11 @@ export class RolesComponent
         next: (res) => {
           this.messageService.success('查詢成功');
           this.tableData = res;
+          // 對所有資料進行編號
+          for (var i=0; i<this.tableData.length; i++) {
+            this.tableData[i].givenIndex = i;
+          }
+
           console.log(this.tableData);
         },
         error: (error) => {
@@ -447,13 +452,29 @@ export class RolesComponent
         ? this.formGroup.get('type')?.value
         : '',
       description: '',
-      givenIndex: this.tableData.length, // 前端給予的編號資料
+      givenIndex: 0, // 前端給予的編號資料
+      // givenIndex: this.tableData.length, // 前端給予的編號資料
     };
+
+    // 所有編號往後推一號
+    this.tableData.forEach(e => {
+      e.givenIndex += 1;
+    })
 
     // 將 index 加入 newRowIndexes，用以紀錄更新資料的 index
     this.newRowIndexes.push(this.newRow.givenIndex);
     // 將此資料推入 tableData
     this.tableData.push(this.newRow);
+    this.tableData.sort((a, b) => {
+      if (a.givenIndex < b.givenIndex) {
+        return -1; // a 排在 b 前
+      } else if (a.givenIndex > b.givenIndex) {
+        return 1; // b 排在 a 前
+      } else {
+        return 0; // 保持順序
+      }
+    });
+    console.log(this.tableData)
   }
 
   /**
