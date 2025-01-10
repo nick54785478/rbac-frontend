@@ -305,7 +305,7 @@ export class GroupsComponent
           this.tableData = res?.content;
           console.log(res.page);
           this.pageNumber = res.page.number + 1;
-          this.totalRecords = res.page.size + 1;
+          this.totalRecords = res.page.totalElements;
           this.numberOfRows = res.page.numberOfElements;
           console.log(this.pageNumber, this.totalRecords, this.numberOfRows);
           // this.totalRecords = res.page;
