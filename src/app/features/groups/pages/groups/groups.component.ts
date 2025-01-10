@@ -284,6 +284,9 @@ export class GroupsComponent
       this.pageNumber = event.first / event.rows;
       console.log(this.numberOfRows);
       console.log(this.pageNumber);
+    } else {
+      this.pageNumber = 0;
+      this.numberOfRows = 10;
     }
 
     this.groupService
@@ -304,11 +307,7 @@ export class GroupsComponent
           this.messageService.success('查詢成功');
           this.tableData = res?.content;
           console.log(res.page);
-          this.pageNumber = res.page.number + 1;
-          this.totalRecords = res.page.totalElements;
-          this.numberOfRows = res.page.numberOfElements;
-          console.log(this.pageNumber, this.totalRecords, this.numberOfRows);
-          // this.totalRecords = res.page;
+          this.totalRecords = res.page.totalElements ;
         },
         error: (error) => {
           this.messageService.error(error.message);
@@ -475,6 +474,7 @@ export class GroupsComponent
     this.newRowIndexes.push(this.newRow.givenIndex);
     // 將此資料推入 tableData
     this.tableData.push(this.newRow);
+    this.totalRecords += 1;
   }
 
   /**
