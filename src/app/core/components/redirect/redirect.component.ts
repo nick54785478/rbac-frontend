@@ -90,4 +90,33 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigate([redirectUrl]);
     }
   }
+
+  refreshToken() {
+    const token =
+      this.storageService.getLocalStorageItem(SystemStorageKey.JWT_TOKEN) ||
+      this.storageService.getSessionStorageItem(SystemStorageKey.JWT_TOKEN);
+
+    if (token && this.authService.checkExpired(token)) {
+      const refreshToken = this.storageService.getLocalStorageItem(
+        SystemStorageKey.REFRESH_TOKEN
+      );
+      if (refreshToken) {
+        this.authService.refreshToken(refreshToken).subscribe({
+          next: (res) => {
+            this.storageService.setLocalStorageItem(
+              SystemStorageKey.JWT_TOKEN,
+              res.token
+            );
+            this.storageService.setSessionStorageItem(
+              SystemStorageKey.JWT_TOKEN,
+              res.token
+            );
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+      }
+    }
+  }
 }

@@ -29,7 +29,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { SplitterModule } from 'primeng/splitter';
 import { StepsModule } from 'primeng/steps';
 import { TableModule } from 'primeng/table';
-import { TabPanel, TabViewModule } from 'primeng/tabview';
+import { TabViewModule } from 'primeng/tabview';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
@@ -41,6 +41,7 @@ import { InplaceModule } from 'primeng/inplace';
 import { InputMaskModule } from 'primeng/inputmask';
 import { PickListModule } from 'primeng/picklist';
 import { StepperModule } from 'primeng/stepper';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 /**
  * 用來匯入 PrimeNG 用到的元件
@@ -71,6 +72,7 @@ import { StepperModule } from 'primeng/stepper';
     MessagesModule,
     MenuModule,
     MultiSelectModule,
+    OverlayPanelModule,
     PanelModule,
     PasswordModule,
     PickListModule,
@@ -114,6 +116,7 @@ import { StepperModule } from 'primeng/stepper';
     MessagesModule,
     MenuModule,
     MultiSelectModule,
+    OverlayPanelModule,
     PanelModule,
     PasswordModule,
     PickListModule,

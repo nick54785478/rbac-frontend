@@ -1,26 +1,15 @@
 <div class="grid p-fluid flex justify-content-start">
-    <p-panel header="RABC 權限控制流程">
-        <div class="card" #contentElement>
-            <p-stepper [style]="{'max-width':'1200px'}" orientation="vertical" >
-                <p-stepperPanel header="註冊使用者">
-                </p-stepperPanel>
-                <p-stepperPanel header="登入具有管理員身分帳號">
-                </p-stepperPanel>
-                <p-stepperPanel header="建立功能">
-                </p-stepperPanel>
-                <p-stepperPanel header="建立角色">
-                </p-stepperPanel>
-                <p-stepperPanel header="將角色賦予功能權限">
-                </p-stepperPanel>
-                <p-stepperPanel header="建立群組">
-                </p-stepperPanel>
-                <p-stepperPanel header="將角色加入群組">
-                </p-stepperPanel>
-                <p-stepperPanel header="將群組賦予使用者">
-                </p-stepperPanel>
-                <p-stepperPanel header="使用者具有該群組角色權限">
-                </p-stepperPanel>
-            </p-stepper>
-        </div>
-    </p-panel>
+  <p-panel header="群組角色權限控制流程">
+    <div class="card" #contentElement>
+      <p-stepper [style]="{ 'max-width': '1200px' }" orientation="vertical">
+        <p-stepperPanel header="建立功能"> </p-stepperPanel>
+        <p-stepperPanel header="建立角色"> </p-stepperPanel>
+        <p-stepperPanel header="將角色賦予功能權限"> </p-stepperPanel>
+        <p-stepperPanel header="建立群組"> </p-stepperPanel>
+        <p-stepperPanel header="將角色加入群組"> </p-stepperPanel>
+        <p-stepperPanel header="將群組賦予使用者"> </p-stepperPanel>
+        <p-stepperPanel header="使用者具有該群組角色權限"> </p-stepperPanel>
+      </p-stepper>
+    </div>
+  </p-panel>
 </div>

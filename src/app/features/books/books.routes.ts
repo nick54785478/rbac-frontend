@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { BooksComponent } from './pages/books.component';
-import { GuestBookComponent } from './pages/guest-book/guest-book.component';
 import { PersonalRoleBookComponent } from './pages/personal-role-book/personal-role-book.component';
 import { GroupRoleBookComponent } from './pages/group-role-book/group-role-book.component';
 
@@ -13,16 +12,12 @@ export const routes: Routes = [
     path: '',
     component: BooksComponent,
   },
-   {
-    path: 'guest',
-    component: GuestBookComponent,
-  },
-   {
+  {
     path: 'personal',
     component: PersonalRoleBookComponent,
   },
   {
     path: 'group',
     component: GroupRoleBookComponent,
-  }
+  },
 ];
