@@ -20,7 +20,7 @@ import { of } from 'rxjs/internal/observable/of';
 export class AuthGuard implements CanActivate {
   private isAuthenticated: boolean = false;
 
-  private publicPaths: string[] = ['/login', '/', '/help', '/register']; // 公開路徑
+  private publicPaths: string[] = ['/login', '/', '/help', '/register', '/books']; // 公開路徑
 
   constructor(
     private authService: AuthService,

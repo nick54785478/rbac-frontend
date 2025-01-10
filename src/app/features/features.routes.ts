@@ -46,4 +46,9 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./setting/setting.module').then((m) => m.SettingModule),
   },
+  {
+    path: 'books',
+    loadChildren: () =>
+      import('./books/books.module').then((m) => m.BooksModule),
+  },
 ];

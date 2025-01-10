@@ -63,5 +63,12 @@
     "icon": "",
     "routerLink": "/setting",
     "visible": false
+  },
+  {
+    "id": "",
+    "label": "使用手冊",
+    "icon": "",
+    "routerLink": "/books",
+    "visible": true
   }
 ]
