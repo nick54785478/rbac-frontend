@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { BaseResponse } from '../../../shared/models/base-response.model';
 import { GroupQueried } from '../models/group-query.model';
 import { SaveGroup } from '../models/save-groups-request.model';
+import { PageableResponse } from '../../../shared/models/pageable.response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -24,14 +25,19 @@ export class GroupsService {
   query(
     type: string,
     name?: string,
-    activeFlag?: string
-  ): Observable<GroupQueried[]> {
+    activeFlag?: string,
+    numberOfRows?: number,
+    pageNumber?: number
+  ): Observable<PageableResponse> {
     const url = this.baseApiUrl + '/groups/query';
+
     let params = new HttpParams()
       .set('type', type ? type : '')
       .set('name', name ? name : '')
-      .set('activeFlag', activeFlag ? activeFlag : '');
-    return this.http.get<GroupQueried[]>(url, { params });
+      .set('activeFlag', activeFlag ? activeFlag : '')
+      .set('numberOfRows', '' + numberOfRows)
+      .set('pageNumber', '' + pageNumber);
+    return this.http.get<PageableResponse>(url, { params });
   }
 
   /**

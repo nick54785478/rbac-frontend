@@ -36,6 +36,10 @@ export class GroupsComponent
   extends BaseInlineEditeTableCompoent
   implements OnInit, DoCheck, OnDestroy
 {
+  pageNumber = 1; // 當前頁碼
+  numberOfRows = 10; // 每頁大小
+  totalRecords = 0; // 總記錄數
+
   activeFlags: Option[] = []; // Active Flag 的下拉式選單
   types: Option[] = []; // 配置種類的下拉式選單
   dialogOpened: boolean = false; //  Dialog 狀態
@@ -246,7 +250,7 @@ export class GroupsComponent
             // 無論成功或失敗都會執行
             this.loadMaskService.hide();
             this.submitted = false;
-            this.query();
+            // this.query();
           })
         )
         .subscribe({
@@ -267,13 +271,29 @@ export class GroupsComponent
   /**
    * 透過特定條件查詢設定資料
    */
-  query() {
+  query(event?: any) {
     // 查詢前先取消所有
     this.cancelAll();
     let formData = this.formGroup.value;
     this.loadMaskService.show();
+
+    // 計算頁數
+    if (event) {
+      console.log(event);
+      this.numberOfRows = event.rows;
+      this.pageNumber = event.first / event.rows;
+      console.log(this.numberOfRows);
+      console.log(this.pageNumber);
+    }
+
     this.groupService
-      .query(formData.type, formData.name, formData.activeFlag)
+      .query(
+        formData.type,
+        formData.name,
+        formData.activeFlag,
+        this.numberOfRows,
+        this.pageNumber
+      )
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -282,8 +302,13 @@ export class GroupsComponent
       .subscribe({
         next: (res) => {
           this.messageService.success('查詢成功');
-          this.tableData = res;
-          console.log(this.tableData);
+          this.tableData = res?.content;
+          console.log(res.page);
+          this.pageNumber = res.page.number + 1;
+          this.totalRecords = res.page.size + 1;
+          this.numberOfRows = res.page.numberOfElements;
+          console.log(this.pageNumber, this.totalRecords, this.numberOfRows);
+          // this.totalRecords = res.page;
         },
         error: (error) => {
           this.messageService.error(error.message);

@@ -38,5 +38,13 @@
     "labelTw": "語系",
     "labelCn": "语系",
     "labelUs": "Language"
+  },
+  {
+    "id": "",
+    "label": "測試",
+    "value": "TEST",
+    "labelTw": "測試",
+    "labelCn": "测试",
+    "labelUs": "Test"
   }
 ]

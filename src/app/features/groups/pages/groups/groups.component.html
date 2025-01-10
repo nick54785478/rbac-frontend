@@ -71,7 +71,10 @@
       scrollDirection="both"
       scrollHeight="500px"
       [paginator]="true"
-      [rows]="10"
+      [lazy]="true"
+      [rows]="numberOfRows"
+      [totalRecords]="totalRecords"
+      (onLazyLoad)="query($event)"
     >
       <!-- 標題 -->
       <ng-template pTemplate="header" let-columns>
