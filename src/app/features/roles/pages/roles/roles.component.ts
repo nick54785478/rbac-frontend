@@ -354,7 +354,7 @@ export class RolesComponent
   cancel(rowIndex?: number) {
     if (this.mode === 'edit') {
       this.cancelEdit();
-    } else if (this.mode === 'add' && rowIndex) {
+    } else if (this.mode === 'add' && rowIndex!==-1 && rowIndex !== undefined) {
       this.cancelAdd(rowIndex);
     }
 
@@ -465,6 +465,7 @@ export class RolesComponent
     this.newRowIndexes.push(this.newRow.givenIndex);
     // 將此資料推入 tableData
     this.tableData.push(this.newRow);
+    // 根據 givenIndex 重排序
     this.tableData.sort((a, b) => {
       if (a.givenIndex < b.givenIndex) {
         return -1; // a 排在 b 前
