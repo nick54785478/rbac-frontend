@@ -54,8 +54,8 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.token = await lastValueFrom(this.authService.getJwtToken());
-    // console.log(this.token);
+    // 若有 Token 但 Token 突然過期，進行刷新
+    this.refreshToken();
     this.redirect();
   }
 
@@ -88,6 +88,38 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
       // 未取得則不帶 params
       console.log(redirectUrl);
       this.router.navigate([redirectUrl]);
+    }
+  }
+
+  /**
+   * 刷新 Token
+   */
+  refreshToken() {
+    const token =
+      this.storageService.getLocalStorageItem(SystemStorageKey.JWT_TOKEN) ||
+      this.storageService.getSessionStorageItem(SystemStorageKey.JWT_TOKEN);
+
+    if (token && this.authService.checkExpired(token)) {
+      const refreshToken = this.storageService.getLocalStorageItem(
+        SystemStorageKey.REFRESH_TOKEN
+      );
+      if (refreshToken) {
+        this.authService.refreshToken(refreshToken).subscribe({
+          next: (res) => {
+            this.storageService.setLocalStorageItem(
+              SystemStorageKey.JWT_TOKEN,
+              res.token
+            );
+            this.storageService.setSessionStorageItem(
+              SystemStorageKey.JWT_TOKEN,
+              res.token
+            );
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+      }
     }
   }
 }
