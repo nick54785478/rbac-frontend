@@ -68,8 +68,7 @@ export class UsersComponent
     private userService: UsersService,
     private dynamicDialogRef: DynamicDialogRef,
     public dialogService: DialogService,
-    private optionService: OptionService,
-    private storageService: StorageService
+    private optionService: OptionService
   ) {
     super();
   }
@@ -258,8 +257,6 @@ export class UsersComponent
   openFormDialog(action: string, data: any): DynamicDialogRef {
     let userInfo = data.userInfo;
 
-    let permissions = this.storageService.getPermissionList();
-
     // Component
     let page: any =
       action === UserConfigureAction.GROUPS
@@ -292,6 +289,8 @@ export class UsersComponent
         console.log('關閉 Dialog');
         // 更改 dialogOpened
         this.dialogOpened = false;
+        // 重查一次
+        this.query();
       });
     return ref;
   }
