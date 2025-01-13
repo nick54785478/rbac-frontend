@@ -60,34 +60,35 @@ export class AuthGuard implements CanActivate {
     return this.authService.getJwtToken().pipe(
       // 檢查 Token 狀態，返回 true 或 UrlTree
       map((token) => {
-        const refreshToken =
-          this.storageService.getLocalStorageItem(
-            SystemStorageKey.REFRESH_TOKEN
-          ) ||
-          this.storageService.getSessionStorageItem(
-            SystemStorageKey.REFRESH_TOKEN
-          );
+        // const refreshToken =
+        //   this.storageService.getLocalStorageItem(
+        //     SystemStorageKey.REFRESH_TOKEN
+        //   ) ||
+        //   this.storageService.getSessionStorageItem(
+        //     SystemStorageKey.REFRESH_TOKEN
+        //   );
 
-        if (this.authService.checkExpired(token) && refreshToken) {
-          this.authService.refreshToken(refreshToken).subscribe((res) => {
-            this.storageService.setLocalStorageItem(
-              SystemStorageKey.JWT_TOKEN,
-              res.token
-            );
-            this.storageService.setSessionStorageItem(
-              SystemStorageKey.JWT_TOKEN,
-              res.token
-            );
-            this.storageService.setLocalStorageItem(
-              SystemStorageKey.REFRESH_TOKEN,
-              res.refreshToken
-            );
-            this.storageService.setSessionStorageItem(
-              SystemStorageKey.REFRESH_TOKEN,
-              res.refreshToken
-            );
-          });
-        }
+        // // 如果
+        // if (this.authService.checkExpired(token) && refreshToken) {
+        //   this.authService.refreshToken(refreshToken).subscribe((res) => {
+        //     this.storageService.setLocalStorageItem(
+        //       SystemStorageKey.JWT_TOKEN,
+        //       res.token
+        //     );
+        //     this.storageService.setSessionStorageItem(
+        //       SystemStorageKey.JWT_TOKEN,
+        //       res.token
+        //     );
+        //     this.storageService.setLocalStorageItem(
+        //       SystemStorageKey.REFRESH_TOKEN,
+        //       res.refreshToken
+        //     );
+        //     this.storageService.setSessionStorageItem(
+        //       SystemStorageKey.REFRESH_TOKEN,
+        //       res.refreshToken
+        //     );
+        //   });
+        // }
 
         if (token && !this.authService.checkExpired(token)) {
           return true; // 放行

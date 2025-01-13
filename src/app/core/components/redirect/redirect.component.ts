@@ -40,8 +40,6 @@ import { LoginComponent } from '../../../features/layout/login/login.component';
 export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly _destroying$ = new Subject<void>();
 
-  private token: string = '';
-
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -99,6 +97,7 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
       this.storageService.getLocalStorageItem(SystemStorageKey.JWT_TOKEN) ||
       this.storageService.getSessionStorageItem(SystemStorageKey.JWT_TOKEN);
 
+    // 有 Token 且 Token 過期
     if (token && this.authService.checkExpired(token)) {
       const refreshToken = this.storageService.getLocalStorageItem(
         SystemStorageKey.REFRESH_TOKEN
