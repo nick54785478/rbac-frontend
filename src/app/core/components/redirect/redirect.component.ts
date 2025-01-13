@@ -114,6 +114,14 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
               SystemStorageKey.JWT_TOKEN,
               res.token
             );
+            this.storageService.setLocalStorageItem(
+              SystemStorageKey.REFRESH_TOKEN,
+              res.refreshToken
+            );
+            this.storageService.setSessionStorageItem(
+              SystemStorageKey.REFRESH_TOKEN,
+              res.refreshToken
+            );
           },
           error: (err) => {
             console.log(err);

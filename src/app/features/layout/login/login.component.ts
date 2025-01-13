@@ -92,6 +92,11 @@ export class LoginComponent
               SystemStorageKey.REFRESH_TOKEN,
               res?.refreshToken
             );
+            // 設置 Refresh Token
+            this.storageService.setSessionStorageItem(
+              SystemStorageKey.REFRESH_TOKEN,
+              res?.refreshToken
+            );
 
             // 設置 Token 進 AuthService Subject 訂閱
             this.authService.tokenSubject$.next(res.token);
