@@ -358,7 +358,7 @@ export class UsersComponent
       // 初始化 AutoComplete 的訂閱
       this.autoCompleteDataSubject$
         .pipe(
-          debounceTime(300), // 防抖，避免频繁發请求
+          debounceTime(300), // 防抖，避免頻繁發請求
           switchMap((keyword) => {
             return this.optionService.getUserOptions(keyword);
           }), // 自動取消上一次未完成的請求
