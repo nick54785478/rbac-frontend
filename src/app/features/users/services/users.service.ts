@@ -12,6 +12,7 @@ import { UserPersonalityQueried } from '../models/user-personality-query.model';
 import { map } from 'rxjs/internal/operators/map';
 import { StorageService } from '../../../core/services/storage.service';
 import { SystemStorageKey } from '../../../core/enums/system-storage.enum';
+import { UpdateUserInfo } from '../models/update-user-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -75,4 +76,14 @@ export class UsersService {
       })
     );
   }
+
+  /**
+   * 更新使用者資料
+   */
+  public update(id: Number, request: UpdateUserInfo): Observable<any> {
+    const url = this.baseApiUrl + '/users/' + id;
+    return this.http.put(url, request);
+  }
+
+  
 }

@@ -213,9 +213,9 @@ export class UsersComponent
     console.log('Tab changed:', event, field);
     this.activeField = field;
 
-    if (this.tableData.length === 0) {
-      return;
-    }
+    // if (this.tableData.length === 0) {
+    //   return;
+    // }
 
     switch (this.activeField) {
       case 'info':

@@ -47,7 +47,6 @@
 
       <div class="flex mb-2 gap-2 justify-content-end">
         <button type="button" pButton label="查詢" (click)="query()"></button>
-
         <button
           type="button"
           class="p-button-secondary p-button-outlined"
@@ -127,10 +126,14 @@
           <tr [pSelectableRow]="rowData">
             <td
               *ngFor="let col of columns"
-              [ngStyle]="{ 'word-break': 'break-all' }"
+              [style]="{ 
+                'white-space': 'normal',
+                'word-wrap': 'break-word',
+                'max-width':'500px'
+               }"
             >
-              <ng-container>
-                {{ rowData[col.field] }}
+              <ng-container>          
+                  {{ rowData[col.field] }}
               </ng-container>
             </td>
             <!-- <td alignFrozen="right" pFrozenColumn style="text-align: center">

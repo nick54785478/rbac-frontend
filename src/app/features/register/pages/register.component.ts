@@ -59,6 +59,7 @@ export class RegisterComponent extends BaseFormCompoent implements OnInit {
             finalize(() => {
               this.loadMaskService.hide();
               this.submitted = false;
+              location.reload();
             })
           )
           .subscribe({

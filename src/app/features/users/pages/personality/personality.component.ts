@@ -8,6 +8,9 @@ import { UserGroupQueried } from '../../models/user-group-query.model';
 import { UserDetailQueried } from '../../models/user-detail-query.model';
 import { BaseFormCompoent } from '../../../../shared/component/base/base-form.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UpdateUserInfo } from '../../models/update-user-request.model';
+import { finalize } from 'rxjs';
+import { LoadingMaskService } from '../../../../core/services/loading-mask.service';
 
 @Component({
   selector: 'app-personality',
@@ -24,7 +27,7 @@ export class PersonalityComponent
   roles: UserRoleQueried[] = []; // 角色
   // 編輯中的資料，需初始化，否則會報錯，Typescript 較嚴格
   userInfo: UserDetailQueried = new UserDetailQueried(); // 查詢後的資料
-
+  
   previousValue: UserDetailQueried = new UserDetailQueried(); // 用來保存先前的值
 
   detailTabs: any[] = [];
@@ -33,7 +36,8 @@ export class PersonalityComponent
 
   constructor(
     private userService: UsersService,
-    private messageService: SystemMessageService
+    private messageService: SystemMessageService,
+    private loadingMaskService: LoadingMaskService
   ) {
     super();
 
@@ -53,7 +57,6 @@ export class PersonalityComponent
       next: (res) => {
         console.log(res);
         this.groups = res.groups;
-
         this.userInfo = res;
         this.roles = res.roles;
       },
@@ -106,7 +109,9 @@ export class PersonalityComponent
       {
         label: '提交',
         icon: 'pi pi-save',
-        command: () => {},
+        command: () => {
+          this.onSubmit()
+        },
         // 當在新增或編輯模式時，不能提交
         disabled: !this.editingMode,
         visible: true,
@@ -158,5 +163,44 @@ export class PersonalityComponent
     console.log(this.previousValue);
     // 返回原值
     this.userInfo = { ...this.previousValue };
+  }
+
+  /**
+   * 提交以更新使用者資料
+   */
+  onSubmit() {
+    console.log(this.userInfo);
+
+    this.loadingMaskService.show();
+    this.submitted = true;
+    if (!this.submitted || this.formGroup.invalid) {
+      return;
+    }
+
+
+    let request: UpdateUserInfo = { 
+      username : this.userInfo.username,
+      name:this.userInfo.name,
+      email: this.userInfo.email,
+      birthday: this.userInfo.birthday,
+      nationalId: this.userInfo.nationalIdNo,
+      address: this.userInfo.address
+     };
+    this.userService.update(this.userInfo.id, request).pipe(finalize(() => {
+      this.loadingMaskService.hide();
+      location.reload();
+      
+    })).subscribe({
+      next: (res) => {
+        if (res.code === 'VALIDATION_FAILED') {
+          this.messageService.error(res.message);
+        } else {
+          this.messageService.success(res.message);
+        }
+      },
+      error:(err) => {
+        this.messageService.error('發生錯誤', err);
+      }
+    })
   }
 }
