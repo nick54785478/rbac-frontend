@@ -66,7 +66,7 @@ export class RoleFunctionsComponent
         command: () => {
           this.cancel();
         },
-        disabled: false,
+        disabled: this.sourceList.length === 0 && this.targetList.length === 0,
       },
     ];
   }
@@ -91,7 +91,7 @@ export class RoleFunctionsComponent
         command: () => {
           this.cancel();
         },
-        disabled: false,
+        disabled: this.sourceList.length === 0 && this.targetList.length === 0,
       },
     ];
   }
