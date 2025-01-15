@@ -76,6 +76,7 @@
         class="p-button-secondary p-button-outlined"
         pButton
         label="清除"
+        *ngIf="!(formAction === 'edit')"
         [disabled]="formAction === 'edit'"
         (click)="clear()"
       ></button>
