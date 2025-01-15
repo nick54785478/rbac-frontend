@@ -126,14 +126,14 @@
           <tr [pSelectableRow]="rowData">
             <td
               *ngFor="let col of columns"
-              [style]="{ 
+              [style]="{
                 'white-space': 'normal',
                 'word-wrap': 'break-word',
-                'max-width':'500px'
-               }"
+                'max-width': '500px'
+              }"
             >
-              <ng-container>          
-                  {{ rowData[col.field] }}
+              <ng-container>
+                {{ rowData[col.field] }}
               </ng-container>
             </td>
             <!-- <td alignFrozen="right" pFrozenColumn style="text-align: center">

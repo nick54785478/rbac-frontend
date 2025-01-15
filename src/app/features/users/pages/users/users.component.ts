@@ -21,9 +21,6 @@ import { UserConfigureAction } from '../../../../core/enums/user-config-action.e
 import { UserGroupsComponent } from '../user-groups/user-groups.component';
 import { UserRolesComponent } from '../user-roles/user-roles.component';
 import { Location } from '@angular/common';
-import { StorageService } from '../../../../core/services/storage.service';
-import { SystemStorageKey } from '../../../../core/enums/system-storage.enum';
-import { MaintainPermission } from '../../../../core/enums/maintain-permission.enum';
 
 @Component({
   selector: 'app-users',
@@ -40,7 +37,7 @@ import { MaintainPermission } from '../../../../core/enums/maintain-permission.e
 })
 export class UsersComponent
   extends BaseFormCompoent
-  implements OnInit, OnDestroy, DoCheck
+  implements OnInit, OnDestroy
 {
   ref!: DynamicDialogRef; // dialog
   dialogOpened!: boolean;
@@ -49,7 +46,7 @@ export class UsersComponent
   cols: any[] = [];
   tableData: any[] = [];
   detailTabs: any[] = [];
-  activeField: string = ''; // 用以激活當前的頁面
+  activeField: string = 'info'; // 用以激活當前的頁面
   pageContents: any; // 當前頁面內容配置
   userQueridData!: any; // 後端查詢使用者資料
 
@@ -140,21 +137,21 @@ export class UsersComponent
         label: '使用者資料',
         field: 'info',
         icon: '',
-        command: (event: any) => this.onTabChange(event, 'info'),
+        command: (event: any) => this.onTabChange(event),
         disabled: this.activeField === '',
       },
       {
         label: '群組',
         field: 'groups',
         icon: '',
-        command: (event: any) => this.onTabChange(event, 'groups'),
+        command: (event: any) => this.onTabChange(event),
         disabled: this.activeField === '',
       },
       {
         label: '角色',
         field: 'roles',
         icon: '',
-        command: (event: any) => this.onTabChange(event, 'roles'),
+        command: (event: any) => this.onTabChange(event),
         disabled: this.activeField === '',
       },
       ,
@@ -162,42 +159,7 @@ export class UsersComponent
         label: '功能',
         field: 'functions',
         icon: '',
-        command: (event: any) => this.onTabChange(event, 'functions'),
-        disabled: this.activeField === '',
-      },
-    ];
-  }
-
-  ngDoCheck(): void {
-    // 初始化上方 Tab 按鈕
-    this.detailTabs = [
-      {
-        label: '使用者資料',
-        field: 'info',
-        icon: '',
-        command: (event: any) => this.onTabChange(event, 'info'),
-        disabled: this.activeField === '',
-      },
-      {
-        label: '群組',
-        field: 'groups',
-        icon: '',
-        command: (event: any) => this.onTabChange(event, 'groups'),
-        disabled: this.activeField === '',
-      },
-      {
-        label: '角色',
-        field: 'roles',
-        icon: '',
-        command: (event: any) => this.onTabChange(event, 'roles'),
-        disabled: this.activeField === '',
-      },
-      ,
-      {
-        label: '功能',
-        field: 'functions',
-        icon: '',
-        command: (event: any) => this.onTabChange(event, 'functions'),
+        command: (event: any) => this.onTabChange(event),
         disabled: this.activeField === '',
       },
     ];
@@ -208,26 +170,35 @@ export class UsersComponent
    * @param event
    * @param  field
    * */
-  onTabChange(event: any, field: string) {
-    console.log('Tab changed:', event, field);
-    this.activeField = field;
+  onTabChange(event: any) {
+    console.log('Tab changed:', event.item.field);
+    this.activeField = event.item.field;
 
     // if (this.tableData.length === 0) {
     //   return;
     // }
 
-    switch (this.activeField) {
+    this.switchTableData(this.activeField);
+  }
+
+  /**
+   * 根據 ActiveField 切換資料
+   * @param activeField
+   * @returns
+   */
+  switchTableData(activeField: string) {
+    switch (activeField) {
       case 'info':
         this.tableData = Array.of(this.userQueridData);
         return;
       case 'groups':
-        this.tableData = this.userQueridData.groups;
+        this.tableData = this.userQueridData?.groups;
         return;
       case 'roles':
-        this.tableData = this.userQueridData.roles;
+        this.tableData = this.userQueridData?.roles;
         return;
       case 'functions':
-        this.tableData = this.userQueridData.functions;
+        this.tableData = this.userQueridData?.functions;
         return;
       default:
         return;
@@ -323,7 +294,6 @@ export class UsersComponent
     if (!this.formGroup.valid || !this.submitted) {
       return;
     }
-    this.activeField = 'info';
     this.loadingMaskService.show();
     this.userService
       .query(userInfo.username)
@@ -340,8 +310,8 @@ export class UsersComponent
           this.messageService.success('查詢成功');
           this.userQueridData = res;
 
-          this.tableData = Array.of(res);
-          // console.log(this.tableData);
+          console.log(this.activeField);
+          this.switchTableData(this.activeField);
         },
         error: (error) => {
           this.messageService.error(error.message);

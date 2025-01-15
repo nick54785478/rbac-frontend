@@ -22,6 +22,7 @@ import { DialogConfirmService } from '../../../../core/services/dialog-confirm.s
 import { SettingType } from '../../../../core/enums/setting-type.enum';
 import { NavigationStart, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { response } from 'express';
 
 @Component({
   selector: 'app-setting',
@@ -133,6 +134,9 @@ export class SettingComponent implements OnInit, OnDestroy {
       .subscribe((returnData: any) => {
         console.log('關閉 Dialog');
         this.dialogOpened = false;
+        console.log(returnData);
+
+        this.query();
       });
     return ref;
   }

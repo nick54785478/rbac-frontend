@@ -117,7 +117,6 @@ export class SettingFormComponent
           // 無論成功或失敗都會執行
           this.clear();
           // this.loading = false;
-          location.reload();
         })
       )
       .subscribe({
@@ -145,13 +144,11 @@ export class SettingFormComponent
         finalize(() => {
           // 無論成功或失敗都會執行
           this.clear();
-          // this.loading = false;
-          location.reload();
         })
       )
       .subscribe({
         next: (res) => {
-          this.systemMessageService.success('新增資料成功');
+          this.systemMessageService.success(res.message);
           this.onCloseForm();
         },
         error: (error) => {
