@@ -204,9 +204,7 @@ export class RolesComponent
   override clear() {
     // this.formGroup.reset();
     this.formGroup.setValue({
-      name: '', // 角色名稱
-      type: '', // 種類
-      activeFlag: '', // 是否生效
+      trainNo: '', // 車次
     });
 
     this.tableData = [];
@@ -370,6 +368,9 @@ export class RolesComponent
    * 回歸原狀，原先新增的資料全部放棄。
    */
   cancelAll() {
+    if (this.mode === 'edit') {
+      this.cancelEdit();
+    }
     this.deleteList = [];
     this.mode = '';
     this.newRow = '';
