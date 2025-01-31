@@ -71,7 +71,7 @@ export class RolesComponent
           this.mode === 'edit',
       },
       {
-        label: '取消',
+        label: '放棄',
         icon: 'pi pi-times',
         command: () => {
           this.cancelAll();
@@ -177,7 +177,7 @@ export class RolesComponent
           this.mode === 'edit',
       },
       {
-        label: '取消',
+        label: '放棄',
         icon: 'pi pi-times',
         command: () => {
           this.cancelAll();
