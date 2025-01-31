@@ -297,27 +297,29 @@ export class RolesComponent
       });
   }
 
-  onEdit(rowIndex: number) {
+  onEdit(givenIndex: number) {
     // 若目前為 新增模式 pass
     if (this.mode === 'add' || this.mode === 'delete') {
       return;
     }
 
     // 避免當我進入編輯模式後，再點擊其他列導致進入其他列的編輯模式
-    if (this.mode === 'edit' && rowIndex !== this.editingIndex) {
+    if (this.mode === 'edit' && givenIndex !== this.editingIndex) {
       return;
     }
 
     // 進入編輯模式
     this.mode = 'edit';
 
-    if (typeof rowIndex === 'number') {
+    if (typeof givenIndex === 'number') {
       // 選取的 rowIndex
-      this.selectedIndex = rowIndex;
+      this.selectedIndex = givenIndex;
       // 被編輯的 row 資料
-      this.editingIndex = rowIndex;
+      this.editingIndex = givenIndex;
     }
-    this.selectedData = this.tableData[rowIndex];
+    this.selectedData = this.tableData.find(
+      (data) => data.givenIndex === givenIndex
+    );
     this.editingRow = { ...this.selectedData }; // 深拷貝選中的行資料，避免直接修改原始數據
   }
 
@@ -349,15 +351,15 @@ export class RolesComponent
   /**
    * 取消編輯/新增
    * */
-  cancel(rowIndex?: number) {
+  cancel(givenIndex?: number) {
     if (this.mode === 'edit') {
       this.cancelEdit();
     } else if (
       this.mode === 'add' &&
-      rowIndex !== -1 &&
-      rowIndex !== undefined
+      givenIndex !== -1 &&
+      givenIndex !== undefined
     ) {
-      this.cancelAdd(rowIndex);
+      this.cancelAdd(givenIndex);
     }
 
     this.editingIndex = -1;
@@ -384,9 +386,10 @@ export class RolesComponent
 
   /**
    * 判斷是否為編輯模式
+   * @param giveIndex
    * */
-  isEditing(rowIndex: any): boolean {
-    return this.editingIndex === rowIndex;
+  isEditing(giveIndex: any): boolean {
+    return this.editingIndex === giveIndex;
   }
 
   /**
@@ -401,24 +404,26 @@ export class RolesComponent
 
   /**
    * 確認編輯/新增
-   * @param rowIndex 當前 row 的 Index
+   * @param givenIndex 當前 row 的 givenIndex
    * */
-  confirm(rowIndex: number) {
+  confirm(givenIndex: number) {
     // 當新增模式會將資料更新為最新的空資料，因為前面進新增模式時未 select
     if (this.mode === 'add') {
       // 更新為該筆資料
-      this.newRow = this.tableData[rowIndex];
+      this.newRow = this.tableData.find(
+        (data) => data.givenIndex === givenIndex
+      );
 
       console.log(this.checkRowData(this.newRow));
 
       // 新增模式下有欄位為空值，不予以 Confirm
-      if (!this.checkRowData(this.tableData[rowIndex])) {
+      if (!this.checkRowData(this.newRow)) {
         return;
       }
 
       // 過濾掉該 rowIndex
       this.newRowIndexes = this.newRowIndexes.filter(
-        (index) => index !== rowIndex
+        (index) => index !== givenIndex
       );
     }
 
@@ -537,15 +542,15 @@ export class RolesComponent
    *
    * @param rowIndex 當前 row 資料的 index
    */
-  cancelAdd(rowIndex: number) {
+  cancelAdd(givenIndex: number) {
     if (this.mode === 'add') {
       // 過濾出 id != null 者 (現有資料) 及 沒被選上的資料
       this.tableData = this.tableData.filter(
-        (data) => data.id !== null || data?.givenIndex !== rowIndex
+        (data) => data.id !== null || data?.givenIndex !== givenIndex
       );
-      // 過濾掉該 rowIndex
+      // 過濾掉該 givenIndex 的資料
       this.newRowIndexes = this.newRowIndexes.filter(
-        (index) => index !== rowIndex
+        (index) => index !== givenIndex
       );
     }
     // reset 新增資料
@@ -613,8 +618,8 @@ export class RolesComponent
   clickRowActionMenu(rowData: any): void {
     this.selectedData = rowData;
 
-    // 開啟 Dialog
-    this.openFormDialog(this.selectedData);
+    // // 開啟 Dialog
+    // this.openFormDialog(this.selectedData);
   }
 
   /**

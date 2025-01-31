@@ -94,7 +94,7 @@ export class FunctionsComponent
       },
       {
         field: 'actionType',
-        header: '動作種類',
+        header: '動作',
         type: 'dropdown',
       },
 
@@ -304,36 +304,44 @@ export class FunctionsComponent
       });
   }
 
-  onEdit(rowIndex: number) {
+  /**
+   * 進入 編輯模式
+   * @param givenIndex
+   * @returns
+   */
+  onEdit(givenIndex: number) {
     // 若目前為 新增模式 pass
     if (this.mode === 'add' || this.mode === 'delete') {
       return;
     }
 
     // 避免當我進入編輯模式後，再點擊其他列導致進入其他列的編輯模式
-    if (this.mode === 'edit' && rowIndex !== this.editingIndex) {
+    if (this.mode === 'edit' && givenIndex !== this.editingIndex) {
       return;
     }
 
     // 進入編輯模式
     this.mode = 'edit';
 
-    if (typeof rowIndex === 'number') {
+    if (typeof givenIndex === 'number') {
       // 選取的 rowIndex
-      this.selectedIndex = rowIndex;
+      this.selectedIndex = givenIndex;
       // 被編輯的 row 資料
-      this.editingIndex = rowIndex;
+      this.editingIndex = givenIndex;
     }
 
-    this.selectedData = this.tableData[rowIndex];
+    this.selectedData = this.tableData.find(
+      (data) => data.givenIndex === givenIndex
+    );
     this.editingRow = { ...this.selectedData }; // 深拷貝選中的行資料，避免直接修改原始數據
   }
 
   /**
    * 判斷是否為編輯模式
+   * @param givenIndex
    * */
-  isEditing(rowIndex: any): boolean {
-    return this.editingIndex === rowIndex;
+  isEditing(givenIndex: any): boolean {
+    return this.editingIndex === givenIndex;
   }
 
   /**
@@ -363,18 +371,20 @@ export class FunctionsComponent
 
   /**
    * 取消編輯/新增
+   *
+   * @param givenIndex
    * */
-  cancel(rowIndex?: number) {
-    console.log(rowIndex);
+  cancel(givenIndex?: number) {
+    console.log(givenIndex);
     console.log(this.editingIndex);
     if (this.mode === 'edit') {
       this.cancelEdit();
     } else if (
       this.mode === 'add' &&
-      rowIndex !== -1 &&
-      rowIndex !== undefined
+      givenIndex !== -1 &&
+      givenIndex !== undefined
     ) {
-      this.cancelAdd(rowIndex);
+      this.cancelAdd(givenIndex);
     }
 
     this.editingIndex = -1;
@@ -398,26 +408,28 @@ export class FunctionsComponent
 
   /**
    * 確認編輯/新增
-   * @param rowIndex 當前 row 的 Index
+   * @param givenIndex 當前 row 的 Index
    * */
-  confirm(rowIndex: number) {
+  confirm(givenIndex: number) {
     console.log(this.newRow);
 
     // 當新增模式會將資料更新為最新的空資料，因為前面進新增模式時未 select
     if (this.mode === 'add') {
       // 更新為該筆資料
-      this.newRow = this.tableData[rowIndex];
+      this.newRow = this.tableData.find(
+        (data) => data.givenIndex === givenIndex
+      );
 
       console.log(this.checkRowData(this.newRow));
 
-      // 新增模式下有欄位為空值，不予以 Confirm
-      if (!this.checkRowData(this.tableData[rowIndex])) {
+      // 新增模式下 有欄位為空值，不予以 Confirm
+      if (!this.checkRowData(this.newRow)) {
         return;
       }
 
       // 過濾掉該 rowIndex
       this.newRowIndexes = this.newRowIndexes.filter(
-        (index) => index !== rowIndex
+        (index) => index !== givenIndex
       );
     }
 
@@ -436,6 +448,17 @@ export class FunctionsComponent
 
     // 解除特定模式
     this.mode = '';
+  }
+
+  /**
+   * Table Action 按鈕按下去的時候要把該筆資料記錄下來。
+   * @param rowData 點選的資料
+   */
+  clickRowActionMenu(rowData: any): void {
+    this.selectedData = rowData;
+
+    // // 開啟 Dialog
+    // this.openFormDialog(this.selectedData);
   }
 
   /**
@@ -545,17 +568,17 @@ export class FunctionsComponent
    * 移除 id = null 的值
    * 用於移除新列 (row)
    *
-   * @param rowIndex 當前 row 資料的 index
+   * @param giveIndex 當前 row 資料的 index
    */
-  cancelAdd(rowIndex: number) {
+  cancelAdd(giveIndex: number) {
     if (this.mode === 'add') {
       // 過濾出 id != null 者 (現有資料) 及 沒被選上的資料
       this.tableData = this.tableData.filter(
-        (data) => data.id !== null || data?.givenIndex !== rowIndex
+        (data) => data.id !== null || data?.givenIndex !== giveIndex
       );
-      // 過濾掉該 rowIndex
+      // 過濾掉該 giveIndex 的資料
       this.newRowIndexes = this.newRowIndexes.filter(
-        (index) => index !== rowIndex
+        (index) => index !== giveIndex
       );
     }
     // reset 新增資料

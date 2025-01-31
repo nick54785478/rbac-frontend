@@ -116,7 +116,10 @@
           >
             <!-- 編輯模式 -->
             <ng-container
-              *ngIf="isEditing(rowIndex) || isAdding(rowData); else viewMode"
+              *ngIf="
+                isEditing(rowData.givenIndex) || isAdding(rowData);
+                else viewMode
+              "
             >
               <!-- getDropDownDataSource(col.data) -->
               <!-- 根據 type 生成 -->
@@ -174,7 +177,7 @@
 
             <!-- 檢視模式 -->
             <ng-template #viewMode>
-              <div (dblclick)="onEdit(rowIndex)" class="cell-content">
+              <div (dblclick)="onEdit(rowData.givenIndex)" class="cell-content">
                 {{ rowData[col.field] }}
               </div>
             </ng-template>
@@ -186,11 +189,29 @@
                 *ngIf="mode === ''"
                 pButton
                 type="button"
+                [rounded]="true"
+                [text]="true"
                 class="p-button-outlined p-button-secondary"
                 icon="pi pi-pencil"
-                (click)="clickRowActionMenu(rowData)"
+                (click)="
+                  clickRowActionMenu(rowData); onEdit(rowData.givenIndex)
+                "
               ></button>
-              <ng-container *ngIf="isEditing(rowIndex) || isAdding(rowData)">
+              <button
+                *ngIf="mode === ''"
+                pButton
+                type="button"
+                [rounded]="true"
+                [text]="true"
+                class="p-button-outlined p-button-secondary"
+                icon="pi pi-pen-to-square"
+                (click)="
+                  clickRowActionMenu(rowData); openFormDialog(this.selectedData)
+                "
+              ></button>
+              <ng-container
+                *ngIf="isEditing(rowData.givenIndex) || isAdding(rowData)"
+              >
                 <i
                   class="pi pi-check"
                   style="color: green"
