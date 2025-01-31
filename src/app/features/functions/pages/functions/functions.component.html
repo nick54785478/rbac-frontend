@@ -69,14 +69,14 @@
     styleClass="table-tabmenu"
   >
   </p-tabMenu>
-  <div class="card">
+  <div class="card table-container">
     <p-table
       #dt
       [rowsPerPageOptions]="[2, 5, 10]"
       [tableStyle]="{
-        'min-width': '10rem',
-        'max-width': '1920px',
+        'max-width': '1200px',
         'word-wrap': 'break-word',
+        'overflow-x': 'auto'
       }"
       styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
       selectionMode="single"
@@ -129,7 +129,7 @@
           </td>
           <td
             *ngFor="let col of columns"
-            style="max-width: 700px !important"
+            style="max-width: 500px"
             [ngStyle]="{ 'word-break': 'break-all', 'word-wrap': 'break-word' }"
           >
             <!-- 編輯模式 -->
@@ -199,7 +199,7 @@
             </ng-template>
           </td>
 
-          <td pFrozenColumn>
+          <td pFrozenColumn alignFrozen="right">
             <div class="flex mb-2 gap-2 justify-content-end">
               <button
                 *ngIf="mode === ''"

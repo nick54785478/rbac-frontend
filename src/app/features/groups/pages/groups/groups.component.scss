@@ -1,0 +1,30 @@
+.table-container {
+    width: 100%;
+    max-width: 1200px;
+    /* 預設最大寬度 */
+    margin: 0 auto;
+    /* 讓表格置中 */
+    overflow-x: auto;
+    /* 超過範圍時出現滾動條 */
+}
+
+/* 📌 大螢幕 (超過 1600px) */
+@media (min-width: 1600px) {
+    .table-container {
+        max-width: 1400px;
+    }
+}
+
+/* 📌 中等螢幕 (1200px - 1600px) */
+@media (max-width: 1600px) and (min-width: 1200px) {
+    .table-container {
+        max-width: 1100px;
+    }
+}
+
+/* 📌 小螢幕 (小於 1200px) */
+@media (max-width: 1200px) {
+    .table-container {
+        max-width: 100%;
+    }
+}

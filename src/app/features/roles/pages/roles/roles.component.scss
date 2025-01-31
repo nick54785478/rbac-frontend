@@ -1,17 +1,30 @@
-// /* 動態輸入框樣式 */
-// .dynamic-input {
-//   border: 1px solid #ccc;
-//   border-radius: 4px;
-//   padding: 4px;
-//   font-size: 14px;
-//   width: fit-content;
-//   max-width: 300px; /* 最大寬度 */
-//   overflow-wrap: break-word; /* 輸入內容過長時換行 */
-// }
+.table-container {
+    width: 100%;
+    max-width: 1200px;
+    /* 預設最大寬度 */
+    margin: 0 auto;
+    /* 讓表格置中 */
+    overflow-x: auto;
+    /* 超過範圍時出現滾動條 */
+}
 
-// /* 輸入框容器，允許內容換行 */
-// .input-container {
-//   display: inline-block;
-//   max-width: 100%; /* 防止超出表格範圍 */
-//   word-wrap: break-word; /* 超過最大寬度時換行 */
-// }
+/* 📌 大螢幕 (超過 1600px) */
+@media (min-width: 1600px) {
+    .table-container {
+        max-width: 1400px;
+    }
+}
+
+/* 📌 中等螢幕 (1200px - 1600px) */
+@media (max-width: 1600px) and (min-width: 1200px) {
+    .table-container {
+        max-width: 1100px;
+    }
+}
+
+/* 📌 小螢幕 (小於 1200px) */
+@media (max-width: 1200px) {
+    .table-container {
+        max-width: 100%;
+    }
+}

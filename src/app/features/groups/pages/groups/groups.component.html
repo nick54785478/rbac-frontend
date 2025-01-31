@@ -56,7 +56,7 @@
     styleClass="table-tabmenu"
   >
   </p-tabMenu>
-  <div class="card">
+  <div class="card table-container">
     <p-table
       #dt
       [rowsPerPageOptions]="[2, 5, 10]"
@@ -183,7 +183,7 @@
             </ng-template>
           </td>
 
-          <td pFrozenColumn>
+          <td pFrozenColumn alignFrozen="right">
             <div class="flex mb-2 gap-2 justify-content-end">
               <button
                 *ngIf="mode === ''"
