@@ -31,6 +31,7 @@
         </p-dropdown>
       </div>
     </div>
+
     <div class="grid p-fluid justify-content-end">
       <div class="col-12 md:col-3 lg:col-2">
         <button type="button" pButton label="查詢" (click)="query()"></button>
@@ -87,7 +88,7 @@
             pFrozenColumn
             style="
               min-width: 70px !important;
-              max-width: 70px !important;
+              max-width: 1rem !important;
               width: 70px !important;
             "
           >
@@ -130,7 +131,7 @@
                   optionValue="value"
                   [style]="{
                     'word-wrap': 'break-word',
-                    'max-width': '100% !important',
+                    'max-width': '5rem',
                     'min-width': '100%  !important'
                   }"
                   appendTo="body"
@@ -146,7 +147,7 @@
                   cols="90"
                   [style]="{
                     'word-wrap': 'break-word',
-                    'max-width': '100% !important',
+                    'max-width': '5rem',
                     'min-width': '100%  !important'
                   }"
                   pInputTextarea
@@ -163,7 +164,7 @@
                   class="p-inputtext"
                   [style]="{
                     'word-wrap': 'break-word',
-                    'max-width': '100% !important',
+                    'max-width': '5rem',
                     'min-width': '100%  !important'
                   }"
                   pInputText
