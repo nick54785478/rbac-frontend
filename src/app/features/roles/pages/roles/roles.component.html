@@ -112,7 +112,11 @@
               (onChange)="onDelete(rowData.id, $event.checked)"
             ></p-checkbox>
           </td>
-          <td *ngFor="let col of columns">
+          <td
+            *ngFor="let col of columns"
+            style="max-width: 700px !important"
+            [ngStyle]="{ 'word-break': 'break-all', 'word-wrap': 'break-word' }"
+          >
             <!-- 編輯模式 -->
             <!-- else viewMode -->
             <ng-container
@@ -129,7 +133,7 @@
                   [options]="loadDropdownData(col)"
                   [style]="{
                     'word-wrap': 'break-word',
-                    'max-width': '5rem',
+                    'max-width': '2rem',
                     'min-width': '100%'
                   }"
                   optionLabel="label"
@@ -143,10 +147,10 @@
                   [(ngModel)]="rowData[col.field]"
                   appAutofocus
                   rows="5"
-                  cols="100"
+                  cols="90"
                   [style]="{
                     'word-wrap': 'break-word',
-                    'max-width': '5rem',
+                    'max-width': '6rem',
                     'min-width': '100%'
                   }"
                   pInputTextarea
@@ -162,7 +166,7 @@
                   appAutofocus
                   [style]="{
                     'word-wrap': 'break-word',
-                    'max-width': '5rem',
+                    'max-width': '2rem',
                     'min-width': '100%'
                   }"
                   class="p-inputtext"

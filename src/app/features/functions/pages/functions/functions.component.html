@@ -73,19 +73,14 @@
     <p-table
       #dt
       [rowsPerPageOptions]="[2, 5, 10]"
-      [tableStyle]="{
-        'max-width': '1200px',
-        'word-wrap': 'break-word',
-        'overflow-x': 'auto'
-      }"
+      [tableStyle]="{ 'min-width': '10rem', 'word-wrap': 'break-word' }"
       styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
       selectionMode="single"
       responsiveLayout="scroll"
       [(selection)]="selectedData"
-      [autoLayout]="true"
       [value]="tableData"
       [columns]="cols"
-      scrollHeight="70vh"
+      scrollHeight="500px"
       [resizableColumns]="true"
       [scrollable]="true"
       [paginator]="true"
@@ -129,7 +124,7 @@
           </td>
           <td
             *ngFor="let col of columns"
-            style="max-width: 500px"
+            style="max-width: 700px !important"
             [ngStyle]="{ 'word-break': 'break-all', 'word-wrap': 'break-word' }"
           >
             <!-- 編輯模式 -->
