@@ -16,6 +16,7 @@ import { LoadingMaskService } from '../../../../core/services/loading-mask.servi
   selector: 'app-personality',
   standalone: true,
   imports: [SharedModule, CoreModule],
+  providers: [SystemMessageService],
   templateUrl: './personality.component.html',
   styleUrl: './personality.component.scss',
 })
@@ -27,7 +28,7 @@ export class PersonalityComponent
   roles: UserRoleQueried[] = []; // 角色
   // 編輯中的資料，需初始化，否則會報錯，Typescript 較嚴格
   userInfo: UserDetailQueried = new UserDetailQueried(); // 查詢後的資料
-  
+
   previousValue: UserDetailQueried = new UserDetailQueried(); // 用來保存先前的值
 
   detailTabs: any[] = [];
@@ -110,7 +111,7 @@ export class PersonalityComponent
         label: '提交',
         icon: 'pi pi-save',
         command: () => {
-          this.onSubmit()
+          this.onSubmit();
         },
         // 當在新增或編輯模式時，不能提交
         disabled: !this.editingMode,
@@ -177,30 +178,37 @@ export class PersonalityComponent
       return;
     }
 
-
-    let request: UpdateUserInfo = { 
-      username : this.userInfo.username,
-      name:this.userInfo.name,
+    let request: UpdateUserInfo = {
+      username: this.userInfo.username,
+      name: this.userInfo.name,
       email: this.userInfo.email,
       birthday: this.userInfo.birthday,
       nationalId: this.userInfo.nationalIdNo,
-      address: this.userInfo.address
-     };
-    this.userService.update(this.userInfo.id, request).pipe(finalize(() => {
-      this.loadingMaskService.hide();
-      location.reload();
-      
-    })).subscribe({
-      next: (res) => {
-        if (res.code === 'VALIDATION_FAILED') {
-          this.messageService.error(res.message);
-        } else {
-          this.messageService.success(res.message);
-        }
-      },
-      error:(err) => {
-        this.messageService.error('發生錯誤', err);
-      }
-    })
+      address: this.userInfo.address,
+    };
+    this.userService
+      .update(this.userInfo.id, request)
+      .pipe(
+        finalize(() => {
+          this.loadingMaskService.hide();
+
+          // 延遲 0.5 秒
+          setTimeout(() => {
+            location.reload();
+          }, 500);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (res.code === 'VALIDATION_FAILED') {
+            this.messageService.error(res.message);
+          } else {
+            this.messageService.success(res.message, true);
+          }
+        },
+        error: (err) => {
+          this.messageService.error('發生錯誤', err);
+        },
+      });
   }
 }
