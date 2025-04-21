@@ -14,20 +14,6 @@ import { StorageService } from '../../services/storage.service';
 import { SystemStorageKey } from '../../enums/system-storage.enum';
 import { Subject } from 'rxjs/internal/Subject';
 import { Router, RouterModule } from '@angular/router';
-import { NavigateService } from '../../services/navigate.service';
-import {
-  async,
-  defaultIfEmpty,
-  delay,
-  firstValueFrom,
-  lastValueFrom,
-  startWith,
-  takeUntil,
-  tap,
-  timer,
-} from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { LoginComponent } from '../../../features/layout/login/login.component';
 
 @Component({
   selector: 'app-redirect',

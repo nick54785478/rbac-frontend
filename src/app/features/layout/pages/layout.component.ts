@@ -39,10 +39,7 @@ export class LayoutComponent implements OnInit {
 
   permissions: string[] = []; // 根據權限決定左側邊框能看到什麼頁面
 
-  constructor(
-    private layoutService: LayoutService,
-    private storageService: StorageService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {}
 

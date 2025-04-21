@@ -52,7 +52,6 @@ export class AuthGuard implements CanActivate {
 
     // 如果當前路徑是公開路徑，直接放行
     if (this.publicPaths.includes(currentPath)) {
-      console.log();
       return of(true);
     }
 

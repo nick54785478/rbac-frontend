@@ -51,26 +51,28 @@ export class LayoutTopbarComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.primengConfig.ripple = true;
-
-    this.userProfile.username = await firstValueFrom(
-      of(
-        this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
-          this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
-      ).pipe(
-        tap((value) => console.log('username value:', value)),
-        defaultIfEmpty('')
-      )
-    );
-
-    this.userProfile.name = await firstValueFrom(
-      of(
-        this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
-          this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
-      ).pipe(
-        tap((value) => console.log('name value:', value)),
-        defaultIfEmpty('')
-      )
-    );
+    if (this.userProfile.username) {
+      this.userProfile.username = await firstValueFrom(
+        of(
+          this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+            this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
+        ).pipe(
+          tap((value) => console.log('username value:', value)),
+          defaultIfEmpty('')
+        )
+      );
+    }
+    if (this.userProfile.name) {
+      this.userProfile.name = await firstValueFrom(
+        of(
+          this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
+            this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
+        ).pipe(
+          tap((value) => console.log('name value:', value)),
+          defaultIfEmpty('')
+        )
+      );
+    }
 
     if (this.userProfile.name || this.userProfile.username) {
       this.islogin = true;

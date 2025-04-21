@@ -42,31 +42,33 @@ export class LayoutSidebarComponent implements OnInit, OnDestroy {
     );
 
     // 取得該帳號能看的頁面超連結
-    this.permissions = await firstValueFrom(
-      this.layoutService
-        .getMaintainPermissions(username)
-        .pipe(map((res) => res.permissionList))
-    );
+    if (username) {
+      this.permissions = await firstValueFrom(
+        this.layoutService
+          .getMaintainPermissions(username)
+          .pipe(map((res) => res.permissionList))
+      );
 
-    // 放置進 SessionStorage 供其他頁面取用
-    this.storageService.setPermissionList(this.permissions);
+      // 放置進 SessionStorage 供其他頁面取用
+      this.storageService.setPermissionList(this.permissions);
 
-    // 初始化 側邊的超連結
-    this.items = await lastValueFrom(
-      this.layoutService.getPermissions().pipe(
-        map((res) => {
-          console.log(res);
-          res.forEach((item) => {
-            let id = item.id ? item.id : '';
-            if (this.permissions.includes(id)) {
-              item.visible = true;
-            }
-          });
-          return res;
-        }),
-        takeUntil(this._destroying$)
-      )
-    );
+      // 初始化 側邊的超連結
+      this.items = await lastValueFrom(
+        this.layoutService.getPermissions().pipe(
+          map((res) => {
+            console.log(res);
+            res.forEach((item) => {
+              let id = item.id ? item.id : '';
+              if (this.permissions.includes(id)) {
+                item.visible = true;
+              }
+            });
+            return res;
+          }),
+          takeUntil(this._destroying$)
+        )
+      );
+    }
   }
 
   ngOnDestroy() {
