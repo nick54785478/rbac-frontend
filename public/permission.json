@@ -3,7 +3,8 @@
     "id": "",
     "label": "首頁",
     "icon": "",
-    "routerLink": "/",
+    "url": "/home",
+    "routerLink": "/home",
     "visible": true
   },
   {

@@ -59,6 +59,8 @@ export class RedirectComponent implements OnInit, AfterViewInit, OnDestroy {
       : '/redirect';
     // 若此處不選擇 redirect 會導致重新整理時一瞬間出現該選擇頁面
 
+    console.log(redirectUrl);
+
     // 取得 query params
     const queryParams = this.storageService.getSessionStorageItem(
       SystemStorageKey.QUERY_PARAMS

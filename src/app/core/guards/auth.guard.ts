@@ -50,11 +50,6 @@ export class AuthGuard implements CanActivate {
     | UrlTree {
     const currentPath = state.url;
 
-    // 如果當前路徑是公開路徑，直接放行
-    if (this.publicPaths.includes(currentPath)) {
-      return of(true);
-    }
-
     // 確認是否已登入
     return this.authService.getJwtToken().pipe(
       // 檢查 Token 狀態，返回 true 或 UrlTree
@@ -62,6 +57,9 @@ export class AuthGuard implements CanActivate {
         if (token && !this.authService.checkExpired(token)) {
           return true; // 放行
         } else {
+          // if (currentPath === '/home') {
+          //   return true;
+          // } else {
           // 設置重導向路徑為 login 登入頁面
           this.storageService.setSessionStorageItem(
             SystemStorageKey.REDIRECT_URL,
@@ -69,6 +67,7 @@ export class AuthGuard implements CanActivate {
           );
           // 返回 UrlTree 進行重導向
           return this.router.createUrlTree(['/redirect']);
+          // }
         }
       })
     );

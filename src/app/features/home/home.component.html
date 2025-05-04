@@ -18,10 +18,11 @@
                 }"
                 class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
               >
-                用戶進行登入動作，取得攜帶該用戶資訊的 JWToken，如:
+                {{ step1 }}
+                <!-- 用戶進行登入動作，取得攜帶該用戶資訊的 JWToken，如:
                 群組(GROUP)、角色(ROLE) 等 ，在後續進行動作時會根據其 Token
                 記錄的群組 (GROUP) 資料以及個人角色 (ROLE) 資料進行功能
-                (FUNCTION) 權限檢查。
+                (FUNCTION) 權限檢查。 -->
               </div>
             </div>
             <div class="col-12 flex pt-4 justify-content-end">
@@ -49,9 +50,10 @@
                 }"
                 class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
               >
-                使用者所屬的群組擁有一組"預設"的權限，該權限是透過群組角色
+                {{ step2 }}
+                <!-- 使用者所屬的群組擁有一組"預設"的權限，該權限是透過群組角色
                 (GROUP_ROLE) 與群組功能 (ROLE_FUNCTION)
-                的設定，讓使用者能根據其設定來獲得該群組所設定的功能權限。
+                的設定，讓使用者能根據其設定來獲得該群組所設定的功能權限。 -->
               </div>
             </div>
             <div class="flex pt-4 justify-content-between">
@@ -84,9 +86,10 @@
                 }"
                 class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
               >
-                除了群組角色權限，使用者也能設定個人的角色權限，這些權限是由使用者與角色的關聯表
+                {{ step3 }}
+                <!-- 除了群組角色權限，使用者也能設定個人的角色權限，這些權限是由使用者與角色的關聯表
                 (USER_ROLE)
-                來進行設定，這些個人角色權限會在群組權限基礎上進行"再擴展"。
+                來進行設定，這些個人角色權限會在群組權限基礎上進行"再擴展"。 -->
               </div>
             </div>
             <div class="flex pt-4 justify-content-between">
@@ -118,10 +121,11 @@
                 }"
                 class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium"
               >
-                登錄系統後，系統會檢查用戶所屬的群組 (GROUP)
+                {{ step4 }}
+                <!-- 登錄系統後，系統會檢查用戶所屬的群組 (GROUP)
                 及其對應的角色權限(ROLE)，然後再檢查用戶的個人角色 (ROLE)
                 權限。最後，使用者的權限由群組角色 (GROUP_ROLE) 權限和個人角色
-                (ROLE) 權限所設定的功能 (FUNCTION) 權限合併形成。
+                (ROLE) 權限所設定的功能 (FUNCTION) 權限合併形成。 -->
               </div>
             </div>
             <div class="flex pt-4 justify-content-start">

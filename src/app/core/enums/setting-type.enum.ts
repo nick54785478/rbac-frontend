@@ -8,4 +8,5 @@ export enum SettingType {
   ACTION_TYPE = 'ACTION_TYPE',
   YES_NO = 'YES_NO',
   LANGUAGE = 'LANGUAGE',
+  DESCRIPTION = 'DESCRIPTION',
 }
