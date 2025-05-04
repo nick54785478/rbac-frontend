@@ -29,8 +29,6 @@ import { UserProfile } from '../models/user-profile.model';
   providers: [LayoutService, StorageService, AuthService],
 })
 export class LayoutTopbarComponent implements OnInit {
-  islogin: boolean = false; // 是否為登入狀態
-
   @Output() visibleEmit = new EventEmitter<boolean>();
 
   @ViewChild('tLanguageMenu') tLanguageMenu!: Menu; // 語系切換，目前尚未實作
@@ -50,38 +48,35 @@ export class LayoutTopbarComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.primengConfig.ripple = true;
-    if (this.userProfile.username) {
-      this.userProfile.username = await firstValueFrom(
-        of(
-          this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
-            this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
-        ).pipe(
-          tap((value) => console.log('username value:', value)),
-          defaultIfEmpty('')
-        )
-      );
-    }
-    if (this.userProfile.name) {
-      this.userProfile.name = await firstValueFrom(
-        of(
-          this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
-            this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
-        ).pipe(
-          tap((value) => console.log('name value:', value)),
-          defaultIfEmpty('')
-        )
-      );
-    }
-
-    if (this.userProfile.name || this.userProfile.username) {
-      this.islogin = true;
-    }
-
     const win = this.windowRef.nativeWindow;
     if (win) {
       this.checkScreenSize();
     }
+
+    this.primengConfig.ripple = true;
+
+    // 載入 UserProfile
+    this.userProfile.username = await firstValueFrom(
+      of(
+        this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+          this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME)
+      ).pipe(
+        tap((value) => console.log('username value:', value)),
+        defaultIfEmpty('')
+      )
+    );
+
+    this.userProfile.name = await firstValueFrom(
+      of(
+        this.storageService.getLocalStorageItem(SystemStorageKey.NAME) ||
+          this.storageService.getSessionStorageItem(SystemStorageKey.NAME)
+      ).pipe(
+        tap((value) => console.log('name value:', value)),
+        defaultIfEmpty('')
+      )
+    );
+
+    console.log(this.userProfile);
 
     /**
      * Languages 語系，可新增(用於以後若要實作 i18n)
@@ -151,6 +146,9 @@ export class LayoutTopbarComponent implements OnInit {
    * 導向個人頁面
    */
   redirectPersonality() {
+    if (!this.userProfile.username || !this.userProfile.name) {
+      return;
+    }
     this.router.navigate(['/users/personality']);
   }
 

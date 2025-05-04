@@ -1,46 +1,43 @@
-<div class="card">
-  <p-toolbar class="toolbar-white">
-    <ng-template pTemplate="start">
-      <!-- 最左 -->
+<p-toolbar class="toolbar-white">
+  <ng-template pTemplate="start">
+    <!-- 最左 -->
+    <button
+      class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
+      (click)="toggleSidebar()"
+    >
+      <i class="pi pi-bars text-xl"></i>
+    </button>
+  </ng-template>
+  <ng-template pTemplate="center">
+    <div class="flex flex-wrap align-items-center gap-3">
+      <div *ngIf="userProfile">
+        {{ userProfile.name }} {{ userProfile.username }}
+      </div>
       <button
         class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
-        (click)="toggleSidebar()"
+        (click)="redirectPersonality()"
       >
-        <i class="pi pi-bars text-xl"></i>
+        <i class="pi pi-user text-xl"></i>
       </button>
-    </ng-template>
-    <ng-template pTemplate="center">
-      <div class="flex flex-wrap align-items-center gap-3">
-        <div *ngIf="userProfile">
-          {{ userProfile.name }} {{ userProfile.username }}
-        </div>
-        <button
-          class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
-          (click)="redirectPersonality()"
-          [disabled]="!islogin"
-        >
-          <i class="pi pi-user text-xl"></i>
-        </button>
-        <button
-          class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
-          (click)="redirectHome()"
-        >
-          <i class="pi pi-home text-xl"></i>
-        </button>
-        <button
-          class=""
-          (click)="tLanguageMenu.toggle($event)"
-          class="pi pi-globe text-xl p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
-        >
-          <!-- <i class="pi pi-globe text-xl"></i> -->
-          <p-menu #tLanguageMenu [popup]="true" [model]="languages"></p-menu>
-        </button>
-        <button
-          class=""
-          (click)="logout()"
-          class="pi pi-sign-out text-xl p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
-        ></button>
-      </div>
-    </ng-template>
-  </p-toolbar>
-</div>
+      <button
+        class="p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
+        (click)="redirectHome()"
+      >
+        <i class="pi pi-home text-xl"></i>
+      </button>
+      <button
+        class=""
+        (click)="tLanguageMenu.toggle($event)"
+        class="pi pi-globe text-xl p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
+      >
+        <!-- <i class="pi pi-globe text-xl"></i> -->
+        <p-menu #tLanguageMenu [popup]="true" [model]="languages"></p-menu>
+      </button>
+      <button
+        class=""
+        (click)="logout()"
+        class="pi pi-sign-out text-xl p-link inline-flex justify-content-center align-items-center text-black h-3rem w-3rem border-circle hover:bg-gray-200 transition-all transition-duration-200"
+      ></button>
+    </div>
+  </ng-template>
+</p-toolbar>

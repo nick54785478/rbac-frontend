@@ -25,11 +25,14 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     // 展平處理非同步流，確保非同步取得的 token 可以被處理，並用於後續請求的加工。
     switchMap((token) => {
       // 若 Token 過期，執行 refresh token
-      if (authService.checkExpired(token)) {
+      if (
+        authService.checkExpired(token) &&
+        storageService.getLocalStorageItem(SystemStorageKey.REFRESH_TOKEN)
+      ) {
         console.log('Token 過期，透過 refreshToken 更新既有的 Token');
-        const refreshToken =
-          storageService.getLocalStorageItem(SystemStorageKey.REFRESH_TOKEN) ||
-          '';
+        const refreshToken = storageService.getLocalStorageItem(
+          SystemStorageKey.REFRESH_TOKEN
+        );
         console.log(refreshToken);
 
         if (refreshToken) {

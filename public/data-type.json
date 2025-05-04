@@ -38,5 +38,13 @@
     "labelTw": "語系",
     "labelCn": "语系",
     "labelUs": "Language"
+  },
+  {
+    "id": "",
+    "label": "敘述",
+    "value": "DESCRIPTION",
+    "labelTw": "敘述",
+    "labelCn": "叙述",
+    "labelUs": "Description"
   }
 ]
