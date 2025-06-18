@@ -7,7 +7,7 @@
           <p-dropdown
             [options]="types"
             optionValue="value"
-            placeholder="請選擇"
+            placeholder="Please select"
             [showClear]="true"
             appendTo="body"
             formControlName="type"
@@ -23,7 +23,7 @@
           <p-dropdown
             [options]="activeFlags"
             optionValue="value"
-            placeholder="請選擇"
+            placeholder="Please select"
             [showClear]="true"
             appendTo="body"
             formControlName="activeFlag"
@@ -128,7 +128,7 @@
               <!-- 根據 type 生成 -->
               <ng-container *ngIf="col.type === 'dropdown'">
                 <p-dropdown
-                  placeholder="請選擇"
+                  placeholder="Please select"
                   [(ngModel)]="rowData[col.field]"
                   [options]="loadDropdownData(col)"
                   [style]="{
