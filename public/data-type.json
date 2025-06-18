@@ -46,5 +46,13 @@
     "labelTw": "敘述",
     "labelCn": "叙述",
     "labelUs": "Description"
+  },
+  {
+    "id": "",
+    "label": "服務",
+    "value": "SERVICE",
+    "labelTw": "服務",
+    "labelCn": "服务",
+    "labelUs": "Service"
   }
 ]
