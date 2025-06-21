@@ -1,7 +1,23 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <p-panel header="新增配置資料">
+  <p-panel header="配置資料">
     <div class="card" #contentElement></div>
     <div class="grid p-fluid">
+      <div class="col-12 md:col-4 lg:col-4">
+        <label class="required">服務</label>
+        <p-dropdown
+          formControlName="serviceName"
+          [options]="serviceList"
+          placeholder="Please select"
+          optionLabel="label"
+          optionValue="value"
+          [showClear]="true"
+          appendTo="body"
+        >
+        </p-dropdown>
+        <div *ngIf="formControlInvalid('serviceName')">
+          <small class="p-error"> 資料不能為空 </small>
+        </div>
+      </div>
       <div class="col-12 md:col-4 lg:col-4">
         <label>配置種類</label>
         <p-dropdown

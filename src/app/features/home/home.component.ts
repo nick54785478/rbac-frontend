@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await firstValueFrom(
-      this.settingService.query(SettingType.DESCRIPTION, '', '', 'Y')
+      this.settingService.query('', SettingType.DESCRIPTION, '', '', 'Y')
     ).then((res) => {
       // 先依 priorityNo 做升序排序
       const sorted = res

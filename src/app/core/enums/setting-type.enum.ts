@@ -9,4 +9,5 @@ export enum SettingType {
   YES_NO = 'YES_NO',
   LANGUAGE = 'LANGUAGE',
   DESCRIPTION = 'DESCRIPTION',
+  SERVICE = 'SERVICE',
 }

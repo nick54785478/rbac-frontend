@@ -39,7 +39,7 @@ export class UserGroupsComponent
 
   ngOnInit(): void {
     console.log(this.dialogConfig.data);
-    this.username = this.dialogConfig.data.data.username;
+    this.username = this.dialogConfig.data.userInfo.username;
 
     // 取得其他群組資料(不屬於該使用者的)
     this.queryOthers();
@@ -83,6 +83,7 @@ export class UserGroupsComponent
 
     let requestData: UpdateUserGroups = {
       username: this.username,
+      service: this.dialogConfig.data['service'],
       groupIds: groupIds,
     };
 
@@ -138,7 +139,10 @@ export class UserGroupsComponent
     console.log(data);
 
     this.userGroupService
-      .queryOthers(data.username)
+      .queryOthers(
+        this.dialogConfig.data['userInfo'].username,
+        this.dialogConfig.data['service']
+      )
       .pipe(finalize(() => {}))
       .subscribe({
         next: (res) => {
@@ -163,10 +167,11 @@ export class UserGroupsComponent
    * 查詢該使用者群組資料
    */
   query() {
-    let data = this.dialogConfig.data.data;
-
     this.userService
-      .queryGroups(data.username)
+      .queryGroups(
+        this.dialogConfig.data['userInfo'].username,
+        this.dialogConfig.data['service']
+      )
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();

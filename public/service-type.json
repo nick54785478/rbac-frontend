@@ -1,0 +1,18 @@
+[
+    {
+        "id": "",
+        "label": "AUTH_SERVICE",
+        "value": "AUTH_SERVICE",
+        "labelTw": "Auth Service",
+        "labelCn": "Auth Service",
+        "labelUs": "Auth Service"
+    },
+    {
+        "id": "",
+        "label": "TRAIN_SERVICE",
+        "value": "TRAIN_SERVICE",
+        "labelTw": "Train Service",
+        "labelCn": "Train Service",
+        "labelUs": "Train Service"
+    }
+]

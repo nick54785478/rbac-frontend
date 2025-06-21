@@ -30,6 +30,18 @@ export class OptionService {
   }
 
   /**
+   * 取得 Service Type 配置資料
+   * @return Observable<MenuItem[]
+   */
+  public getServiceTypes(): Observable<Option[]> {
+    return this.http.get<Option[]>('/service-type.json').pipe(
+      map((response) => {
+        return response;
+      })
+    );
+  }
+
+  /**
    * 取得 Setting Type 種類
    * @param type
    * @return  Observable<Option[]>

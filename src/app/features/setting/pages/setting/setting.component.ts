@@ -56,6 +56,7 @@ export class SettingComponent implements OnInit, OnDestroy {
   tableData: SettingQueried[] = []; // 查詢表格資料
   cols: any[] = []; // 表格資訊
   selectedData: [] = []; // 選擇資料清單
+  serviceList: Option[] = []; // 服務清單
 
   dialogOpened: boolean = false;
 
@@ -81,6 +82,7 @@ export class SettingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
+      service: new FormControl(''),
       dataType: new FormControl(''),
       type: new FormControl(''),
       name: new FormControl(''),
@@ -91,12 +93,19 @@ export class SettingComponent implements OnInit, OnDestroy {
     this.optionService.getDataTypes().subscribe((res) => {
       this.dataTypes = res;
     });
-    // 取得 activeFlag 下拉資料
+
+    // 取得 ServiceTypes 下拉資料
+    this.optionService.getServiceTypes().subscribe((res) => {
+      this.serviceList = res;
+    });
+
+    // 取得 ActiveFlag 下拉資料
     this.optionService.getSettingTypes(SettingType.YES_NO).subscribe((res) => {
       this.activeFlags = res;
     });
 
     this.cols = [
+      { field: 'service', header: '服務' },
       { field: 'dataType', header: '配置種類' },
       { field: 'type', header: '類別' },
       { field: 'name', header: '名稱' },
@@ -180,6 +189,7 @@ export class SettingComponent implements OnInit, OnDestroy {
     console.log(formData);
     this.settingService
       .query(
+        formData.service,
         formData.dataType,
         formData.type,
         formData.name,

@@ -21,6 +21,8 @@ import { UserConfigureAction } from '../../../../core/enums/user-config-action.e
 import { UserGroupsComponent } from '../user-groups/user-groups.component';
 import { UserRolesComponent } from '../user-roles/user-roles.component';
 import { Location } from '@angular/common';
+import { Option } from '../../../../shared/models/option.model';
+import { SettingType } from '../../../../core/enums/setting-type.enum';
 
 @Component({
   selector: 'app-users',
@@ -49,6 +51,7 @@ export class UsersComponent
   activeField: string = 'info'; // 用以激活當前的頁面
   pageContents: any; // 當前頁面內容配置
   userQueridData!: any; // 後端查詢使用者資料
+  serviceList: Option[] = []; // 服務清單
 
   // AutoComplete 與其下拉欄位值變動的 Subject，用來避免前次查詢較慢返回覆蓋後次資料
   private autoCompleteDataSubject$ = new Subject<string>();
@@ -82,6 +85,16 @@ export class UsersComponent
 
     this.formGroup = new FormGroup({
       userInfo: new FormControl('', [Validators.required]),
+      service: new FormControl('', [Validators.required]),
+    });
+
+    this.optionService.getSettingTypes(SettingType.SERVICE).subscribe({
+      next: (res) => {
+        this.serviceList = res;
+      },
+      error: (error) => {
+        this.messageService.error('取得資料發生錯誤', error.message);
+      },
     });
 
     this.pageContents = {
@@ -98,6 +111,7 @@ export class UsersComponent
       groups: {
         title: '群組頁面',
         cols: [
+          { field: 'service', header: '服務' },
           { field: 'type', header: '種類' },
           { field: 'name', header: '名稱' },
           { field: 'code', header: '代碼' },
@@ -109,6 +123,8 @@ export class UsersComponent
       roles: {
         title: '角色頁面',
         cols: [
+          { field: 'service', header: '服務' },
+          { field: 'roleType', header: '角色來源' },
           { field: 'type', header: '種類' },
           { field: 'name', header: '名稱' },
           { field: 'code', header: '代碼' },
@@ -120,6 +136,7 @@ export class UsersComponent
       functions: {
         title: '功能頁面',
         cols: [
+          { field: 'service', header: '服務' },
           { field: 'label', header: '權限' },
           { field: 'type', header: '種類' },
           { field: 'name', header: '名稱' },
@@ -227,6 +244,7 @@ export class UsersComponent
    */
   openFormDialog(action: string, data: any): DynamicDialogRef {
     let userInfo = data.userInfo;
+    let service = data.service;
 
     // Component
     let page: any =
@@ -247,7 +265,8 @@ export class UsersComponent
       maximizable: true,
       data: {
         action: action,
-        data: userInfo, // 將 userInfo 傳入
+        userInfo: userInfo, // 將 userInfo 傳入
+        service: service,
       },
       templates: {
         content: page,
@@ -289,6 +308,7 @@ export class UsersComponent
    */
   query() {
     let userInfo = this.formGroup.value.userInfo;
+    let service = this.formGroup.value.service;
 
     this.submitted = true;
     if (!this.formGroup.valid || !this.submitted) {
@@ -296,7 +316,7 @@ export class UsersComponent
     }
     this.loadingMaskService.show();
     this.userService
-      .query(userInfo.username)
+      .query(userInfo.username, service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行

@@ -2,6 +2,7 @@ import { RoleQueried } from '../../roles/models/role-query.model';
 
 export class GroupQueried {
   id?: number;
+  service!: string;
   code!: string; // 資料種類
   type?: string; // 種類
   name?: string; // 名稱

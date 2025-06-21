@@ -1,6 +1,11 @@
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
 import { FunctionsService } from '../../services/functions.service';
-import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
 import { Option } from '../../../../shared/models/option.model';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../../../shared/shared.module';
@@ -12,8 +17,6 @@ import { CoreModule } from '../../../../core/core.module';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { LoadingMaskService } from '../../../../core/services/loading-mask.service';
 import { SaveFunction } from '../../models/save-functions-request.model';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { error } from 'console';
 
 @Component({
   selector: 'app-functions',
@@ -27,6 +30,15 @@ export class FunctionsComponent
   extends BaseInlineEditeTableCompoent
   implements OnInit, DoCheck, OnDestroy
 {
+  serviceList: Option[] = []; // 服務清單
+
+  // Active Flag 的下拉式選單
+  activeFlags: Option[] = [];
+  // 配置種類的下拉式選單
+  types: Option[] = [];
+  // ActionTypes 的下拉式選單
+  actionTypes: Option[] = [];
+
   constructor(
     private loadingMaskService: LoadingMaskService,
     private optionService: OptionService,
@@ -79,6 +91,7 @@ export class FunctionsComponent
     ];
     // 初始化表單
     this.formGroup = new FormGroup({
+      service: new FormControl('', [Validators.required]),
       actionType: new FormControl(''), // 動作種類
       type: new FormControl(''), // 種類
       name: new FormControl(''), // 功能名稱
@@ -139,6 +152,15 @@ export class FunctionsComponent
       },
     });
 
+    this.optionService.getSettingTypes(SettingType.SERVICE).subscribe({
+      next: (res) => {
+        this.serviceList = res;
+      },
+      error: (error) => {
+        this.messageService.error('取得資料發生錯誤', error.message);
+      },
+    });
+
     this.optionService.getSettingTypes(SettingType.ACTION_TYPE).subscribe({
       next: (res) => {
         this.actionTypes = res;
@@ -194,19 +216,13 @@ export class FunctionsComponent
     ];
   }
 
-  // Active Flag 的下拉式選單
-  activeFlags: Option[] = [];
-  // 配置種類的下拉式選單
-  types: Option[] = [];
-  // ActionTypes 的下拉式選單
-  actionTypes: Option[] = [];
-
   /**
    * 清除表單資料
    */
   override clear() {
     // this.formGroup.reset();
     this.formGroup.setValue({
+      service: '',
       name: '', // 功能名稱
       type: '', // 種類
       actionType: '',
@@ -235,6 +251,7 @@ export class FunctionsComponent
     const requestData: SaveFunction[] = this.tableData.map((data) => {
       return {
         id: data.id,
+        service: this.formGroup.get('service')?.value,
         actionType: data.actionType,
         code: data.code,
         type: data.type,
@@ -275,12 +292,21 @@ export class FunctionsComponent
    * 透過特定條件查詢設定資料
    */
   query() {
+    this.submitted = true;
+    if (!this.submitted || this.formGroup.invalid) {
+      return;
+    }
     this.loadingMaskService.show();
     // 查詢前先取消所有
     this.cancelAll();
     let formData = this.formGroup.value;
     this.functionService
-      .query(formData.type, formData.name, formData.activeFlag)
+      .query(
+        formData.service,
+        formData.type,
+        formData.name,
+        formData.activeFlag
+      )
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行

@@ -2,10 +2,6 @@
   <p-panel header="查詢使用者資料">
     <div class="card" #contentElement>
       <div class="grid p-fluid">
-        <!-- <div class="col-12 md:col-3 lg:col-3">
-        <label>Email</label>
-        <input type="text" pInputText formControlName="email" />
-      </div> -->
         <div class="col-12 md:col-3 lg:col-3">
           <label class="required">使用者</label>
           <p-autoComplete
@@ -16,7 +12,6 @@
             [completeOnFocus]="true"
             appendTo="body"
             showClear="true"
-            (onClear)="clear()"
             styleClass="w-full"
             inputStyleClass="w-full"
             [showEmptyMessage]="true"
@@ -40,6 +35,21 @@
               (dialogOpened && !formControlInvalid('userInfo'))
             "
           >
+            <small class="p-error"> 資料不能為空 </small>
+          </div>
+        </div>
+        <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">服務</label>
+          <p-dropdown
+            [options]="serviceList"
+            optionValue="value"
+            placeholder="Please select"
+            [showClear]="true"
+            appendTo="body"
+            formControlName="service"
+          >
+          </p-dropdown>
+          <div *ngIf="formControlInvalid('service')">
             <small class="p-error"> 資料不能為空 </small>
           </div>
         </div>
@@ -100,6 +110,7 @@
         scrollDirection="both"
         scrollHeight="500px"
         [paginator]="true"
+        [globalFilterFields]="['service']"
         [rows]="10"
       >
         <!-- 標題 -->

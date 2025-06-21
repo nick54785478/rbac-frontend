@@ -37,11 +37,13 @@ export class SettingService {
 
   /**
    * 查詢
+   * @param service
    * @param dataType
    * @param type
    * @param name
    */
   query(
+    service: string,
     dataType: string,
     type: string,
     name: string,
@@ -49,6 +51,7 @@ export class SettingService {
   ): Observable<SettingQueried[]> {
     const url = this.baseApiUrl + '/settings/query';
     let params = new HttpParams()
+      .set('service', service ? service : '')
       .set('dataType', dataType ? dataType : '')
       .set('type', type ? type : '')
       .set('name', name ? name : '')

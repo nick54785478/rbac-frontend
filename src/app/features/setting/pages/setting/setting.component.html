@@ -3,6 +3,18 @@
     <div class="card" #contentElement>
       <div class="grid p-fluid">
         <div class="col-12 md:col-3 lg:col-3">
+          <label>服務</label>
+          <p-dropdown
+            [options]="serviceList"
+            optionValue="value"
+            placeholder="Please select"
+            [showClear]="true"
+            appendTo="body"
+            formControlName="service"
+          >
+          </p-dropdown>
+        </div>
+        <div class="col-12 md:col-3 lg:col-3">
           <label>配置種類</label>
           <p-dropdown
             [options]="dataTypes"

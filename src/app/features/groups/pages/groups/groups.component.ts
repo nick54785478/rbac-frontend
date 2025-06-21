@@ -4,7 +4,7 @@ import { OptionService } from '../../../../shared/services/option.service';
 import { SystemMessageService } from '../../../../core/services/system-message.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { GroupsService } from '../../services/groups.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SettingType } from '../../../../core/enums/setting-type.enum';
 import { Option } from '../../../../shared/models/option.model';
 import { CommonModule } from '@angular/common';
@@ -41,6 +41,7 @@ export class GroupsComponent
   dialogOpened: boolean = false; //  Dialog 狀態
   rowActionMenu: MenuItem[] = []; // Table Row Actions 右側選單。
   readonly _destroying$ = new Subject<void>(); // 用來取消訂閱
+  serviceList: Option[] = []; // 服務清單
 
   constructor(
     private groupService: GroupsService,
@@ -105,6 +106,7 @@ export class GroupsComponent
     // 初始化表單
     this.formGroup = new FormGroup({
       name: new FormControl(''), // 角色名稱
+      service: new FormControl('', [Validators.required]),
       type: new FormControl(''), // 種類
       activeFlag: new FormControl(''), // 是否生效
     });
@@ -146,6 +148,14 @@ export class GroupsComponent
       },
       error: (err) => {
         console.error('Failed to load dropdown data:', err);
+      },
+    });
+    this.optionService.getSettingTypes(SettingType.SERVICE).subscribe({
+      next: (res) => {
+        this.serviceList = res;
+      },
+      error: (error) => {
+        this.messageService.error('取得資料發生錯誤', error.message);
       },
     });
   }
@@ -201,6 +211,7 @@ export class GroupsComponent
   override clear() {
     // this.formGroup.reset();
     this.formGroup.setValue({
+      service: '',
       name: '', // 群組名稱
       type: '', // 種類
       activeFlag: '', // 是否生效
@@ -228,6 +239,7 @@ export class GroupsComponent
     const requestData: SaveGroup[] = this.tableData.map((data) => {
       return {
         id: data.id,
+        service: this.formGroup.get('service')?.value,
         code: data.code,
         type: data.type,
         name: data.name,
@@ -268,12 +280,21 @@ export class GroupsComponent
    * 透過特定條件查詢設定資料
    */
   query() {
+    this.submitted = true;
+    if (!this.submitted || this.formGroup.invalid) {
+      return;
+    }
     // 查詢前先取消所有
     this.cancelAll();
     let formData = this.formGroup.value;
     this.loadMaskService.show();
     this.groupService
-      .query(formData.type, formData.name, formData.activeFlag)
+      .query(
+        formData.service,
+        formData.type,
+        formData.name,
+        formData.activeFlag
+      )
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();

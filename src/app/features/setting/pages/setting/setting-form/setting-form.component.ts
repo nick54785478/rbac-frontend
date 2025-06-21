@@ -10,11 +10,12 @@ import { SystemMessageService } from '../../../../../core/services/system-messag
 import { OptionService } from '../../../../../shared/services/option.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BaseFormCompoent } from '../../../../../shared/component/base/base-form.component';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { SettingQueried } from '../../../models/setting-query.model';
 import { UpdateSetting } from '../../../models/update-setting-request.model';
 import { SettingType } from '../../../../../core/enums/setting-type.enum';
 import { Location } from '@angular/common';
+import { error } from 'console';
 
 @Component({
   selector: 'app-setting-form',
@@ -29,6 +30,7 @@ export class SettingFormComponent
 {
   dataTypes: Option[] = [];
   activeFlags: Option[] = [];
+  serviceList: Option[] = []; // 服務清單
 
   constructor(
     private location: Location,
@@ -48,8 +50,8 @@ export class SettingFormComponent
     });
 
     this.formAction = this.dialogConfig.data['action'];
-
     this.formGroup = new FormGroup({
+      serviceName: new FormControl('', [Validators.required]),
       dataType: new FormControl('', [Validators.required]),
       type: new FormControl('', [Validators.required]),
       name: new FormControl('', [Validators.required]),
@@ -58,22 +60,20 @@ export class SettingFormComponent
       activeFlag: new FormControl(''),
     });
 
-    console.log(this.dialogConfig.data);
+    // 取得下拉式選單資料
+    forkJoin({
+      dataTypes: this.optionService.getDataTypes(),
+      activeFlags: this.optionService.getSettingTypes(SettingType.YES_NO),
+      serviceList: this.optionService.getSettingTypes(SettingType.SERVICE),
+    }).subscribe(({ dataTypes, activeFlags, serviceList }) => {
+      this.dataTypes = dataTypes;
+      this.activeFlags = activeFlags;
+      this.serviceList = serviceList;
 
-    // 若為 'edit' => 編輯，
-    if (this.formAction === 'edit') {
-      this.patchFormGroupValue(this.dialogConfig.data['data']);
-    }
-
-    console.log(this.ref);
-    // 取得 DataTypes 下拉資料
-    this.optionService.getDataTypes().subscribe((res) => {
-      this.dataTypes = res;
-    });
-
-    // 取得 activeFlag 下拉資料
-    this.optionService.getSettingTypes(SettingType.YES_NO).subscribe((res) => {
-      this.activeFlags = res;
+      // 編輯資料表單要 Patch
+      if (this.formAction === 'edit') {
+        this.patchFormGroupValue(this.dialogConfig.data['data']);
+      }
     });
   }
 
@@ -138,12 +138,18 @@ export class SettingFormComponent
     const request: UpdateSetting = { ...this.formGroup.value };
     console.log(request);
     let id = this.dialogConfig.data['data'].id;
+
+    this.submitted = true;
+    if (this.formGroup.invalid || !this.submitted) {
+      return;
+    }
     this.settingService
       .update(id, request)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
           this.clear();
+          this.submitted = false;
         })
       )
       .subscribe({
@@ -180,6 +186,7 @@ export class SettingFormComponent
    */
   override patchFormGroupValue(data: SettingQueried): void {
     this.formGroup.patchValue({
+      serviceName: data.service,
       dataType: data.dataType,
       type: data.type,
       name: data.name,

@@ -10,6 +10,7 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { UserRolesService } from '../../services/user-roles.service';
 import { UpdateUserRoles } from '../../models/update-user-roles-request.model';
 import { Location } from '@angular/common';
+import { userInfo } from 'os';
 
 @Component({
   selector: 'app-user-roles',
@@ -36,7 +37,7 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.dialogConfig.data);
-    this.username = this.dialogConfig.data.data.username;
+    this.username = this.dialogConfig.data.userInfo.username;
 
     // 取得其他群組資料(不屬於該使用者的)
     this.queryOthers();
@@ -90,11 +91,11 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
    * 查詢其他群組資料(不屬於該使用者的)
    */
   queryOthers() {
-    let data = this.dialogConfig.data.data;
-    console.log(data);
-
     this.userRoleService
-      .queryOthers(data.username)
+      .queryOthers(
+        this.dialogConfig.data['userInfo'].username,
+        this.dialogConfig.data['service']
+      )
       .pipe(finalize(() => {}))
       .subscribe({
         next: (res) => {
@@ -119,10 +120,11 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
    * 查詢該使用者角色資料
    */
   query() {
-    let data = this.dialogConfig.data.data;
-
     this.userService
-      .queryRoles(data.username)
+      .queryRoles(
+        this.dialogConfig.data['userInfo'].username,
+        this.dialogConfig.data['service']
+      )
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -154,6 +156,7 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
 
     let requestData: UpdateUserRoles = {
       username: this.username,
+      service: this.dialogConfig.data['service'],
       roleIds: roleIds,
     };
 

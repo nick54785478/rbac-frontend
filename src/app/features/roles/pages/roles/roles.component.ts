@@ -1,5 +1,10 @@
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
 import { Option } from '../../../../shared/models/option.model';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../../../shared/shared.module';
@@ -37,6 +42,7 @@ export class RolesComponent
   types: Option[] = []; // 配置種類的下拉式選單
   dialogOpened: boolean = false; //  Dialog 狀態
   rowActionMenu: MenuItem[] = []; // Table Row Actions 右側選單。
+  serviceList: Option[] = []; // 服務清單
   readonly _destroying$ = new Subject<void>(); // 用來取消訂閱
 
   constructor(
@@ -92,6 +98,7 @@ export class RolesComponent
     ];
     // 初始化表單
     this.formGroup = new FormGroup({
+      service: new FormControl('', [Validators.required]),
       name: new FormControl(''), // 角色名稱
       type: new FormControl(''), // 種類
       activeFlag: new FormControl(''), // 是否生效
@@ -136,6 +143,14 @@ export class RolesComponent
     this.optionService.getSettingTypes(SettingType.YES_NO).subscribe({
       next: (res) => {
         this.activeFlags = res;
+      },
+      error: (error) => {
+        this.messageService.error('取得資料發生錯誤', error.message);
+      },
+    });
+    this.optionService.getSettingTypes(SettingType.SERVICE).subscribe({
+      next: (res) => {
+        this.serviceList = res;
       },
       error: (error) => {
         this.messageService.error('取得資料發生錯誤', error.message);
@@ -203,8 +218,11 @@ export class RolesComponent
    */
   override clear() {
     // this.formGroup.reset();
-    this.formGroup.setValue({
-      trainNo: '', // 車次
+    this.formGroup.patchValue({
+      name: '',
+      type: '',
+      activeFlag: '',
+      service: '',
     });
 
     this.tableData = [];
@@ -229,6 +247,7 @@ export class RolesComponent
     const requestData: SaveRole[] = this.tableData.map((data) => {
       return {
         id: data.id,
+        service: this.formGroup.get('service')?.value,
         code: data.code,
         type: data.type,
         name: data.name,
@@ -268,12 +287,22 @@ export class RolesComponent
    * 透過特定條件查詢設定資料
    */
   query() {
+    this.submitted = true;
+    if (!this.submitted || this.formGroup.invalid) {
+      return;
+    }
     this.loadingMaskService.show();
     // 查詢前先取消所有
     this.cancelAll();
     let formData = this.formGroup.value;
+
     this.roleService
-      .query(formData.type, formData.name, formData.activeFlag)
+      .query(
+        formData.service,
+        formData.type,
+        formData.name,
+        formData.activeFlag
+      )
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
