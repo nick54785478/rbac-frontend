@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { StorageService } from './storage.service';
 import { SystemStorageKey } from '../enums/system-storage.enum';
 import { Observable } from 'rxjs/internal/Observable';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { of } from 'rxjs/internal/observable/of';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -13,6 +13,7 @@ import { RefreshTokenResponse } from '../models/refresh-token.response.model';
 })
 export class AuthService {
   private readonly baseApiUrl = environment.apiEndpoint;
+  private readonly serviceHeader = environment.serviceHeader;
 
   tokenSubject$ = new BehaviorSubject<string>('');
 
@@ -37,7 +38,12 @@ export class AuthService {
    * */
   refreshToken(refreshToken: string): Observable<RefreshTokenResponse> {
     const url = this.baseApiUrl + '/refresh';
-    return this.http.post<RefreshTokenResponse>(url, { token: refreshToken });
+    // 加入 Service Header 請求頭
+    const headers = new HttpHeaders({
+      service: this.serviceHeader,
+    });
+    const request = { token: refreshToken };
+    return this.http.post<RefreshTokenResponse>(url, { headers, request });
   }
 
   /**

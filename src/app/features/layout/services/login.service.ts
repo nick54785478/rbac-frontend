@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { JwtToken } from '../models/jwt-token.model';
@@ -12,6 +12,7 @@ import { UserProfile } from '../models/user-profile.model';
 })
 export class LoginService {
   private readonly baseApiUrl = environment.apiEndpoint;
+  private readonly serviceHeader = environment.serviceHeader;
 
   constructor(private http: HttpClient) {}
 
@@ -22,7 +23,13 @@ export class LoginService {
    */
   login(request: Login): Observable<any> {
     const url = this.baseApiUrl + '/login';
-    return this.http.post<JwtToken>(url, request);
+
+    // 加入 Service Header 請求頭
+    const headers = new HttpHeaders({
+      'service-header': this.serviceHeader,
+    });
+
+    return this.http.post<JwtToken>(url, request, { headers: headers });
   }
 
   /**

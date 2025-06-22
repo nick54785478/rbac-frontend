@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  serviceHeader: 'AUTH_SERVICE',
   apiMock: false,
   apiEndpoint: '/api/v1',
   redirectUrl: 'http://localhost:4200',
