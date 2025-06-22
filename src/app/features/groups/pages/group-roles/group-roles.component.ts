@@ -15,6 +15,8 @@ import { GroupsService } from '../../services/groups.service';
 import { UpdateGroupRoles } from '../../models/update-group-roles-request.model';
 import { GroupQueried } from '../../models/group-query.model';
 import { GroupInfoOption } from '../../../../shared/models/group-info-option.model';
+import { Option } from '../../../../shared/models/option.model';
+import { SettingType } from '../../../../core/enums/setting-type.enum';
 
 @Component({
   selector: 'app-group-roles',
@@ -37,16 +39,19 @@ export class GroupRolesComponent
 
   queriedStr!: string;
 
+  serviceList: Option[] = []; // 服務清單
+
+  groupReadonly = true; // 控制角色欄位是否可填
+
   /**
    * 用來取消訂閱
    */
   readonly _destroying$ = new Subject<void>();
 
   constructor(
-    private groupService: GroupsService,
     private groupRolesService: GroupRolesService,
     private optionService: OptionService,
-    private systemMessageService: SystemMessageService,
+    private messageService: SystemMessageService,
     private loadMaskService: LoadingMaskService
   ) {
     super();
@@ -74,7 +79,19 @@ export class GroupRolesComponent
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
+      service: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
+    });
+
+    // role 會監聽 service 的值變化
+    this.formGroup.get('service')?.valueChanges.subscribe((val) => {
+      const groupControl = this.formGroup.get('group');
+      if (!val) {
+        this.groupReadonly = true;
+        groupControl?.reset(); // 清空資料
+      } else {
+        this.groupReadonly = false;
+      }
     });
 
     this.detailTabs = [
@@ -95,6 +112,15 @@ export class GroupRolesComponent
         disabled: this.sourceList.length === 0 && this.targetList.length === 0,
       },
     ];
+
+    this.optionService.getSettingTypes(SettingType.SERVICE).subscribe({
+      next: (res) => {
+        this.serviceList = res;
+      },
+      error: (error) => {
+        this.messageService.error('取得資料發生錯誤', error.message);
+      },
+    });
   }
 
   ngOnDestroy(): void {
@@ -132,13 +158,13 @@ export class GroupRolesComponent
       .subscribe({
         next: (res) => {
           if (res.code !== 'VALIDATION_FAILED') {
-            this.systemMessageService.success(res.message);
+            this.messageService.success(res.message);
           } else {
-            this.systemMessageService.error(res.message);
+            this.messageService.error(res.message);
           }
         },
         error: (error) => {
-          this.systemMessageService.error(error);
+          this.messageService.error(error);
         },
       });
   }
@@ -163,8 +189,8 @@ export class GroupRolesComponent
     }
 
     this.loadMaskService.show();
-    this.groupService
-      .queryById(formData.group.id)
+    this.groupRolesService
+      .queryRoles(formData.group.id, formData.service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -172,7 +198,7 @@ export class GroupRolesComponent
         })
       )
       .subscribe((res) => {
-        let roleList = res.roles;
+        let roleList = res;
         if (roleList) {
           this.targetList = roleList.map((role: any) => ({
             id: role.id,
@@ -184,7 +210,7 @@ export class GroupRolesComponent
         }
       });
     // 查詢不屬於該 群組 (id) 的角色資料
-    this.getOtherRoles(formData.group.id);
+    this.getOtherRoles(formData.group.id, formData.service);
   }
 
   /**
@@ -231,10 +257,11 @@ export class GroupRolesComponent
   /**
    * 取得不屬於該群組的角色
    * @param id
+   * @param service
    */
-  getOtherRoles(id: number) {
+  getOtherRoles(id: number, service: string) {
     this.groupRolesService
-      .queryOthers(id)
+      .queryOthers(id, service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行

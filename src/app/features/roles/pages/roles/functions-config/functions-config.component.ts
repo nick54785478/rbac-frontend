@@ -37,17 +37,17 @@ export class FunctionsConfigComponent
 
   ngOnInit(): void {
     let data = this.dialogConfig.data;
-    console.log(data.id);
+    console.log(data);
 
-    this.getOtherFunctions(data.id);
-    this.query(data.id);
+    this.getOtherFunctions(data.id, data.service);
+    this.query(data.id, data.service);
 
     this.detailTabs = [
       {
         label: '提交',
         icon: 'pi pi-save',
         command: () => {
-          this.onSubmit(data.id);
+          this.onSubmit(data.id, data.service);
         },
         disabled: false,
       },
@@ -65,8 +65,9 @@ export class FunctionsConfigComponent
   /**
    * 提交變更角色功能資料
    * @param id
+   * @param service
    */
-  onSubmit(id: number) {
+  onSubmit(id: number, service: string) {
     let funcIds = this.targetList
       ? this.targetList
           .map((e) => e.id)
@@ -74,6 +75,7 @@ export class FunctionsConfigComponent
       : [];
     let requestData: UpdateRoleFunction = {
       roleId: id,
+      service: service,
       functions: funcIds,
     };
     this.submitted = true;
@@ -112,9 +114,9 @@ export class FunctionsConfigComponent
    * 取得不屬於該角色的功能
    * @param id
    */
-  getOtherFunctions(id: number) {
+  getOtherFunctions(id: number, service: string) {
     this.roleFunctionsService
-      .queryOthers(id)
+      .queryOthers(id, service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
@@ -135,12 +137,14 @@ export class FunctionsConfigComponent
 
   /**
    * 提交資料，查詢角色相關資料
+   * @param id
+   * @param service
    */
-  query(id: number) {
+  query(id: number, service: string) {
     this.loadMaskService.show();
 
-    this.roleService
-      .queryById(id)
+    this.roleFunctionsService
+      .queryFuncs(id, service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -148,7 +152,7 @@ export class FunctionsConfigComponent
         })
       )
       .subscribe((res) => {
-        let funcList = res.functions;
+        let funcList = res;
         if (funcList) {
           this.targetList = funcList.map((func: any) => ({
             id: func.id,

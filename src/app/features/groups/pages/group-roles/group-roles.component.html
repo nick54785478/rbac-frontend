@@ -2,12 +2,27 @@
   <p-panel header="群組角色設置">
     <div class="grid p-fluid">
       <div class="col-12 md:col-3 lg:col-3">
+        <label class="required">服務</label>
+        <p-dropdown
+          [options]="serviceList"
+          optionValue="value"
+          placeholder="Please select"
+          [showClear]="true"
+          appendTo="body"
+          formControlName="service"
+        >
+        </p-dropdown>
+        <div *ngIf="formControlInvalid('service')">
+          <small class="p-error"> 資料不能為空 </small>
+        </div>
+      </div>
+      <div class="col-12 md:col-3 lg:col-3">
         <label class="required">群組查詢</label>
         <p-autoComplete
           formControlName="group"
           [suggestions]="groupOptions"
           [forceSelection]="true"
-          [dropdown]="true"
+          [dropdown]="!groupReadonly"
           [completeOnFocus]="true"
           appendTo="body"
           styleClass="w-full"
@@ -16,6 +31,7 @@
           (completeMethod)="getGroupOptions($event)"
           emptyMessage="查無資料"
           field="displayName"
+          [readonly]="groupReadonly"
         >
         </p-autoComplete>
         <div *ngIf="formControlInvalid('group')">

@@ -646,9 +646,6 @@ export class RolesComponent
    */
   clickRowActionMenu(rowData: any): void {
     this.selectedData = rowData;
-
-    // // 開啟 Dialog
-    // this.openFormDialog(this.selectedData);
   }
 
   /**

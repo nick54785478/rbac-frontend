@@ -190,11 +190,6 @@ export class UsersComponent
   onTabChange(event: any) {
     console.log('Tab changed:', event.item.field);
     this.activeField = event.item.field;
-
-    // if (this.tableData.length === 0) {
-    //   return;
-    // }
-
     this.switchTableData(this.activeField);
   }
 
@@ -227,12 +222,12 @@ export class UsersComponent
    * @param action
    */
   onStartUserConfig(action: string) {
+    this.submitted = true;
     this.dialogOpened = true;
-    console.log(this.formControlInvalid('userInfo'));
-
-    if (!this.dialogOpened || !this.formGroup.valid) {
+    if (!this.dialogOpened || !this.formGroup.valid || !this.submitted) {
       return;
     }
+
     this.openFormDialog(action, this.formGroup.value);
   }
 
@@ -289,6 +284,7 @@ export class UsersComponent
    * 關閉 Dialog 表單
    */
   closeFormDialog() {
+    this.submitted = false;
     this.dialogOpened = false;
     this.dynamicDialogRef.close();
   }

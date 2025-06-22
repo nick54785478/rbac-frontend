@@ -39,10 +39,11 @@ export class RolesConfigComponent
 
   ngOnInit(): void {
     let data = this.dialogConfig.data;
+
     console.log(data.id);
 
-    this.getOtherFunctions(data.id);
-    this.query(data.id);
+    this.getOtherRoles(data.id, data.service);
+    this.query(data.id, data.service);
 
     this.detailTabs = [
       {
@@ -111,12 +112,12 @@ export class RolesConfigComponent
   }
 
   /**
-   * 取得不屬於該角色的功能
+   * 取得不屬於該群組的角色
    * @param id
    */
-  getOtherFunctions(id: number) {
+  getOtherRoles(id: number, service: string) {
     this.groupRolesService
-      .queryOthers(id)
+      .queryOthers(id, service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
@@ -138,11 +139,11 @@ export class RolesConfigComponent
   /**
    * 提交資料，查詢角色相關資料
    */
-  query(id: number) {
+  query(id: number, service: string) {
     this.loadMaskService.show();
 
-    this.groupService
-      .queryById(id)
+    this.groupRolesService
+      .queryRoles(id, service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -150,7 +151,7 @@ export class RolesConfigComponent
         })
       )
       .subscribe((res) => {
-        let roleList = res.roles;
+        let roleList = res;
         if (roleList) {
           this.targetList = roleList.map((role: any) => ({
             id: role.id,

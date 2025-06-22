@@ -26,16 +26,11 @@
             </ng-template>
           </p-autoComplete>
           <!-- 點擊按鈕時，要顯示
-           * 值為空但要開啟Dialog 時顯示
+           * 值為空但要開啟 Dialog 時顯示
            * 點擊查詢但值為空
             -->
-          <div
-            *ngIf="
-              formControlInvalid('userInfo') ||
-              (dialogOpened && !formControlInvalid('userInfo'))
-            "
-          >
-            <small class="p-error"> 資料不能為空 </small>
+          <div *ngIf="formControlInvalid('userInfo')">
+            <small class="p-error"> 資料不能為空</small>
           </div>
         </div>
         <div class="col-12 md:col-3 lg:col-3">
@@ -50,7 +45,7 @@
           >
           </p-dropdown>
           <div *ngIf="formControlInvalid('service')">
-            <small class="p-error"> 資料不能為空 </small>
+            <small class="p-error"> 資料不能為空</small>
           </div>
         </div>
       </div>
