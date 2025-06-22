@@ -11,6 +11,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UpdateUserInfo } from '../../models/update-user-request.model';
 import { finalize } from 'rxjs';
 import { LoadingMaskService } from '../../../../core/services/loading-mask.service';
+import {
+  UserGroupSummaryQueried,
+  UserRoleSummaryQueried,
+  UserSummaryQueried,
+} from '../../models/user-summary-query.model';
 
 @Component({
   selector: 'app-personality',
@@ -24,12 +29,12 @@ export class PersonalityComponent
   extends BaseFormCompoent
   implements OnInit, DoCheck
 {
-  groups: UserGroupQueried[] = []; // 群組
-  roles: UserRoleQueried[] = []; // 角色
+  groups: UserGroupSummaryQueried[] = []; // 群組
+  roles: UserRoleSummaryQueried[] = []; // 角色
   // 編輯中的資料，需初始化，否則會報錯，Typescript 較嚴格
-  userInfo: UserDetailQueried = new UserDetailQueried(); // 查詢後的資料
+  userInfo: UserSummaryQueried = new UserSummaryQueried(); // 查詢後的資料
 
-  previousValue: UserDetailQueried = new UserDetailQueried(); // 用來保存先前的值
+  previousValue: UserSummaryQueried = new UserSummaryQueried(); // 用來保存先前的值
 
   detailTabs: any[] = [];
 

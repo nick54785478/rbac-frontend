@@ -163,39 +163,30 @@
   </p-panel>
 
   <div class="grid">
-    <!-- 群組資料區域 -->
-    <div class="col-12 md:col-3 lg:col-6">
-      <p-panel
-        header="群組資料"
-        [style]="{ 'max-width': '1000px' }"
-        [toggleable]="true"
-      >
-        <div class="grid flex justify-content-start">
-          <!-- 遍歷Group資料 -->
+    <!-- 群組資料 -->
+    <div class="col-12 md:col-6">
+      <p-panel header="群組資料" [toggleable]="true">
+        <div class="flex flex-column gap-2">
           @for (group of groups; track group.id) {
           <div
-            class="flex align-items-center justify-content-center w-10rem h-10rem font-bold border-round m-2"
+            class="border-round shadow-1 p-3 font-bold text-center bg-gray-100"
           >
-            <li>{{ group.name }}</li>
+            {{ group.service }} - {{ group.name }}
           </div>
           }
         </div>
       </p-panel>
     </div>
-    <!-- 角色資料區域 -->
-    <div class="col-12 md:col-3 lg:col-6">
-      <p-panel
-        header="角色資料"
-        [style]="{ 'max-width': '1000px' }"
-        [toggleable]="true"
-      >
-        <div class="flex justify-content-start flex-wrap">
-          <!-- 遍歷Role資料 -->
+
+    <!-- 角色資料 -->
+    <div class="col-12 md:col-6">
+      <p-panel header="角色資料" [toggleable]="true">
+        <div class="flex flex-column gap-2">
           @for (role of roles; track role.id) {
           <div
-            class="flex align-items-center justify-content-center w-10rem h-10rem font-bold border-round m-2"
+            class="border-round shadow-1 p-3 font-bold text-center bg-gray-100"
           >
-            <li>{{ role.name }}</li>
+            {{ role.service }} - {{ role.name }}
           </div>
           }
         </div>

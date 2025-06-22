@@ -13,6 +13,7 @@ import { map } from 'rxjs/internal/operators/map';
 import { StorageService } from '../../../core/services/storage.service';
 import { SystemStorageKey } from '../../../core/enums/system-storage.enum';
 import { UpdateUserInfo } from '../models/update-user-request.model';
+import { UserSummaryQueried } from '../models/user-summary-query.model';
 
 @Injectable({
   providedIn: 'root',
@@ -72,16 +73,16 @@ export class UsersService {
     const username =
       this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME) ||
       this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME);
-    const url = this.baseApiUrl + '/users/' + username + '/details';
+    const url = this.baseApiUrl + '/users/' + username + '/summary';
 
     if (environment.apiMock) {
-      return this.http.get<UserDetailQueried>('/user-data.json').pipe(
+      return this.http.get<UserSummaryQueried>('/user-data.json').pipe(
         map((response) => {
           return response;
         })
       );
     }
-    return this.http.get<UserDetailQueried>(url).pipe(
+    return this.http.get<UserSummaryQueried>(url).pipe(
       map((response) => {
         return response;
       })
