@@ -5,7 +5,6 @@ import { CoreModule } from '../../../../../core/core.module';
 import { SharedModule } from '../../../../../shared/shared.module';
 import { CommonService } from '../../../../../shared/services/common.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { OptionService } from '../../../../../shared/services/option.service';
 import { RoleFunctionsService } from '../../../services/role-functions.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { RoleService } from '../../../services/role.service';

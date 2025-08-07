@@ -20,6 +20,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogFormComponent } from '../../../../shared/component/dialog-form/dialog-form.component';
 import { MenuItem } from 'primeng/api';
 import { FunctionsConfigComponent } from './functions-config/functions-config.component';
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 
 @Component({
   selector: 'app-roles',
@@ -38,6 +39,8 @@ export class RolesComponent
   dialogOpened: boolean = false; //  Dialog 狀態
   rowActionMenu: MenuItem[] = []; // Table Row Actions 右側選單。
   readonly _destroying$ = new Subject<void>(); // 用來取消訂閱
+
+  autoCompleteList: any[] = [];
 
   constructor(
     private loadingMaskService: LoadingMaskService,
@@ -103,30 +106,35 @@ export class RolesComponent
         field: 'type',
         header: '配置種類',
         type: 'dropdown',
+        required: 'true',
         data: 'types', // 取已選中的 dropdown
       },
       {
         field: 'code',
         header: '角色代碼',
         type: 'inputText',
+        required: 'true',
         data: '',
       },
       {
         field: 'name',
         header: '名稱',
         type: 'inputText',
+        required: 'true',
         data: '',
       },
       {
         field: 'description',
         header: '說明',
         type: 'textArea',
+        required: 'false',
         data: '',
       },
       {
         field: 'activeFlag',
         header: '是否生效',
         type: 'dropdown',
+        required: 'true',
         data: 'activeFlags',
       },
     ];
@@ -297,30 +305,14 @@ export class RolesComponent
       });
   }
 
-  onEdit(givenIndex: number) {
-    // 若目前為 新增模式 pass
-    if (this.mode === 'add' || this.mode === 'delete') {
-      return;
-    }
-
-    // 避免當我進入編輯模式後，再點擊其他列導致進入其他列的編輯模式
-    if (this.mode === 'edit' && givenIndex !== this.editingIndex) {
-      return;
-    }
-
-    // 進入編輯模式
-    this.mode = 'edit';
-
-    if (typeof givenIndex === 'number') {
-      // 選取的 rowIndex
-      this.selectedIndex = givenIndex;
-      // 被編輯的 row 資料
-      this.editingIndex = givenIndex;
-    }
-    this.selectedData = this.tableData.find(
-      (data) => data.givenIndex === givenIndex
-    );
-    this.editingRow = { ...this.selectedData }; // 深拷貝選中的行資料，避免直接修改原始數據
+  /**
+   * 切換 編輯模式
+   * @param givenIndex
+   * @returns
+   */
+  onEdit(rowData: any) {
+    console.log(rowData);
+    this.clonedData[rowData.givenIndex] = { ...rowData };
   }
 
   /**
@@ -351,19 +343,10 @@ export class RolesComponent
   /**
    * 取消編輯/新增
    * */
-  cancel(givenIndex?: number) {
-    if (this.mode === 'edit') {
-      this.cancelEdit();
-    } else if (
-      this.mode === 'add' &&
-      givenIndex !== -1 &&
-      givenIndex !== undefined
-    ) {
-      this.cancelAdd(givenIndex);
-    }
-
-    this.editingIndex = -1;
-    this.editingRow = null;
+  cancel(rowData: any, rowIndex: number) {
+    console.log(rowIndex);
+    this.tableData[rowIndex] = this.clonedData[rowData.givenIndex];
+    delete this.clonedData[rowData.givenIndex];
   }
 
   /**
@@ -448,13 +431,6 @@ export class RolesComponent
    * 新增一筆空的 row 資料
    * */
   addNewRow(): void {
-    // 如果是編輯或刪除模式，就不新增資料
-    if (this.mode === 'edit' || this.mode === 'delete') {
-      return;
-    }
-
-    // 設定模式為 新增模式
-    this.mode = 'add';
     this.newRow = {
       id: null,
       name: '',
@@ -462,30 +438,14 @@ export class RolesComponent
         ? this.formGroup.get('type')?.value
         : '',
       description: '',
-      givenIndex: 0, // 前端給予的編號資料
-      // givenIndex: this.tableData.length, // 前端給予的編號資料
+      givenIndex: this.minGivenIndex--, // 前端給予的編號資料
     };
-
-    // 所有編號往後推一號
-    this.tableData.forEach((e) => {
-      e.givenIndex += 1;
+    this.tableData.unshift(this.newRow);
+    // this.onEdit(this.newRow);
+    // 觸發該 row 的編輯模式
+    setTimeout(() => {
+      this.dataTable.initRowEdit(this.newRow);
     });
-
-    // 將 index 加入 newRowIndexes，用以紀錄更新資料的 index
-    this.newRowIndexes.push(this.newRow.givenIndex);
-    // 將此資料推入 tableData
-    this.tableData.push(this.newRow);
-    // 根據 givenIndex 重排序
-    this.tableData.sort((a, b) => {
-      if (a.givenIndex < b.givenIndex) {
-        return -1; // a 排在 b 前
-      } else if (a.givenIndex > b.givenIndex) {
-        return 1; // b 排在 a 前
-      } else {
-        return 0; // 保持順序
-      }
-    });
-    console.log(this.tableData);
   }
 
   /**

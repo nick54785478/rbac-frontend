@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SystemMessageService } from '../../../core/services/system-message.service';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -6,6 +6,8 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { Option } from '../../models/option.model';
 import { BaseTableRow } from '../../models/base-table-row.model';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { Table } from 'primeng/table';
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 
 /**
  * 定義基礎的 Form 表單 Component
@@ -22,6 +24,21 @@ export abstract class BaseInlineEditeTableCompoent {
    * 上方頁簽
    * */
   protected detailTabs: MenuItem[] = [];
+
+  /**
+   * Table 內部屬性，用來新增資料
+   * */
+  protected minGivenIndex = -1;
+
+  /**
+   * 表格控制項
+   */
+  @ViewChild('dt') dataTable!: Table;
+
+  /**
+   * Cloned 資料，用來配置資料
+   */
+  protected clonedData: { [s: string]: any } = {};
 
   /**
    * 表格資料
@@ -113,6 +130,12 @@ export abstract class BaseInlineEditeTableCompoent {
   protected mode!: string; // 模式
 
   constructor() {}
+
+  /**
+   * 用於取得 AutoComplete 資料
+   * @param $event
+   */
+  completeMethod($event: AutoCompleteCompleteEvent) {}
 
   /**
    * Patch FormGroup 的值
