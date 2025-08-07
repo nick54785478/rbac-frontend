@@ -88,18 +88,6 @@ export abstract class BaseInlineEditeTableCompoent {
   protected deleteList: number[] = [];
 
   /**
-   * 根據 ID 清單刪除資料
-   *@param ids
-   */
-  protected delete(ids: number[]) {}
-
-  /**
-   * 提交資料
-   * @param tableData
-   */
-  protected submit(tableData: any[]) {}
-
-  /**
    * 清除表單
    */
   protected clear() {}
@@ -130,6 +118,12 @@ export abstract class BaseInlineEditeTableCompoent {
   protected mode!: string; // 模式
 
   constructor() {}
+
+  /**
+   * 根據 ID 清單刪除資料
+   *@param rowData
+   */
+  protected remove(rowData: any) {}
 
   /**
    * 用於取得 AutoComplete 資料
@@ -200,4 +194,16 @@ export abstract class BaseInlineEditeTableCompoent {
   loadDropdownData(col: any): any[] {
     return [];
   }
+
+  /**
+   * 根據 ID 清單刪除資料
+   *@param ids
+   */
+  protected delete(ids: number[]) {}
+
+  /**
+   * 提交資料
+   * @param tableData
+   */
+  protected submit(tableData: any[]) {}
 }

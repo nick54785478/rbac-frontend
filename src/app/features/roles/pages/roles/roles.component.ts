@@ -21,12 +21,18 @@ import { DialogFormComponent } from '../../../../shared/component/dialog-form/di
 import { MenuItem } from 'primeng/api';
 import { FunctionsConfigComponent } from './functions-config/functions-config.component';
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import { DialogConfirmService } from '../../../../core/services/dialog-confirm.service';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
   imports: [CommonModule, SharedModule, CoreModule],
-  providers: [OptionService, SystemMessageService, DialogService],
+  providers: [
+    OptionService,
+    SystemMessageService,
+    DialogService,
+    DialogConfirmService,
+  ],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.scss',
 })
@@ -47,6 +53,7 @@ export class RolesComponent
     private dialogService: DialogService,
     private optionService: OptionService,
     private roleService: RoleService,
+    private dialogConfirmService: DialogConfirmService,
     private messageService: SystemMessageService
   ) {
     super();
@@ -270,6 +277,23 @@ export class RolesComponent
           },
         });
     }
+  }
+
+  /**
+   * 刪除 Table 資料
+   * @param rowData
+   */
+  protected override remove(rowData: any): void {
+    this.dialogConfirmService.confirmDelete(
+      () => {
+        // 確認後的動作 => 過濾該 givenIndex 的資料
+        this.tableData = this.tableData.filter(
+          (item) => item.givenIndex !== rowData.givenIndex
+        );
+      },
+      '',
+      () => {}
+    );
   }
 
   /**
