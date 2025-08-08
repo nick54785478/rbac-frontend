@@ -270,6 +270,7 @@
               style="color: #f70202"
               class="p-button-outlined p-button-secondary"
               icon="pi pi-trash"
+              (click) ="onDelete(rowIndex)"
             ></button>
             <div class="flex mb-2 gap-2 justify-content-start">
               <ng-container *ngIf="editing">

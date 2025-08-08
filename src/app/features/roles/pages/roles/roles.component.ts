@@ -22,6 +22,7 @@ import { MenuItem } from 'primeng/api';
 import { FunctionsConfigComponent } from './functions-config/functions-config.component';
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { DialogConfirmService } from '../../../../core/services/dialog-confirm.service';
+import e from 'express';
 
 @Component({
   selector: 'app-roles',
@@ -92,7 +93,6 @@ export class RolesComponent
         label: '刪除',
         icon: 'pi pi-trash',
         command: () => {
-          this.onStartDelete();
         },
         disabled:
           !(this.mode !== 'add') ||
@@ -203,7 +203,6 @@ export class RolesComponent
         label: '刪除',
         icon: 'pi pi-trash',
         command: () => {
-          this.onStartDelete();
         },
         disabled:
           !(this.mode !== 'add') ||
@@ -464,6 +463,7 @@ export class RolesComponent
       description: '',
       givenIndex: this.minGivenIndex--, // 前端給予的編號資料
     };
+    console.log(this.minGivenIndex);
     this.tableData.unshift(this.newRow);
     // this.onEdit(this.newRow);
     // 觸發該 row 的編輯模式
@@ -472,28 +472,14 @@ export class RolesComponent
     });
   }
 
-  /**
-   * 進行刪除
-   */
-  onStartDelete() {
-    this.mode = 'delete';
-  }
 
   /**
    * 進行刪除
-   * @param id
-   * @param isSelected 是否被選中
+   * @param rowIndex
    */
-  onDelete(id: number, isSelected: boolean) {
-    // 如果不包含該 id 加入
-    if (isSelected) {
-      // 若選中，添加到陣列
-      this.deleteList.push(id);
-    } else {
-      // 若取消選中，從陣列移除
-      this.deleteList = this.deleteList.filter((e) => e !== id);
-    }
-    console.log(this.deleteList);
+  onDelete(rowIndex: number) {
+    this.tableData.splice(rowIndex, 1); // 從陣列刪除指定 row
+    this.tableData = [...this.tableData]; // 觸發變更檢測 (避免不刷新)
   }
 
   // 刪除幾列資料
