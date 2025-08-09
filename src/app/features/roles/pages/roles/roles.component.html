@@ -76,15 +76,13 @@
       [resizableColumns]="true"
       [tableStyle]="{ 'min-width': '40rem'}"
     >
-      <!-- scrollDirection="both"  [resizableColumns]="true"-->
-
       <!-- 標題 -->
       <ng-template pTemplate="header" #header let-columns>
         <tr>
           <th  style="max-width: 30rem;" *ngFor="let col of columns" [pSortableColumn]="col.field">
             <ng-container 
               >{{ col.header }}
-              <!-- <p-sortIcon [field]="col.field"/> -->
+              <p-sortIcon [field]="col.field"/>
             </ng-container>
           </th>
           <th
@@ -129,13 +127,6 @@
                     [(ngModel)]="rowData[col.field]"
                     [required]="col.required"
                   />
-                          <!-- [style]="{
-                      'word-wrap': 'break-word',
-                      'max-width': '5rem',
-                      
-                      'min-width': '100%  !important'
-                    }" -->
-
                   <!-- textArea -->
                   <textarea
                     name="{{ col.field }}-{{ rowIndex }}"
@@ -148,14 +139,6 @@
                     [autoResize]="true"
                     [required]="col.required"
                   ></textarea>
-
-                                      <!-- [style]="{
-                      'white-space': 'pre-wrap',
-                      'word-break': 'break-word',
-                      'overflow-wrap': 'break-word',
-                      resize: 'vertical'
-                    }" -->
-
                   <!-- dropdown -->
                   <p-dropdown
                     name="{{ col.field }}-{{ rowIndex }}"
@@ -173,11 +156,6 @@
                     [style]="{'width':'100%'}"                  
                     [required]="col.required"
                   ></p-dropdown>
-
-                  <!-- [style]="{
-                      'word-wrap': 'break-word'
-                    }" -->
-
                   <!-- autoComplete -->
                   <p-autoComplete
                     name="{{ col.field }}-{{ rowIndex }}"
@@ -194,8 +172,6 @@
                     styleClass="w-full"
                     inputStyleClass="w-full"
                   ></p-autoComplete>
-                      <!-- 'max-width': '3rem',
-                      'min-width': '100%  !important' -->
 
                   <!-- fallback -->
                   <input
