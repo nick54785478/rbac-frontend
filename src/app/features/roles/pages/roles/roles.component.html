@@ -74,15 +74,15 @@
       dataKey="givenIndex"
       editMode="row"
       [resizableColumns]="true"
-      [tableStyle]="{ 'min-width': '10rem', 'word-wrap': 'break-word' }"
+      [tableStyle]="{ 'min-width': '40rem'}"
     >
       <!-- scrollDirection="both"  [resizableColumns]="true"-->
 
       <!-- 標題 -->
       <ng-template pTemplate="header" #header let-columns>
         <tr>
-          <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-            <ng-container
+          <th  style="max-width: 30rem;" *ngFor="let col of columns" [pSortableColumn]="col.field">
+            <ng-container 
               >{{ col.header }}
               <!-- <p-sortIcon [field]="col.field"/> -->
             </ng-container>
@@ -111,7 +111,7 @@
         <tr [pEditableRow]="rowData">
           <td
             *ngFor="let col of columns"
-            style="max-width: 700px !important"
+            style="max-width: 30rem !important"
             [ngStyle]="{ 'word-break': 'break-all', 'word-wrap': 'break-word' }"
           >
             <p-cellEditor>
@@ -124,38 +124,37 @@
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
                     *ngSwitchCase="'inputText'"
                     pInputText
-                    [style]="{
-                      'word-wrap': 'break-word',
-                      'max-width': '5rem',
-                      'min-width': '100%  !important'
-                    }"
+                    [style]="{'width':'100%'}"
                     type="text"
                     [(ngModel)]="rowData[col.field]"
                     [required]="col.required"
                   />
+                          <!-- [style]="{
+                      'word-wrap': 'break-word',
+                      'max-width': '5rem',
+                      
+                      'min-width': '100%  !important'
+                    }" -->
 
                   <!-- textArea -->
                   <textarea
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
-                    [style]="{
-                      width: '100%',
-                      'min-width': '100%',
-                      'max-width': '100%',
-                      'white-space': 'pre-wrap',
-                      'word-break': 'break-word',
-                      'overflow-wrap': 'break-word',
-                      resize: 'vertical'
-                    }"
-                    rows="5"
-                    cols="90"
+                    [style]="{'width':'100%'}"
                     *ngSwitchCase="'textArea'"
                     pInputTextarea
                     [(ngModel)]="rowData[col.field]"
                     [autoResize]="true"
                     [required]="col.required"
                   ></textarea>
+
+                                      <!-- [style]="{
+                      'white-space': 'pre-wrap',
+                      'word-break': 'break-word',
+                      'overflow-wrap': 'break-word',
+                      resize: 'vertical'
+                    }" -->
 
                   <!-- dropdown -->
                   <p-dropdown
@@ -171,13 +170,13 @@
                     optionValue="value"
                     placeholder="Please select"
                     appendTo="body"
-                    [style]="{
-                      'word-wrap': 'break-word',
-                      'max-width': '5rem',
-                      'min-width': '100%  !important'
-                    }"
+                    [style]="{'width':'100%'}"                  
                     [required]="col.required"
                   ></p-dropdown>
+
+                  <!-- [style]="{
+                      'word-wrap': 'break-word'
+                    }" -->
 
                   <!-- autoComplete -->
                   <p-autoComplete
@@ -189,16 +188,14 @@
                     [suggestions]="autoCompleteList"
                     (completeMethod)="completeMethod($event)"
                     [dropdown]="true"
-                    [forceSelection]="true"
-                    [style]="{
-                      'word-wrap': 'break-word',
-                      'max-width': '5rem',
-                      'min-width': '100%  !important'
-                    }"
+                    [forceSelection]="true"                  
                     appendTo="body"
+                     [style]="{'width':'100%'}"
                     styleClass="w-full"
                     inputStyleClass="w-full"
                   ></p-autoComplete>
+                      <!-- 'max-width': '3rem',
+                      'min-width': '100%  !important' -->
 
                   <!-- fallback -->
                   <input
@@ -207,11 +204,7 @@
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
                     *ngSwitchDefault
                     pInputText
-                    [style]="{
-                      'word-wrap': 'break-word',
-                      'max-width': '5rem',
-                      'min-width': '100%  !important'
-                    }"
+                    [style]="{'width':'100%'}"
                     type="text"
                     [(ngModel)]="rowData[col.field]"
                     required
@@ -230,7 +223,7 @@
                     white-space: normal;
                     word-break: break-word;
                     overflow-wrap: break-word;
-                    max-width: 200px;
+                    max-width: 40rem;
                   "
                 >
                   {{ rowData[col.field] }}
@@ -261,7 +254,7 @@
               icon="pi pi-pencil"
               (click)="clickRowActionMenu(rowData); onEdit(rowData)"
             ></button>
-            <button
+            <!-- <button
               *ngIf="!editing"
               pButton
               [rounded]="true"
@@ -271,7 +264,7 @@
               class="p-button-outlined p-button-secondary"
               icon="pi pi-trash"
               (click) ="onDelete(rowIndex)"
-            ></button>
+            ></button> -->
             <div class="flex mb-2 gap-2 justify-content-start">
               <ng-container *ngIf="editing">
                 <i

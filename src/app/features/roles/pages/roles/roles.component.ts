@@ -12,17 +12,13 @@ import { CoreModule } from '../../../../core/core.module';
 import { SaveRole } from '../../models/save-role-request.model';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { LoadingMaskService } from '../../../../core/services/loading-mask.service';
-import { FormAction } from '../../../../core/enums/form-action.enum';
-import { RoleFunctionsComponent } from '../role-functions/role-functions.component';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs/internal/Subject';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogFormComponent } from '../../../../shared/component/dialog-form/dialog-form.component';
 import { MenuItem } from 'primeng/api';
 import { FunctionsConfigComponent } from './functions-config/functions-config.component';
-import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { DialogConfirmService } from '../../../../core/services/dialog-confirm.service';
-import e from 'express';
 
 @Component({
   selector: 'app-roles',
@@ -68,7 +64,7 @@ export class RolesComponent
         command: () => {
           this.addNewRow();
         },
-        disabled: !(this.mode === ''),
+        disabled: false,
       },
       {
         label: '提交',
@@ -76,10 +72,7 @@ export class RolesComponent
         command: () => {
           this.submit();
         },
-        disabled:
-          this.tableData.length === 0 ||
-          this.mode === 'add' ||
-          this.mode === 'edit',
+        disabled: false,
       },
       {
         label: '放棄',
@@ -87,17 +80,14 @@ export class RolesComponent
         command: () => {
           this.cancelAll();
         },
-        disabled: this.tableData.length === 0,
+        disabled: false,
       },
       {
         label: '刪除',
         icon: 'pi pi-trash',
         command: () => {
         },
-        disabled:
-          !(this.mode !== 'add') ||
-          !(this.mode !== 'edit') ||
-          this.tableData.length === 0,
+        disabled: false,
       },
     ];
     // 初始化表單
@@ -169,47 +159,7 @@ export class RolesComponent
   }
 
   ngDoCheck(): void {
-    this.detailTabs = [
-      {
-        label: '新增',
-        icon: 'pi pi-plus',
-        // 當沒有表單資料，不能新增
-        disabled: !(this.mode === ''),
-        command: () => {
-          this.addNewRow();
-        },
-      },
-      {
-        label: '提交',
-        icon: 'pi pi-save',
-        command: () => {
-          this.submit();
-        },
-        // 當在新增或編輯模式時，不能提交
-        disabled:
-          this.tableData.length === 0 ||
-          this.mode === 'add' ||
-          this.mode === 'edit',
-      },
-      {
-        label: '放棄',
-        icon: 'pi pi-times',
-        command: () => {
-          this.cancelAll();
-        },
-        disabled: this.tableData.length === 0,
-      },
-      {
-        label: '刪除',
-        icon: 'pi pi-trash',
-        command: () => {
-        },
-        disabled:
-          !(this.mode !== 'add') ||
-          !(this.mode !== 'edit') ||
-          this.tableData.length === 0,
-      },
-    ];
+  
   }
 
   /**
@@ -376,18 +326,6 @@ export class RolesComponent
    * 回歸原狀，原先新增的資料全部放棄。
    */
   cancelAll() {
-    if (this.mode === 'edit') {
-      this.cancelEdit();
-    }
-    this.deleteList = [];
-    this.mode = '';
-    this.newRow = '';
-    this.newRowIndexes = [];
-    this.selectedData = null;
-    this.selectedIndex = -1;
-    this.editingIndex = -1;
-    this.editingRow = [];
-    this.tableData = this.tableData.filter((data) => data.id !== null);
   }
 
   /**
