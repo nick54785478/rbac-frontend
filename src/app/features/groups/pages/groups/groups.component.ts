@@ -163,7 +163,6 @@ export class GroupsComponent
 
   // 提交資料
   override submit() {
-
     this.submitted = true;
     const requestData: SaveGroup[] = this.tableData.map((data) => {
       return {
