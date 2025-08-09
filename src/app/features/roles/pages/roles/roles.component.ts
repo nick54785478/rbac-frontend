@@ -35,7 +35,7 @@ import { DialogConfirmService } from '../../../../core/services/dialog-confirm.s
 })
 export class RolesComponent
   extends BaseInlineEditeTableCompoent
-  implements OnInit, DoCheck, OnDestroy
+  implements OnInit, OnDestroy
 {
   activeFlags: Option[] = []; // Active Flag 的下拉式選單
   types: Option[] = []; // 配置種類的下拉式選單
@@ -158,25 +158,14 @@ export class RolesComponent
     });
   }
 
-  ngDoCheck(): void {
-  
-  }
 
   /**
    * 清除表單資料
    */
   override clear() {
-    // this.formGroup.reset();
-    this.formGroup.setValue({
-      trainNo: '', // 車次
-    });
-
+    this.formGroup.reset();
     this.tableData = [];
-    this.selectedIndex = -1;
-    this.selectedData = null;
-    this.editingIndex = -1;
-    this.editingRow = null;
-    this.mode = '';
+    this.minGivenIndex = -1;
   }
 
   ngOnDestroy() {}
@@ -288,30 +277,6 @@ export class RolesComponent
     this.clonedData[rowData.givenIndex] = { ...rowData };
   }
 
-  /**
-   * 取消編輯
-   */
-  cancelEdit() {
-    if (!this.editingRow) {
-      return;
-    }
-    // 透過 editingRow 回覆上次修改的資料
-    this.tableData.forEach((e) => {
-      if (
-        e.id === this.editingRow.id &&
-        e.givenIndex === this.editingRow.givenIndex
-      ) {
-        e.type = this.editingRow.type;
-        e.name = this.editingRow.name;
-        e.code = this.editingRow.code;
-        e.activeFlag = this.editingRow.activeFlag;
-        e.description = this.editingRow.description;
-      }
-    });
-
-    // 取消，解除模式
-    this.mode = '';
-  }
 
   /**
    * 取消編輯/新增
@@ -326,66 +291,6 @@ export class RolesComponent
    * 回歸原狀，原先新增的資料全部放棄。
    */
   cancelAll() {
-  }
-
-  /**
-   * 判斷是否為編輯模式
-   * @param giveIndex
-   * */
-  isEditing(giveIndex: any): boolean {
-    return this.editingIndex === giveIndex;
-  }
-
-  /**
-   * 判斷是否為新增模式
-   * @param rowData 當前的 row 資料
-   * */
-  isAdding(rowData: any) {
-    // 這裡要使用 givenIndex ，因 Table 的 index 會隨資料數量改變
-    return !rowData.id && this.newRowIndexes.includes(rowData.givenIndex);
-    // rowIndex !== rowData.givenIndex;
-  }
-
-  /**
-   * 確認編輯/新增
-   * @param givenIndex 當前 row 的 givenIndex
-   * */
-  confirm(givenIndex: number) {
-    // 當新增模式會將資料更新為最新的空資料，因為前面進新增模式時未 select
-    if (this.mode === 'add') {
-      // 更新為該筆資料
-      this.newRow = this.tableData.find(
-        (data) => data.givenIndex === givenIndex
-      );
-
-      console.log(this.checkRowData(this.newRow));
-
-      // 新增模式下有欄位為空值，不予以 Confirm
-      if (!this.checkRowData(this.newRow)) {
-        return;
-      }
-
-      // 過濾掉該 rowIndex
-      this.newRowIndexes = this.newRowIndexes.filter(
-        (index) => index !== givenIndex
-      );
-    }
-
-    // 編輯模式，檢查資料
-    if (this.mode === 'edit' && !this.checkRowData(this.selectedData)) {
-      return;
-    }
-    this.newRow = null;
-    this.editingIndex = -1;
-    this.editingRow = null;
-
-    // newRowIndexes 裡面還有資料，代表不能解除更新資料
-    if (this.newRowIndexes.length > 0) {
-      return;
-    }
-
-    // 解除特定模式
-    this.mode = '';
   }
 
   /**
@@ -445,35 +350,10 @@ export class RolesComponent
   }
 
   /**
-   * 移除 id = null 的值
-   * 用於移除新列 (row)
-   *
-   * @param rowIndex 當前 row 資料的 index
-   */
-  cancelAdd(givenIndex: number) {
-    if (this.mode === 'add') {
-      // 過濾出 id != null 者 (現有資料) 及 沒被選上的資料
-      this.tableData = this.tableData.filter(
-        (data) => data.id !== null || data?.givenIndex !== givenIndex
-      );
-      // 過濾掉該 givenIndex 的資料
-      this.newRowIndexes = this.newRowIndexes.filter(
-        (index) => index !== givenIndex
-      );
-    }
-    // reset 新增資料
-    this.newRow = null;
-
-    // newRowIndexes 裡面還有資料，代表不能解除新增模式
-    if (this.newRowIndexes.length > 0) {
-      return;
-    }
-
-    this.mode = '';
-  }
-
-  // 檢查 row 資料是否有未填欄位
-  override checkRowData(selectedData: any): boolean {
+   * 檢查 row 資料是否有未填欄位
+   * @param rowData Row 資料
+   * */ 
+  override checkRowData(selectedData: any): void {
     if (
       !selectedData.type ||
       !selectedData.name ||
@@ -481,9 +361,8 @@ export class RolesComponent
       !selectedData.description ||
       !selectedData.activeFlag
     ) {
-      return false;
+      this.dataTable.initRowEdit(selectedData);  
     }
-    return true;
   }
 
   /**
@@ -504,7 +383,11 @@ export class RolesComponent
     return false;
   }
 
-  // 載入 dropdown 資料
+  /**
+   * 載入 dropdown 資料
+   * @param col 欄資料
+   * @returns 
+   * */ 
   override loadDropdownData(col: any): any[] {
     console.log(col.field);
 
@@ -525,9 +408,6 @@ export class RolesComponent
    */
   clickRowActionMenu(rowData: any): void {
     this.selectedData = rowData;
-
-    // // 開啟 Dialog
-    // this.openFormDialog(this.selectedData);
   }
 
   /**
