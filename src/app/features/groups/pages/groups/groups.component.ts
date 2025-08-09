@@ -34,7 +34,7 @@ import { RolesConfigComponent } from './roles-config/roles-config.component';
 })
 export class GroupsComponent
   extends BaseInlineEditeTableCompoent
-  implements OnInit, DoCheck, OnDestroy
+  implements OnInit, OnDestroy
 {
   activeFlags: Option[] = []; // Active Flag 的下拉式選單
   types: Option[] = []; // 配置種類的下拉式選單
@@ -69,7 +69,7 @@ export class GroupsComponent
         command: () => {
           this.addNewRow();
         },
-        disabled: !(this.mode === ''),
+        disabled: false,
       },
       {
         label: '提交',
@@ -77,29 +77,22 @@ export class GroupsComponent
         command: () => {
           this.submit();
         },
-        disabled:
-          this.tableData.length === 0 ||
-          this.mode === 'add' ||
-          this.mode === 'edit',
+        disabled: false,
       },
       {
         label: '放棄',
         icon: 'pi pi-times',
         command: () => {
           this.cancelAll();
-        },
-        disabled: this.tableData.length === 0,
+        },        
+        disabled: false,
       },
       {
         label: '刪除',
         icon: 'pi pi-trash',
         command: () => {
-          this.onStartDelete();
         },
-        disabled:
-          !(this.mode !== 'add') ||
-          !(this.mode !== 'edit') ||
-          this.tableData.length === 0,
+        disabled: false,
       },
     ];
     // 初始化表單
@@ -115,27 +108,34 @@ export class GroupsComponent
         field: 'type',
         header: '配置種類',
         type: 'dropdown',
+        required: 'true',
+
       },
       {
         field: 'code',
         header: '群組代碼',
         type: 'inputText',
+        required: 'true',
+
       },
       {
         field: 'name',
         header: '名稱',
         type: 'inputText',
+        required: 'true',
       },
       {
         field: 'description',
         header: '說明',
         type: 'textArea',
+        required: 'true',
       },
 
       {
         field: 'activeFlag',
         header: '是否生效',
         type: 'dropdown',
+        required: 'true',
       },
     ];
 
@@ -150,79 +150,19 @@ export class GroupsComponent
     });
   }
 
-  ngDoCheck(): void {
-    this.detailTabs = [
-      {
-        label: '新增',
-        icon: 'pi pi-plus',
-        // 當沒有表單資料，不能新增
-        disabled: !(this.mode === ''),
-        command: () => {
-          this.addNewRow();
-        },
-      },
-      {
-        label: '提交',
-        icon: 'pi pi-save',
-        command: () => {
-          this.submit();
-        },
-        // 當在新增或編輯模式時，不能提交
-        disabled:
-          this.tableData.length === 0 ||
-          this.mode === 'add' ||
-          this.mode === 'edit',
-      },
-      {
-        label: '放棄',
-        icon: 'pi pi-times',
-        command: () => {
-          this.cancelAll();
-        },
-        disabled: this.tableData.length === 0,
-      },
-      {
-        label: '刪除',
-        icon: 'pi pi-trash',
-        command: () => {
-          this.onStartDelete();
-        },
-        disabled:
-          !(this.mode !== 'add') ||
-          !(this.mode !== 'edit') ||
-          this.tableData.length === 0,
-      },
-    ];
-  }
-
   /**
    * 清除表單資料
    */
   override clear() {
-    // this.formGroup.reset();
-    this.formGroup.setValue({
-      name: '', // 群組名稱
-      type: '', // 種類
-      activeFlag: '', // 是否生效
-    });
-
+    this.formGroup.reset();
     this.tableData = [];
-    this.selectedIndex = -1;
-    this.selectedData = null;
-    this.editingIndex = -1;
-    this.editingRow = null;
-    this.mode = '';
+    this.minGivenIndex = -1;
   }
 
   ngOnDestroy() {}
 
   // 提交資料
   override submit() {
-    // 刪除模式的提交
-    if (this.mode === 'delete') {
-      this.delete(this.deleteList);
-      return;
-    }
 
     this.submitted = true;
     const requestData: SaveGroup[] = this.tableData.map((data) => {
@@ -295,87 +235,30 @@ export class GroupsComponent
       });
   }
 
-  onEdit(givenIndex: number) {
-    // 若目前為 新增模式 pass
-    if (this.mode === 'add' || this.mode === 'delete') {
-      return;
-    }
-
-    // 避免當我進入編輯模式後，再點擊其他列導致進入其他列的編輯模式
-    if (this.mode === 'edit' && givenIndex !== this.editingIndex) {
-      return;
-    }
-
-    // 進入編輯模式
-    this.mode = 'edit';
-
-    if (typeof givenIndex === 'number') {
-      // 選取的 givenIndex
-      this.selectedIndex = givenIndex;
-      // 被編輯的 row 資料
-      this.editingIndex = givenIndex;
-    }
-    this.selectedData = this.tableData.find(
-      (data) => data.givenIndex === givenIndex
-    );
-    this.editingRow = { ...this.selectedData }; // 深拷貝選中的行資料，避免直接修改原始數據
-  }
-
+  
   /**
-   * 取消編輯
+   * 切換 編輯模式
+   * @param givenIndex
+   * @returns
    */
-  cancelEdit() {
-    if (!this.editingRow) {
-      return;
-    }
-    // 透過 editingRow 回覆上次修改的資料
-    this.tableData.forEach((e) => {
-      if (
-        e.id === this.editingRow.id &&
-        e.givenIndex === this.editingRow.givenIndex
-      ) {
-        e.type = this.editingRow.type;
-        e.name = this.editingRow.name;
-        e.code = this.editingRow.code;
-        e.description = this.editingRow.description;
-      }
-    });
-
-    // 取消，解除模式
-    this.mode = '';
+  onEdit(rowData: any) {
+    console.log(rowData);
+    this.clonedData[rowData.givenIndex] = { ...rowData };
   }
 
   /**
    * 取消編輯/新增
    * */
-  cancel(givenIndex?: number) {
-    if (this.mode === 'edit') {
-      this.cancelEdit();
-    } else if (
-      this.mode === 'add' &&
-      givenIndex !== -1 &&
-      givenIndex !== undefined
-    ) {
-      this.cancelAdd(givenIndex);
-    }
-
-    this.editingIndex = -1;
-    this.editingRow = null;
+  cancel(rowData: any, rowIndex: number) {
+    console.log(rowIndex);
+    this.tableData[rowIndex] = this.clonedData[rowData.givenIndex];
+    delete this.clonedData[rowData.givenIndex];
   }
 
   /**
    * 回歸原狀，原先新增的資料全部放棄。
    */
   cancelAll() {
-    this.deleteList = [];
-    this.mode = '';
-    this.newRow = '';
-    this.newRowIndexes = [];
-    this.selectedData = null;
-    this.selectedIndex = -1;
-    this.editingIndex = -1;
-    this.editingRow = [];
-    this.tableData = this.tableData.filter((data) => data.id !== null);
   }
 
   /**
@@ -395,59 +278,11 @@ export class GroupsComponent
     // rowIndex !== rowData.givenIndex;
   }
 
-  /**
-   * 確認編輯/新增
-   * @param givenIndex 當前 row 的 givenIndex
-   * */
-  confirm(givenIndex: number) {
-    // 當新增模式會將資料更新為最新的空資料，因為前面進新增模式時未 select
-    if (this.mode === 'add') {
-      // 更新為該筆資料
-      this.newRow = this.tableData.find(
-        (data) => data.givenIndex === givenIndex
-      );
-
-      console.log(this.checkRowData(this.newRow));
-
-      // 新增模式下有欄位為空值，不予以 Confirm
-      if (!this.checkRowData(this.newRow)) {
-        return;
-      }
-
-      // 過濾掉該 rowIndex
-      this.newRowIndexes = this.newRowIndexes.filter(
-        (index) => index !== givenIndex
-      );
-    }
-
-    // 編輯模式，檢查資料
-    if (this.mode === 'edit' && !this.checkRowData(this.selectedData)) {
-      return;
-    }
-    this.newRow = null;
-    this.editingIndex = -1;
-    this.editingRow = null;
-
-    // newRowIndexes 裡面還有資料，代表不能解除更新資料
-    if (this.newRowIndexes.length > 0) {
-      return;
-    }
-
-    // 解除特定模式
-    this.mode = '';
-  }
 
   /**
    * 新增一筆空的 row 資料
    * */
   addNewRow(): void {
-    // 如果是編輯或刪除模式，就不新增資料
-    if (this.mode === 'edit' || this.mode === 'delete') {
-      return;
-    }
-
-    // 設定模式為 新增模式
-    this.mode = 'add';
     this.newRow = {
       id: null,
       name: '',
@@ -455,36 +290,15 @@ export class GroupsComponent
         ? this.formGroup.get('type')?.value
         : '',
       description: '',
-      givenIndex: 0, // 前端給予的編號資料
-      // givenIndex: this.tableData.length, // 前端給予的編號資料
+      givenIndex: this.minGivenIndex--, // 前端給予的編號資料
     };
-    // 所有編號往後推一號
-    this.tableData.forEach((e) => {
-      e.givenIndex += 1;
+    console.log(this.minGivenIndex);
+    this.tableData.unshift(this.newRow);
+    // this.onEdit(this.newRow);
+    // 觸發該 row 的編輯模式
+    setTimeout(() => {
+      this.dataTable.initRowEdit(this.newRow);
     });
-
-    console.log(this.tableData);
-    // 將 index 加入 newRowIndexes，用以紀錄更新資料的 index
-    this.newRowIndexes.push(this.newRow.givenIndex);
-    // 將此資料推入 tableData
-    this.tableData.push(this.newRow);
-    //  按照 givenIndex 再排序
-    this.tableData.sort((a, b) => {
-      if (a.givenIndex < b.givenIndex) {
-        return -1; // a 排在 b 前
-      } else if (a.givenIndex > b.givenIndex) {
-        return 1; // b 排在 a 前
-      } else {
-        return 0; // 保持順序
-      }
-    });
-  }
-
-  /**
-   * 進行刪除
-   */
-  onStartDelete() {
-    this.mode = 'delete';
   }
 
   /**
@@ -528,36 +342,8 @@ export class GroupsComponent
       });
   }
 
-  /**
-   * 移除 id = null 的值
-   * 用於移除新列 (row)
-   *
-   * @param givenIndex 當前 row 資料的 giveIndex
-   */
-  cancelAdd(givenIndex: number) {
-    if (this.mode === 'add') {
-      // 過濾出 id != null 者 (現有資料) 及 沒被選上的資料
-      this.tableData = this.tableData.filter(
-        (data) => data.id !== null || data?.givenIndex !== givenIndex
-      );
-      // 過濾掉屬於該 givenIndex 的資料
-      this.newRowIndexes = this.newRowIndexes.filter(
-        (index) => index !== givenIndex
-      );
-    }
-    // reset 新增資料
-    this.newRow = null;
-
-    // newRowIndexes 裡面還有資料，代表不能解除新增模式
-    if (this.newRowIndexes.length > 0) {
-      return;
-    }
-
-    this.mode = '';
-  }
-
   // 檢查 row 資料是否有未填欄位
-  override checkRowData(selectedData: any): boolean {
+  override checkRowData(selectedData: any): void {
     if (
       !selectedData.type ||
       !selectedData.name ||
@@ -565,9 +351,8 @@ export class GroupsComponent
       !selectedData.description ||
       !selectedData.activeFlag
     ) {
-      return false;
+      this.dataTable.initRowEdit(selectedData);  
     }
-    return true;
   }
 
   /**

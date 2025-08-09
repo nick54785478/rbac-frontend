@@ -41,6 +41,11 @@ export abstract class BaseInlineEditeTableCompoent {
   protected clonedData: { [s: string]: any } = {};
 
   /**
+   * AutoComplete 資料
+   */
+  protected  autoCompleteList: any[] = [];
+
+  /**
    * 表格資料
    * */
   protected tableData: any[] = [];

@@ -43,8 +43,6 @@ export class RolesComponent
   rowActionMenu: MenuItem[] = []; // Table Row Actions 右側選單。
   readonly _destroying$ = new Subject<void>(); // 用來取消訂閱
 
-  autoCompleteList: any[] = [];
-
   constructor(
     private loadingMaskService: LoadingMaskService,
     private dialogService: DialogService,
@@ -104,35 +102,30 @@ export class RolesComponent
         header: '配置種類',
         type: 'dropdown',
         required: 'true',
-        data: 'types', // 取已選中的 dropdown
       },
       {
         field: 'code',
         header: '角色代碼',
         type: 'inputText',
         required: 'true',
-        data: '',
       },
       {
         field: 'name',
         header: '名稱',
         type: 'inputText',
         required: 'true',
-        data: '',
       },
       {
         field: 'description',
         header: '說明',
         type: 'textArea',
         required: 'false',
-        data: '',
       },
       {
         field: 'activeFlag',
         header: '是否生效',
         type: 'dropdown',
         required: 'true',
-        data: 'activeFlags',
       },
     ];
 
@@ -158,7 +151,6 @@ export class RolesComponent
     });
   }
 
-
   /**
    * 清除表單資料
    */
@@ -172,12 +164,6 @@ export class RolesComponent
 
   // 提交資料
   override submit() {
-    // 刪除模式的提交
-    if (this.mode === 'delete') {
-      this.delete(this.deleteList);
-      return;
-    }
-
     this.submitted = true;
     const requestData: SaveRole[] = this.tableData.map((data) => {
       return {
