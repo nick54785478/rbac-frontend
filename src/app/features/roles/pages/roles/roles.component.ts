@@ -1,5 +1,10 @@
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
 import { Option } from '../../../../shared/models/option.model';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../../../shared/shared.module';
@@ -37,6 +42,7 @@ export class RolesComponent
   extends BaseInlineEditeTableCompoent
   implements OnInit, OnDestroy
 {
+  services: Option[] = [];
   activeFlags: Option[] = []; // Active Flag 的下拉式選單
   types: Option[] = []; // 配置種類的下拉式選單
   dialogOpened: boolean = false; //  Dialog 狀態
@@ -83,6 +89,7 @@ export class RolesComponent
     ];
     // 初始化表單
     this.formGroup = new FormGroup({
+      service: new FormControl('', Validators.required),
       name: new FormControl(''), // 角色名稱
       type: new FormControl(''), // 種類
       activeFlag: new FormControl(''), // 是否生效
@@ -90,6 +97,12 @@ export class RolesComponent
 
     // 初始化 Table 配置
     this.cols = [
+      {
+        field: 'service',
+        header: '服務',
+        type: 'dropdown',
+        required: 'true',
+      },
       {
         field: 'type',
         header: '配置種類',
@@ -146,6 +159,16 @@ export class RolesComponent
           this.messageService.error('取得資料發生錯誤', error.message);
         },
       });
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.SERVICE)
+      .subscribe({
+        next: (res) => {
+          this.services = res;
+        },
+        error: (error) => {
+          this.messageService.error('取得資料發生錯誤', error.message);
+        },
+      });
   }
 
   /**
@@ -162,6 +185,10 @@ export class RolesComponent
   // 提交資料
   override submit() {
     this.submitted = true;
+
+    if (this.formGroup.invalid || !this.submitted) {
+      return;
+    }
     const requestData: SaveRole[] = this.tableData.map((data) => {
       return {
         id: data.id,
@@ -222,16 +249,28 @@ export class RolesComponent
    * 透過特定條件查詢設定資料
    */
   query() {
+    this.submitted = true;
+
+    if (this.formGroup.invalid || !this.submitted) {
+      return;
+    }
+
     this.loadingMaskService.show();
     // 查詢前先取消所有
     this.cancelAll();
     let formData = this.formGroup.value;
     this.roleService
-      .query(formData.type, formData.name, formData.activeFlag)
+      .query(
+        formData.service,
+        formData.type,
+        formData.name,
+        formData.activeFlag
+      )
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
           this.loadingMaskService.hide();
+          this.submitted = false;
         })
       )
       .subscribe({
@@ -281,6 +320,7 @@ export class RolesComponent
   addNewRow(): void {
     this.newRow = {
       id: null,
+      service: '',
       name: '',
       type: this.formGroup.get('type')?.value
         ? this.formGroup.get('type')?.value
@@ -336,6 +376,7 @@ export class RolesComponent
    * */
   override checkRowData(selectedData: any): void {
     if (
+      !selectedData.service ||
       !selectedData.type ||
       !selectedData.name ||
       !selectedData.code ||
@@ -378,6 +419,8 @@ export class RolesComponent
         return this.types;
       case 'activeFlag':
         return this.activeFlags;
+      case 'service':
+        return this.services;
       default:
         return [];
     }
