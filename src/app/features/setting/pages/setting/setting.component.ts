@@ -84,6 +84,8 @@ export class SettingComponent implements OnInit, OnDestroy {
       dataType: new FormControl(''),
       type: new FormControl(''),
       name: new FormControl(''),
+      // value: new FormControl(''),
+      // code: new FormControl(''),
       activeFlag: new FormControl(''),
     });
 
@@ -100,6 +102,8 @@ export class SettingComponent implements OnInit, OnDestroy {
       { field: 'dataType', header: '配置種類' },
       { field: 'type', header: '類別' },
       { field: 'name', header: '名稱' },
+      { field: 'code', header: '代碼' },
+      { field: 'value', header: '值' },
       { field: 'description', header: '說明' },
       { field: 'priorityNo', header: '排序' },
     ];
