@@ -80,13 +80,6 @@ export class RolesComponent
         },
         disabled: false,
       },
-      {
-        label: '刪除',
-        icon: 'pi pi-trash',
-        command: () => {
-        },
-        disabled: false,
-      },
     ];
     // 初始化表單
     this.formGroup = new FormGroup({
@@ -263,7 +256,6 @@ export class RolesComponent
     this.clonedData[rowData.givenIndex] = { ...rowData };
   }
 
-
   /**
    * 取消編輯/新增
    * */
@@ -276,8 +268,7 @@ export class RolesComponent
   /**
    * 回歸原狀，原先新增的資料全部放棄。
    */
-  cancelAll() {
-  }
+  cancelAll() {}
 
   /**
    * 新增一筆空的 row 資料
@@ -300,7 +291,6 @@ export class RolesComponent
       this.dataTable.initRowEdit(this.newRow);
     });
   }
-
 
   /**
    * 進行刪除
@@ -338,7 +328,7 @@ export class RolesComponent
   /**
    * 檢查 row 資料是否有未填欄位
    * @param rowData Row 資料
-   * */ 
+   * */
   override checkRowData(selectedData: any): void {
     if (
       !selectedData.type ||
@@ -347,7 +337,7 @@ export class RolesComponent
       !selectedData.description ||
       !selectedData.activeFlag
     ) {
-      this.dataTable.initRowEdit(selectedData);  
+      this.dataTable.initRowEdit(selectedData);
     }
   }
 
@@ -372,8 +362,8 @@ export class RolesComponent
   /**
    * 載入 dropdown 資料
    * @param col 欄資料
-   * @returns 
-   * */ 
+   * @returns
+   * */
   override loadDropdownData(col: any): any[] {
     console.log(col.field);
 

@@ -1,5 +1,5 @@
 <form [formGroup]="formGroup">
-  <p-panel header="查詢群組資料">
+  <p-panel header="查詢功能資料">
     <div class="card" #contentElement></div>
     <div class="grid p-fluid">
       <div class="col-12 md:col-3 lg:col-3">
@@ -74,15 +74,19 @@
       dataKey="givenIndex"
       editMode="row"
       [resizableColumns]="true"
-      [tableStyle]="{ 'min-width': '40rem'}"
+      [tableStyle]="{ 'min-width': '40rem' }"
     >
       <!-- 標題 -->
       <ng-template pTemplate="header" #header let-columns>
         <tr>
-          <th  style="max-width: 30rem;" *ngFor="let col of columns" [pSortableColumn]="col.field">
-            <ng-container 
+          <th
+            style="max-width: 30rem"
+            *ngFor="let col of columns"
+            [pSortableColumn]="col.field"
+          >
+            <ng-container
               >{{ col.header }}
-              <p-sortIcon [field]="col.field"/>
+              <p-sortIcon [field]="col.field" />
             </ng-container>
           </th>
           <th
@@ -109,7 +113,7 @@
         <tr [pEditableRow]="rowData">
           <td
             *ngFor="let col of columns"
-            style="max-width: 30rem !important"
+            style="max-width: 300px !important"
             [ngStyle]="{ 'word-break': 'break-all', 'word-wrap': 'break-word' }"
           >
             <p-cellEditor>
@@ -122,7 +126,7 @@
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
                     *ngSwitchCase="'inputText'"
                     pInputText
-                    [style]="{'width':'100%'}"
+                    [style]="{ width: '100%' }"
                     type="text"
                     [(ngModel)]="rowData[col.field]"
                     [required]="col.required"
@@ -132,7 +136,7 @@
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
-                    [style]="{'width':'100%'}"
+                    [style]="{ width: '100%' }"
                     *ngSwitchCase="'textArea'"
                     pInputTextarea
                     [(ngModel)]="rowData[col.field]"
@@ -153,7 +157,7 @@
                     optionValue="value"
                     placeholder="Please select"
                     appendTo="body"
-                    [style]="{'width':'100%'}"                  
+                    [style]="{ width: '100%' }"
                     [required]="col.required"
                   ></p-dropdown>
                   <!-- autoComplete -->
@@ -166,9 +170,9 @@
                     [suggestions]="autoCompleteList"
                     (completeMethod)="completeMethod($event)"
                     [dropdown]="true"
-                    [forceSelection]="true"                  
+                    [forceSelection]="true"
                     appendTo="body"
-                     [style]="{'width':'100%'}"
+                    [style]="{ width: '100%' }"
                     styleClass="w-full"
                     inputStyleClass="w-full"
                   ></p-autoComplete>
@@ -180,7 +184,7 @@
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
                     *ngSwitchDefault
                     pInputText
-                    [style]="{'width':'100%'}"
+                    [style]="{ width: '100%' }"
                     type="text"
                     [(ngModel)]="rowData[col.field]"
                     required
@@ -230,17 +234,6 @@
               icon="pi pi-pencil"
               (click)="clickRowActionMenu(rowData); onEdit(rowData)"
             ></button>
-            <!-- <button
-              *ngIf="!editing"
-              pButton
-              [rounded]="true"
-              [text]="true"
-              type="button"
-              style="color: #f70202"
-              class="p-button-outlined p-button-secondary"
-              icon="pi pi-trash"
-              (click) ="onDelete(rowIndex)"
-            ></button> -->
             <div class="flex mb-2 gap-2 justify-content-start">
               <ng-container *ngIf="editing">
                 <i

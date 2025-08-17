@@ -37,7 +37,7 @@ export class FunctionsComponent
     super();
   }
   ngOnInit(): void {
-   // 初始化上方 Tab 按鈕
+    // 初始化上方 Tab 按鈕
     this.detailTabs = [
       {
         label: '新增',
@@ -60,13 +60,6 @@ export class FunctionsComponent
         icon: 'pi pi-times',
         command: () => {
           this.cancelAll();
-        },        
-        disabled: false,
-      },
-      {
-        label: '刪除',
-        icon: 'pi pi-trash',
-        command: () => {
         },
         disabled: false,
       },
@@ -90,26 +83,26 @@ export class FunctionsComponent
       {
         field: 'actionType',
         header: '動作',
-        type: 'dropdown',        
-        required: 'true',    
+        type: 'dropdown',
+        required: 'true',
       },
 
       {
         field: 'code',
         header: '功能代碼',
-        type: 'inputText',        
+        type: 'inputText',
         required: 'true',
       },
       {
         field: 'name',
         header: '名稱',
-        type: 'inputText',        
+        type: 'inputText',
         required: 'true',
       },
       {
         field: 'description',
         header: '說明',
-        type: 'textArea',        
+        type: 'textArea',
         required: 'true',
       },
       {
@@ -124,7 +117,7 @@ export class FunctionsComponent
     forkJoin({
       types: this.optionService.getSettingTypes(SettingType.FUNCTION),
       activeFlags: this.optionService.getSettingTypes(SettingType.YES_NO),
-      actionTypes: this.optionService.getSettingTypes(SettingType.ACTION_TYPE)
+      actionTypes: this.optionService.getSettingTypes(SettingType.ACTION_TYPE),
     }).subscribe({
       next: (res) => {
         this.types = res.types;
@@ -133,7 +126,7 @@ export class FunctionsComponent
       },
       error: (error) => {
         this.messageService.error(error);
-      }
+      },
     });
   }
 
@@ -230,7 +223,6 @@ export class FunctionsComponent
       });
   }
 
-    
   /**
    * 切換 編輯模式
    * @param givenIndex
@@ -261,9 +253,7 @@ export class FunctionsComponent
   /**
    * 回歸原狀，原先新增的資料全部放棄。
    */
-  cancelAll() {
-  }
-
+  cancelAll() {}
 
   /**
    * Table Action 按鈕按下去的時候要把該筆資料記錄下來。
@@ -278,7 +268,7 @@ export class FunctionsComponent
    * */
   addNewRow(): void {
     this.newRow = {
-     id: null,
+      id: null,
       actionType: '',
       name: '',
       type: this.formGroup.get('type')?.value
@@ -347,7 +337,7 @@ export class FunctionsComponent
       !selectedData.description ||
       !selectedData.activeFlag
     ) {
-      this.dataTable.initRowEdit(selectedData);  
+      this.dataTable.initRowEdit(selectedData);
     }
   }
 

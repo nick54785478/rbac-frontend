@@ -84,13 +84,6 @@ export class GroupsComponent
         icon: 'pi pi-times',
         command: () => {
           this.cancelAll();
-        },        
-        disabled: false,
-      },
-      {
-        label: '刪除',
-        icon: 'pi pi-trash',
-        command: () => {
         },
         disabled: false,
       },
@@ -109,14 +102,12 @@ export class GroupsComponent
         header: '配置種類',
         type: 'dropdown',
         required: 'true',
-
       },
       {
         field: 'code',
         header: '群組代碼',
         type: 'inputText',
         required: 'true',
-
       },
       {
         field: 'name',
@@ -234,7 +225,6 @@ export class GroupsComponent
       });
   }
 
-  
   /**
    * 切換 編輯模式
    * @param givenIndex
@@ -257,8 +247,7 @@ export class GroupsComponent
   /**
    * 回歸原狀，原先新增的資料全部放棄。
    */
-  cancelAll() {
-  }
+  cancelAll() {}
 
   /**
    * 判斷是否為編輯模式
@@ -276,7 +265,6 @@ export class GroupsComponent
     return !rowData.id && this.newRowIndexes.includes(rowData.givenIndex);
     // rowIndex !== rowData.givenIndex;
   }
-
 
   /**
    * 新增一筆空的 row 資料
@@ -350,7 +338,7 @@ export class GroupsComponent
       !selectedData.description ||
       !selectedData.activeFlag
     ) {
-      this.dataTable.initRowEdit(selectedData);  
+      this.dataTable.initRowEdit(selectedData);
     }
   }
 
