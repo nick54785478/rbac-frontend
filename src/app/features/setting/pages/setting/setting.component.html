@@ -116,14 +116,17 @@
             ></p-menu>
             <button
               pButton
+              [rounded]="true"
+              [text]="true"
               type="button"
-              class="p-button-outlined p-button-secondary"
-              style="color: rgb(1, 155, 70)"
+              class="p-button-outlined p-button-primary"
               icon="pi pi-pencil"
               (click)="clickRowActionMenu(rowData); menu.toggle($event)"
             ></button>
             <button
               pButton
+              [rounded]="true"
+              [text]="true"
               type="button"
               class="p-button-outlined p-button-secondary"
               icon="pi pi-trash"
