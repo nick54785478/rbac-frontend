@@ -14,12 +14,12 @@ import { finalize } from 'rxjs';
 import { SettingQueried } from '../../../models/setting-query.model';
 import { UpdateSetting } from '../../../models/update-setting-request.model';
 import { SettingType } from '../../../../../core/enums/setting-type.enum';
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 
 @Component({
   selector: 'app-setting-form',
   standalone: true,
-  imports: [SharedModule, CoreModule],
+  imports: [SharedModule, CoreModule, CommonModule],
   templateUrl: './setting-form.component.html',
   styleUrl: './setting-form.component.scss',
 })

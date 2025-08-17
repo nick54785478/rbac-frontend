@@ -78,20 +78,25 @@
 <div class="card">
   <p-table
     #dt
-    responsiveLayout="stack"
-    [rowsPerPageOptions]="[2, 5, 10]"
-    styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
-    selectionMode="multiple"
-    [resizableColumns]="true"
+    responsiveLayout="scroll"
     [value]="tableData"
     [columns]="cols"
     [(selection)]="selectedData"
     [scrollable]="true"
-    scrollDirection="both"
+    [rows]="10"
     scrollHeight="300px"
     [paginator]="true"
-    [rows]="10"
+    [rowsPerPageOptions]="[2, 5, 10]"
+    styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
+    [tableStyle]="{ 'max-width': '1200px' }"
   >
+    <!-- 
+
+
+selectionMode="multiple" 
+    scrollHeight="300px"   [resizableColumns]="true"   styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
+-->
+
     <!-- 標題 -->
     <ng-template pTemplate="header" let-columns>
       <tr>
@@ -99,13 +104,9 @@
           {{ col.header }} <p-sortIcon [field]="col.field" />
         </th>
         <th
-          alignFrozen="right"
+          alignFrozen="left"
+          style="min-width: 70px !important; max-width: 300px !important"
           pFrozenColumn
-          style="
-            min-width: 70px !important;
-            max-width: 70px !important;
-            width: 70px !important;
-          "
         >
           Actions
         </th>
@@ -120,14 +121,17 @@
             white-space: pre-wrap;
             word-break: break-all;
             word-wrap: break-word;
-            max-width: 700px !important;
           "
         >
           <ng-container>
             {{ rowData[col.field] }}
           </ng-container>
         </td>
-        <td alignFrozen="right" pFrozenColumn style="text-align: center">
+        <td
+          alignFrozen="right"
+          style="min-width: 70px !important; max-width: 300px !important"
+          pFrozenColumn
+        >
           <div>
             <p-menu
               #menu

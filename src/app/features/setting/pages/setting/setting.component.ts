@@ -20,15 +20,13 @@ import { FormAction } from '../../../../core/enums/form-action.enum';
 import { SettingFormComponent } from './setting-form/setting-form.component';
 import { DialogConfirmService } from '../../../../core/services/dialog-confirm.service';
 import { SettingType } from '../../../../core/enums/setting-type.enum';
-import { NavigationStart, Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { response } from 'express';
+import { CommonModule } from '@angular/common';
 import { BaseFormCompoent } from '../../../../shared/component/base/base-form.component';
 
 @Component({
   selector: 'app-setting',
   standalone: true,
-  imports: [SharedModule, CoreModule],
+  imports: [SharedModule, CoreModule, CommonModule],
   providers: [
     DialogService,
     DialogConfirmService,
