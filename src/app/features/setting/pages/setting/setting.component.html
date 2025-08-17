@@ -3,6 +3,25 @@
     <div class="card" #contentElement>
       <div class="grid p-fluid">
         <div class="col-12 md:col-3 lg:col-3">
+          <label class="required">服務</label>
+          <p-dropdown
+            [options]="services"
+            optionValue="value"
+            placeholder="Please select"
+            [showClear]="true"
+            appendTo="body"
+            formControlName="service"
+          />
+          <div *ngIf="formControlInvalid('service')">
+            <small
+              class="p-error"
+              *ngIf="formControl('service').errors?.['required']"
+            >
+              資料不能為空
+            </small>
+          </div>
+        </div>
+        <div class="col-12 md:col-3 lg:col-3">
           <label>配置種類</label>
           <p-dropdown
             [options]="dataTypes"
@@ -13,6 +32,8 @@
             formControlName="dataType"
           />
         </div>
+      </div>
+      <div class="grid p-fluid">
         <div class="col-12 md:col-3 lg:col-3">
           <label>類別</label>
           <input type="text" pInputText formControlName="type" />
@@ -136,7 +157,6 @@
           </div>
         </td>
       </tr>
-      <!-- <button type="button" (click)="show('test')" pButton icon="pi pi-info-circle" label="Show"></button> -->
     </ng-template>
   </p-table>
 </div>

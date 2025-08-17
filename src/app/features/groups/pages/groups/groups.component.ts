@@ -53,14 +53,16 @@ export class GroupsComponent
   }
   ngOnInit(): void {
     // 取得下拉式選單資料
-    this.optionService.getSettingTypes(SettingType.GROUP).subscribe({
-      next: (res) => {
-        this.types = res;
-      },
-      error: (error) => {
-        this.messageService.error(error);
-      },
-    });
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.GROUP)
+      .subscribe({
+        next: (res) => {
+          this.types = res;
+        },
+        error: (error) => {
+          this.messageService.error(error);
+        },
+      });
     // 初始化上方 Tab 按鈕
     this.detailTabs = [
       {
@@ -131,14 +133,16 @@ export class GroupsComponent
     ];
 
     // 初始化 ActiveFlag 下拉選單
-    this.optionService.getSettingTypes(SettingType.YES_NO).subscribe({
-      next: (options) => {
-        this.activeFlags = options;
-      },
-      error: (err) => {
-        console.error('Failed to load dropdown data:', err);
-      },
-    });
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.YES_NO)
+      .subscribe({
+        next: (options) => {
+          this.activeFlags = options;
+        },
+        error: (err) => {
+          console.error('Failed to load dropdown data:', err);
+        },
+      });
   }
 
   /**

@@ -29,14 +29,28 @@ export class OptionService {
     );
   }
 
+  // /**
+  //  * 取得 Service 配置資料
+  //  * @return Observable<MenuItem[]
+  //  */
+  // public getServiceList(): Observable<Option[]> {
+  //   return this.http.get<Option[]>('/services.json').pipe(
+  //     map((response) => {
+  //       return response;
+  //     })
+  //   );
+  // }
+
   /**
    * 取得 Setting Type 種類
    * @param type
    * @return  Observable<Option[]>
    */
-  public getSettingTypes(type: string): Observable<Option[]> {
+  public getSettingTypes(service: string, type: string): Observable<Option[]> {
     const url = this.baseApiUrl + '/options/query';
-    let params = new HttpParams().set('type', type ? type : '');
+    let params = new HttpParams()
+      .set('type', type ? type : '')
+      .set('service', service ? service : '');
     return this.http.get<Option[]>(url, { params }).pipe(
       map((response) => {
         return response;

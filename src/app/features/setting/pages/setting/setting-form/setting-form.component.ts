@@ -29,6 +29,7 @@ export class SettingFormComponent
 {
   dataTypes: Option[] = [];
   activeFlags: Option[] = [];
+  services: Option[] = [];
 
   constructor(
     private location: Location,
@@ -50,6 +51,7 @@ export class SettingFormComponent
     this.formAction = this.dialogConfig.data['action'];
 
     this.formGroup = new FormGroup({
+      service: new FormControl('', [Validators.required]),
       dataType: new FormControl('', [Validators.required]),
       type: new FormControl('', [Validators.required]),
       name: new FormControl('', [Validators.required]),
@@ -73,10 +75,19 @@ export class SettingFormComponent
       this.dataTypes = res;
     });
 
+    // 取得 Service 下拉選單
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.SERVICE)
+      .subscribe((res) => {
+        this.services = res;
+      });
+
     // 取得 activeFlag 下拉資料
-    this.optionService.getSettingTypes(SettingType.YES_NO).subscribe((res) => {
-      this.activeFlags = res;
-    });
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.YES_NO)
+      .subscribe((res) => {
+        this.activeFlags = res;
+      });
   }
 
   ngOnDestroy() {}
@@ -182,6 +193,7 @@ export class SettingFormComponent
    */
   override patchFormGroupValue(data: SettingQueried): void {
     this.formGroup.patchValue({
+      service: data.service,
       dataType: data.dataType,
       type: data.type,
       name: data.name,

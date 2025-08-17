@@ -1,5 +1,6 @@
 export class SettingQueried {
   dataType?: string; // 資料種類
+  service?: string;
   type?: string; // 種類
   name?: string; // 名稱
   code?: string;

@@ -124,24 +124,28 @@ export class RolesComponent
 
     // 初始化 ActiveFlag 下拉選單
     // 取得下拉式選單資料
-    this.optionService.getSettingTypes(SettingType.YES_NO).subscribe({
-      next: (res) => {
-        this.activeFlags = res;
-      },
-      error: (error) => {
-        this.messageService.error('取得資料發生錯誤', error.message);
-      },
-    });
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.YES_NO)
+      .subscribe({
+        next: (res) => {
+          this.activeFlags = res;
+        },
+        error: (error) => {
+          this.messageService.error('取得資料發生錯誤', error.message);
+        },
+      });
 
     // 取得下拉式選單資料
-    this.optionService.getSettingTypes(SettingType.ROLE).subscribe({
-      next: (res) => {
-        this.types = res;
-      },
-      error: (error) => {
-        this.messageService.error('取得資料發生錯誤', error.message);
-      },
-    });
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.ROLE)
+      .subscribe({
+        next: (res) => {
+          this.types = res;
+        },
+        error: (error) => {
+          this.messageService.error('取得資料發生錯誤', error.message);
+        },
+      });
   }
 
   /**
@@ -161,6 +165,7 @@ export class RolesComponent
     const requestData: SaveRole[] = this.tableData.map((data) => {
       return {
         id: data.id,
+        service: data.service,
         code: data.code,
         type: data.type,
         name: data.name,

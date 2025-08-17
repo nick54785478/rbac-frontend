@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   DialogService,
   DynamicDialogConfig,
@@ -23,6 +23,7 @@ import { SettingType } from '../../../../core/enums/setting-type.enum';
 import { NavigationStart, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { response } from 'express';
+import { BaseFormCompoent } from '../../../../shared/component/base/base-form.component';
 
 @Component({
   selector: 'app-setting',
@@ -39,9 +40,13 @@ import { response } from 'express';
   templateUrl: './setting.component.html',
   styleUrl: './setting.component.scss',
 })
-export class SettingComponent implements OnInit, OnDestroy {
+export class SettingComponent
+  extends BaseFormCompoent
+  implements OnInit, OnDestroy
+{
   dataTypes: Option[] = [];
   activeFlags: Option[] = [];
+  services: Option[] = [];
   //Table Row Actions 選單。
   rowActionMenu: MenuItem[] = [];
 
@@ -59,7 +64,7 @@ export class SettingComponent implements OnInit, OnDestroy {
 
   dialogOpened: boolean = false;
 
-  formAction!: FormAction; // Dialog 操作
+  // override formAction!: FormAction; // Dialog 操作
 
   constructor(
     private dialogConfirmService: DialogConfirmService,
@@ -68,7 +73,9 @@ export class SettingComponent implements OnInit, OnDestroy {
     private optionService: OptionService,
     private settingService: SettingService,
     public messageService: SystemMessageService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnDestroy(): void {
     // 保證組件銷毀時關閉 Dialog
@@ -77,15 +84,14 @@ export class SettingComponent implements OnInit, OnDestroy {
     }
   }
 
-  formGroup!: FormGroup;
-
   ngOnInit(): void {
     this.formGroup = new FormGroup({
+      service: new FormControl('', [Validators.required]),
       dataType: new FormControl(''),
+      code: new FormControl(''),
+      value: new FormControl(''),
       type: new FormControl(''),
       name: new FormControl(''),
-      // value: new FormControl(''),
-      // code: new FormControl(''),
       activeFlag: new FormControl(''),
     });
 
@@ -93,12 +99,23 @@ export class SettingComponent implements OnInit, OnDestroy {
     this.optionService.getDataTypes().subscribe((res) => {
       this.dataTypes = res;
     });
+
+    // 取得 Services 下拉選單
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.SERVICE)
+      .subscribe((res) => {
+        this.services = res;
+      });
+
     // 取得 activeFlag 下拉資料
-    this.optionService.getSettingTypes(SettingType.YES_NO).subscribe((res) => {
-      this.activeFlags = res;
-    });
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.YES_NO)
+      .subscribe((res) => {
+        this.activeFlags = res;
+      });
 
     this.cols = [
+      { field: 'service', header: '服務' },
       { field: 'dataType', header: '配置種類' },
       { field: 'type', header: '類別' },
       { field: 'name', header: '名稱' },
@@ -107,8 +124,6 @@ export class SettingComponent implements OnInit, OnDestroy {
       { field: 'description', header: '說明' },
       { field: 'priorityNo', header: '排序' },
     ];
-
-    this.query();
   }
 
   /**
@@ -180,10 +195,15 @@ export class SettingComponent implements OnInit, OnDestroy {
    * 透過特定條件查詢設定資料
    */
   query() {
+    this.submitted = true;
     let formData = this.formGroup.value;
-    console.log(formData);
+
+    if (!this.submitted || this.formGroup.invalid) {
+      return;
+    }
     this.settingService
       .query(
+        formData.service,
         formData.dataType,
         formData.type,
         formData.name,

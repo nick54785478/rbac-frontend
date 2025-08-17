@@ -115,9 +115,18 @@ export class FunctionsComponent
 
     // 初始化下拉選單資料
     forkJoin({
-      types: this.optionService.getSettingTypes(SettingType.FUNCTION),
-      activeFlags: this.optionService.getSettingTypes(SettingType.YES_NO),
-      actionTypes: this.optionService.getSettingTypes(SettingType.ACTION_TYPE),
+      types: this.optionService.getSettingTypes(
+        'AUTH_SERVICE',
+        SettingType.FUNCTION
+      ),
+      activeFlags: this.optionService.getSettingTypes(
+        'AUTH_SERVICE',
+        SettingType.YES_NO
+      ),
+      actionTypes: this.optionService.getSettingTypes(
+        'AUTH_SERVICE',
+        SettingType.ACTION_TYPE
+      ),
     }).subscribe({
       next: (res) => {
         this.types = res.types;
