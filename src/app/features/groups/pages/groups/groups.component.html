@@ -3,6 +3,26 @@
     <div class="card" #contentElement></div>
     <div class="grid p-fluid">
       <div class="col-12 md:col-3 lg:col-3">
+        <label class="required">服務</label>
+        <p-dropdown
+          [options]="services"
+          optionValue="value"
+          placeholder="Please select"
+          [showClear]="true"
+          appendTo="body"
+          formControlName="service"
+        >
+        </p-dropdown>
+        <div *ngIf="formControlInvalid('service')">
+          <small
+            class="p-error"
+            *ngIf="formControl('service').errors?.['required']"
+          >
+            資料不能為空
+          </small>
+        </div>
+      </div>
+      <div class="col-12 md:col-3 lg:col-3">
         <label>種類</label>
         <p-dropdown
           [options]="types"
@@ -74,15 +94,19 @@
       dataKey="givenIndex"
       editMode="row"
       [resizableColumns]="true"
-      [tableStyle]="{ 'min-width': '40rem'}"
+      [tableStyle]="{ 'min-width': '40rem' }"
     >
       <!-- 標題 -->
       <ng-template pTemplate="header" #header let-columns>
         <tr>
-          <th  style="max-width: 30rem;" *ngFor="let col of columns" [pSortableColumn]="col.field">
-            <ng-container 
+          <th
+            style="max-width: 30rem"
+            *ngFor="let col of columns"
+            [pSortableColumn]="col.field"
+          >
+            <ng-container
               >{{ col.header }}
-              <p-sortIcon [field]="col.field"/>
+              <p-sortIcon [field]="col.field" />
             </ng-container>
           </th>
           <th
@@ -122,7 +146,7 @@
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
                     *ngSwitchCase="'inputText'"
                     pInputText
-                    [style]="{'width':'100%'}"
+                    [style]="{ width: '100%' }"
                     type="text"
                     [(ngModel)]="rowData[col.field]"
                     [required]="col.required"
@@ -132,7 +156,7 @@
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
-                    [style]="{'width':'100%'}"
+                    [style]="{ width: '100%' }"
                     *ngSwitchCase="'textArea'"
                     pInputTextarea
                     [(ngModel)]="rowData[col.field]"
@@ -153,7 +177,7 @@
                     optionValue="value"
                     placeholder="Please select"
                     appendTo="body"
-                    [style]="{'width':'100%'}"                  
+                    [style]="{ width: '100%' }"
                     [required]="col.required"
                   ></p-dropdown>
                   <!-- autoComplete -->
@@ -166,9 +190,9 @@
                     [suggestions]="autoCompleteList"
                     (completeMethod)="completeMethod($event)"
                     [dropdown]="true"
-                    [forceSelection]="true"                  
+                    [forceSelection]="true"
                     appendTo="body"
-                     [style]="{'width':'100%'}"
+                    [style]="{ width: '100%' }"
                     styleClass="w-full"
                     inputStyleClass="w-full"
                   ></p-autoComplete>
@@ -180,7 +204,7 @@
                     [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
                     *ngSwitchDefault
                     pInputText
-                    [style]="{'width':'100%'}"
+                    [style]="{ width: '100%' }"
                     type="text"
                     [(ngModel)]="rowData[col.field]"
                     required

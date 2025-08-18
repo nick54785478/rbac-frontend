@@ -22,12 +22,14 @@ export class GroupsService {
    * @param activeFlag
    */
   query(
-    type: string,
+    service?: string,
+    type?: string,
     name?: string,
     activeFlag?: string
   ): Observable<GroupQueried[]> {
     const url = this.baseApiUrl + '/groups/query';
     let params = new HttpParams()
+      .set('service', service ? service : '')
       .set('type', type ? type : '')
       .set('name', name ? name : '')
       .set('activeFlag', activeFlag ? activeFlag : '');

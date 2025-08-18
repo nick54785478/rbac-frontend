@@ -98,6 +98,7 @@ export class UsersComponent
       groups: {
         title: '群組頁面',
         cols: [
+          { field: 'service', header: '服務' },
           { field: 'type', header: '種類' },
           { field: 'name', header: '名稱' },
           { field: 'code', header: '代碼' },
@@ -109,6 +110,7 @@ export class UsersComponent
       roles: {
         title: '角色頁面',
         cols: [
+          { field: 'service', header: '服務' },
           { field: 'type', header: '種類' },
           { field: 'name', header: '名稱' },
           { field: 'code', header: '代碼' },
@@ -120,6 +122,7 @@ export class UsersComponent
       functions: {
         title: '功能頁面',
         cols: [
+          { field: 'service', header: '服務' },
           { field: 'label', header: '權限' },
           { field: 'type', header: '種類' },
           { field: 'name', header: '名稱' },

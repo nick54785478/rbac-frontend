@@ -4,7 +4,7 @@ import { OptionService } from '../../../../shared/services/option.service';
 import { SystemMessageService } from '../../../../core/services/system-message.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { GroupsService } from '../../services/groups.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SettingType } from '../../../../core/enums/setting-type.enum';
 import { Option } from '../../../../shared/models/option.model';
 import { CommonModule } from '@angular/common';
@@ -36,6 +36,7 @@ export class GroupsComponent
   extends BaseInlineEditeTableCompoent
   implements OnInit, OnDestroy
 {
+  services: Option[] = [];
   activeFlags: Option[] = []; // Active Flag 的下拉式選單
   types: Option[] = []; // 配置種類的下拉式選單
   dialogOpened: boolean = false; //  Dialog 狀態
@@ -92,6 +93,7 @@ export class GroupsComponent
     ];
     // 初始化表單
     this.formGroup = new FormGroup({
+      service: new FormControl('', Validators.required),
       name: new FormControl(''), // 角色名稱
       type: new FormControl(''), // 種類
       activeFlag: new FormControl(''), // 是否生效
@@ -99,6 +101,12 @@ export class GroupsComponent
 
     // 初始化 Table 配置
     this.cols = [
+      {
+        field: 'service',
+        header: '服務',
+        type: 'dropdown',
+        required: 'true',
+      },
       {
         field: 'type',
         header: '配置種類',
@@ -143,6 +151,16 @@ export class GroupsComponent
           console.error('Failed to load dropdown data:', err);
         },
       });
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.SERVICE)
+      .subscribe({
+        next: (res) => {
+          this.services = res;
+        },
+        error: (error) => {
+          this.messageService.error('取得資料發生錯誤', error.message);
+        },
+      });
   }
 
   /**
@@ -159,9 +177,13 @@ export class GroupsComponent
   // 提交資料
   override submit() {
     this.submitted = true;
+    if (this.formGroup.invalid || !this.submitted) {
+      return;
+    }
     const requestData: SaveGroup[] = this.tableData.map((data) => {
       return {
         id: data.id,
+        service: data.service,
         code: data.code,
         type: data.type,
         name: data.name,
@@ -202,14 +224,24 @@ export class GroupsComponent
    * 透過特定條件查詢設定資料
    */
   query() {
+    this.submitted = true;
+    if (this.formGroup.invalid || !this.submitted) {
+      return;
+    }
     // 查詢前先取消所有
     this.cancelAll();
     let formData = this.formGroup.value;
     this.loadMaskService.show();
     this.groupService
-      .query(formData.type, formData.name, formData.activeFlag)
+      .query(
+        formData.service,
+        formData.type,
+        formData.name,
+        formData.activeFlag
+      )
       .pipe(
         finalize(() => {
+          this.submitted = false;
           this.loadMaskService.hide();
         })
       )
@@ -276,6 +308,7 @@ export class GroupsComponent
   addNewRow(): void {
     this.newRow = {
       id: null,
+      service: '',
       name: '',
       type: this.formGroup.get('type')?.value
         ? this.formGroup.get('type')?.value
@@ -309,33 +342,10 @@ export class GroupsComponent
     console.log(this.deleteList);
   }
 
-  // 刪除幾列資料
-  override delete(ids: number[], event?: Event) {
-    this.groupService
-      .delete(ids)
-      .pipe(
-        finalize(() => {
-          // 無論成功或失敗都會執行
-          this.query();
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          if (res?.code === 'VALIDATION_FAILED') {
-            this.messageService.error(res.message);
-          } else {
-            this.messageService.success(res.message);
-          }
-        },
-        error: (error) => {
-          this.messageService.error(error.message);
-        },
-      });
-  }
-
   // 檢查 row 資料是否有未填欄位
   override checkRowData(selectedData: any): void {
     if (
+      !selectedData.service ||
       !selectedData.type ||
       !selectedData.name ||
       !selectedData.code ||
@@ -372,6 +382,8 @@ export class GroupsComponent
         return this.types;
       case 'activeFlag':
         return this.activeFlags;
+      case 'service':
+        return this.services;
       default:
         return [];
     }
@@ -383,9 +395,6 @@ export class GroupsComponent
    */
   clickRowActionMenu(rowData: any): void {
     this.selectedData = rowData;
-
-    // // 開啟 Dialog
-    // this.openFormDialog(this.selectedData);
   }
 
   /**
