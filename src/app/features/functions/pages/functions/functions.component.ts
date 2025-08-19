@@ -1,6 +1,11 @@
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
 import { FunctionsService } from '../../services/functions.service';
-import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
 import { Option } from '../../../../shared/models/option.model';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../../../shared/shared.module';
@@ -28,6 +33,11 @@ export class FunctionsComponent
   extends BaseInlineEditeTableCompoent
   implements OnInit, OnDestroy
 {
+  activeFlags: Option[] = []; // Active Flag 的下拉式選單
+  types: Option[] = []; // 配置種類的下拉式選單
+  actionTypes: Option[] = []; // ActionTypes 的下拉式選單
+  services: Option[] = [];
+
   constructor(
     private loadingMaskService: LoadingMaskService,
     private optionService: OptionService,
@@ -66,6 +76,7 @@ export class FunctionsComponent
     ];
     // 初始化表單
     this.formGroup = new FormGroup({
+      service: new FormControl('', Validators.required), // 種類
       actionType: new FormControl(''), // 動作種類
       type: new FormControl(''), // 種類
       name: new FormControl(''), // 功能名稱
@@ -74,6 +85,12 @@ export class FunctionsComponent
 
     // 初始化 Table 配置
     this.cols = [
+      {
+        field: 'service',
+        header: '服務',
+        type: 'dropdown',
+        required: 'true',
+      },
       {
         field: 'type',
         header: '配置種類',
@@ -86,7 +103,6 @@ export class FunctionsComponent
         type: 'dropdown',
         required: 'true',
       },
-
       {
         field: 'code',
         header: '功能代碼',
@@ -127,24 +143,22 @@ export class FunctionsComponent
         'AUTH_SERVICE',
         SettingType.ACTION_TYPE
       ),
+      services: this.optionService.getSettingTypes(
+        'AUTH_SERVICE',
+        SettingType.SERVICE
+      ),
     }).subscribe({
       next: (res) => {
         this.types = res.types;
         this.activeFlags = res.activeFlags;
         this.actionTypes = res.actionTypes;
+        this.services = res.services;
       },
       error: (error) => {
         this.messageService.error(error);
       },
     });
   }
-
-  // Active Flag 的下拉式選單
-  activeFlags: Option[] = [];
-  // 配置種類的下拉式選單
-  types: Option[] = [];
-  // ActionTypes 的下拉式選單
-  actionTypes: Option[] = [];
 
   /**
    * 清除表單資料
@@ -163,6 +177,7 @@ export class FunctionsComponent
     const requestData: SaveFunction[] = this.tableData.map((data) => {
       return {
         id: data.id,
+        service: data.service,
         actionType: data.actionType,
         code: data.code,
         type: data.type,
@@ -172,45 +187,56 @@ export class FunctionsComponent
       };
     });
 
-    if (this.submitted) {
-      this.loadingMaskService.show();
-      this.functionService
-        .submit(requestData)
-        .pipe(
-          finalize(() => {
-            this.submitted = false;
-            this.loadingMaskService.hide();
-            // 無論成功或失敗都會執行
-            this.query();
-          })
-        )
-        .subscribe({
-          next: (res) => {
-            if (res?.code === 'VALIDATION_FAILED') {
-              this.messageService.error(res.message);
-            } else {
-              this.messageService.success(res.message);
-            }
-          },
-          error: (error) => {
-            this.messageService.error(error.message);
-          },
-        });
+    if (!this.submitted || this.mode) {
+      return;
     }
+    this.loadingMaskService.show();
+    this.functionService
+      .submit(requestData)
+      .pipe(
+        finalize(() => {
+          this.submitted = false;
+          this.loadingMaskService.hide();
+          // 無論成功或失敗都會執行
+          this.query();
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (res?.code === 'VALIDATION_FAILED') {
+            this.messageService.error(res.message);
+          } else {
+            this.messageService.success(res.message);
+          }
+        },
+        error: (error) => {
+          this.messageService.error(error.message);
+        },
+      });
   }
 
   /**
    * 透過特定條件查詢設定資料
    */
   query() {
+    this.submitted = true;
+    if (this.formGroup.invalid) {
+      return;
+    }
     this.loadingMaskService.show();
     // 查詢前先取消所有
     this.cancelAll();
     let formData = this.formGroup.value;
     this.functionService
-      .query(formData.type, formData.name, formData.activeFlag)
+      .query(
+        formData.service,
+        formData.type,
+        formData.name,
+        formData.activeFlag
+      )
       .pipe(
         finalize(() => {
+          this.submitted = false;
           // 無論成功或失敗都會執行
           this.loadingMaskService.hide();
         })
@@ -238,6 +264,7 @@ export class FunctionsComponent
    * @returns
    */
   onEdit(rowData: any) {
+    this.mode = 'edit';
     console.log(rowData);
     this.clonedData[rowData.givenIndex] = { ...rowData };
   }
@@ -257,6 +284,8 @@ export class FunctionsComponent
     console.log(rowIndex);
     this.tableData[rowIndex] = this.clonedData[rowData.givenIndex];
     delete this.clonedData[rowData.givenIndex];
+    this.mode = '';
+    console.log(this.mode);
   }
 
   /**
@@ -276,8 +305,12 @@ export class FunctionsComponent
    * 新增一筆空的 row 資料
    * */
   addNewRow(): void {
+    this.mode = 'add';
     this.newRow = {
       id: null,
+      service: this.formGroup.get('service')?.value
+        ? this.formGroup.get('service')?.value
+        : '',
       actionType: '',
       name: '',
       type: this.formGroup.get('type')?.value
@@ -293,23 +326,6 @@ export class FunctionsComponent
     setTimeout(() => {
       this.dataTable.initRowEdit(this.newRow);
     });
-  }
-
-  /**
-   * 進行刪除
-   * @param id
-   * @param isSelected 是否被選中
-   */
-  onDelete(id: number, isSelected: boolean) {
-    // 如果不包含該 id 加入
-    if (isSelected) {
-      // 若選中，添加到陣列
-      this.deleteList.push(id);
-    } else {
-      // 若取消選中，從陣列移除
-      this.deleteList = this.deleteList.filter((e) => e !== id);
-    }
-    console.log(this.deleteList);
   }
 
   // 刪除幾列資料
@@ -339,6 +355,7 @@ export class FunctionsComponent
   // 檢查 row 資料是否有未填欄位
   override checkRowData(selectedData: any): void {
     if (
+      !selectedData.service ||
       !selectedData.type ||
       !selectedData.actionType ||
       !selectedData.name ||
@@ -347,7 +364,10 @@ export class FunctionsComponent
       !selectedData.activeFlag
     ) {
       this.dataTable.initRowEdit(selectedData);
+    } else {
+      this.mode = '';
     }
+    console.log(this.mode);
   }
 
   /**
@@ -382,6 +402,8 @@ export class FunctionsComponent
         return this.activeFlags;
       case 'actionType':
         return this.actionTypes;
+      case 'service':
+        return this.services;
       default:
         return [];
     }

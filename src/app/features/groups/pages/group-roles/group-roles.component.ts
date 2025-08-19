@@ -15,6 +15,8 @@ import { GroupsService } from '../../services/groups.service';
 import { UpdateGroupRoles } from '../../models/update-group-roles-request.model';
 import { GroupQueried } from '../../models/group-query.model';
 import { GroupInfoOption } from '../../../../shared/models/group-info-option.model';
+import { Option } from '../../../../shared/models/option.model';
+import { SettingType } from '../../../../core/enums/setting-type.enum';
 
 @Component({
   selector: 'app-group-roles',
@@ -29,6 +31,7 @@ export class GroupRolesComponent
   implements OnInit, DoCheck, OnDestroy
 {
   groupOptions: GroupInfoOption[] = [];
+  services: Option[] = [];
 
   // AutoComplete 與其下拉欄位值變動的 Subject，用來避免前次查詢較慢返回覆蓋後次資料
   private dataSubject$ = new Subject<string>();
@@ -46,7 +49,7 @@ export class GroupRolesComponent
     private groupService: GroupsService,
     private groupRolesService: GroupRolesService,
     private optionService: OptionService,
-    private systemMessageService: SystemMessageService,
+    private messageService: SystemMessageService,
     private loadMaskService: LoadingMaskService
   ) {
     super();
@@ -74,7 +77,22 @@ export class GroupRolesComponent
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      group: new FormControl('', [Validators.required]),
+      service: new FormControl('', [Validators.required]),
+      group: new FormControl({ value: '', disabled: true }, [
+        Validators.required,
+      ]),
+    });
+
+    // 監聽 service 變更
+    this.formGroup.get('service')?.valueChanges.subscribe((serviceValue) => {
+      const control = this.formGroup.get('group');
+      if (serviceValue) {
+        control?.enable(); // 選到 service -> 啟用 role
+      } else {
+        control?.reset(); // 清空角色
+        control?.disable(); // 禁用 role
+        this.groupOptions = []; // 清空群組下拉選單
+      }
     });
 
     this.detailTabs = [
@@ -95,6 +113,17 @@ export class GroupRolesComponent
         disabled: this.sourceList.length === 0 && this.targetList.length === 0,
       },
     ];
+
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.SERVICE)
+      .subscribe({
+        next: (res) => {
+          this.services = res;
+        },
+        error: (error) => {
+          this.messageService.error('取得資料發生錯誤', error.message);
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -106,6 +135,7 @@ export class GroupRolesComponent
    */
   onSubmit() {
     let groupId = this.formGroup.value.group.id;
+    let service = this.formGroup.value.service;
     console.log(this.targetList);
     let roleIds = this.targetList
       ? this.targetList
@@ -132,13 +162,13 @@ export class GroupRolesComponent
       .subscribe({
         next: (res) => {
           if (res.code !== 'VALIDATION_FAILED') {
-            this.systemMessageService.success(res.message);
+            this.messageService.success(res.message);
           } else {
-            this.systemMessageService.error(res.message);
+            this.messageService.error(res.message);
           }
         },
         error: (error) => {
-          this.systemMessageService.error(error);
+          this.messageService.error(error);
         },
       });
   }
@@ -164,7 +194,7 @@ export class GroupRolesComponent
 
     this.loadMaskService.show();
     this.groupService
-      .queryById(formData.group.id)
+      .queryByIdAndService(formData.group.id, formData.service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -176,6 +206,7 @@ export class GroupRolesComponent
         if (roleList) {
           this.targetList = roleList.map((role: any) => ({
             id: role.id,
+            service: role.service,
             code: role.code,
             name: role.name,
             displayName: `${role.code} (${role.name})`, // 生成 displayName
@@ -184,7 +215,7 @@ export class GroupRolesComponent
         }
       });
     // 查詢不屬於該 群組 (id) 的角色資料
-    this.getOtherRoles(formData.group.id);
+    this.getOtherRoles(formData.group.id, formData.service);
   }
 
   /**
@@ -209,8 +240,9 @@ export class GroupRolesComponent
           debounceTime(300), // 防抖，避免频繁發请求
           switchMap((keyword) => {
             console.log(keyword);
+            let service = this.formGroup.value.service;
 
-            return this.optionService.getGroupOptions(keyword);
+            return this.optionService.getGroupOptions(service, keyword);
           }), // 自動取消上一次未完成的請求
 
           takeUntil(this._destroying$)
@@ -232,9 +264,9 @@ export class GroupRolesComponent
    * 取得不屬於該群組的角色
    * @param id
    */
-  getOtherRoles(id: number) {
+  getOtherRoles(id: number, service: string) {
     this.groupRolesService
-      .queryOthers(id)
+      .queryOthers(id, service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行

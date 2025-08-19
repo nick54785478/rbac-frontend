@@ -78,9 +78,14 @@ export class OptionService {
    * @param queryStr
    * @returns
    */
-  public getRoleOptions(queryStr: string): Observable<RoleInfoOption[]> {
+  public getRoleOptions(
+    service: string,
+    queryStr: string
+  ): Observable<RoleInfoOption[]> {
     const url = this.baseApiUrl + '/options/roles';
-    let params = new HttpParams().set('queryStr', queryStr ? queryStr : '');
+    let params = new HttpParams()
+      .set('service', service ? service : '')
+      .set('queryStr', queryStr ? queryStr : '');
     return this.http.get<RoleInfoOption[]>(url, { params }).pipe(
       map((response) => {
         return response;
@@ -93,9 +98,14 @@ export class OptionService {
    * @param queryStr
    * @returns
    */
-  public getGroupOptions(queryStr: string): Observable<GroupInfoOption[]> {
+  public getGroupOptions(
+    service: string,
+    queryStr: string
+  ): Observable<GroupInfoOption[]> {
     const url = this.baseApiUrl + '/options/groups';
-    let params = new HttpParams().set('queryStr', queryStr ? queryStr : '');
+    let params = new HttpParams()
+      .set('service', service ? service : '')
+      .set('queryStr', queryStr ? queryStr : '');
     return this.http.get<GroupInfoOption[]>(url, { params }).pipe(
       map((response) => {
         return response;

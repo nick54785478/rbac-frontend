@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs/internal/Observable';
 import { UpdateGroupRoles } from '../models/update-group-roles-request.model';
@@ -15,12 +15,15 @@ export class GroupRolesService {
   constructor(private http: HttpClient) {}
 
   /**
-   * 透過 ID 查詢角色資料
+   * 透過 ID 與服務查詢不屬於該群組的角色資料
    * @param id
+   * @param service
+   * @returns
    */
-  queryOthers(id: number): Observable<GroupRoleQueried[]> {
+  queryOthers(id: number, service: string): Observable<GroupRoleQueried[]> {
     const url = this.baseApiUrl + '/groups/roles/' + id + '/others';
-    return this.http.get<GroupRoleQueried[]>(url);
+    let params = new HttpParams().set('service', service ? service : '');
+    return this.http.get<GroupRoleQueried[]>(url, { params });
   }
 
   /**

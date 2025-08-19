@@ -16,12 +16,14 @@ export class FunctionsService {
 
   /**
    * 查詢功能資料
+   * @param service
    * @param dataType
    * @param type
    * @param name
    * @param activeFlag
    */
   query(
+    service: string,
     type: string,
     name?: string,
     activeFlag?: string,
@@ -29,6 +31,7 @@ export class FunctionsService {
   ): Observable<FunctionQueried[]> {
     const url = this.baseApiUrl + '/functions/query';
     let params = new HttpParams()
+      .set('service', service ? service : '')
       .set('actionType', actionType ? actionType : '')
       .set('type', type ? type : '')
       .set('name', name ? name : '')

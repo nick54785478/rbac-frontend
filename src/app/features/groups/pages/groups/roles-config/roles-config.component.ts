@@ -41,7 +41,7 @@ export class RolesConfigComponent
     let data = this.dialogConfig.data;
     console.log(data.id);
 
-    this.getOtherFunctions(data.id);
+    // this.getOtherFunctions(data.id);
     this.query(data.id);
 
     this.detailTabs = [
@@ -111,12 +111,13 @@ export class RolesConfigComponent
   }
 
   /**
-   * 取得不屬於該角色的功能
+   * 取得不屬於該群組的角色
    * @param id
+   * @param service
    */
-  getOtherFunctions(id: number) {
+  getOtherRoles(id: number, service: string) {
     this.groupRolesService
-      .queryOthers(id)
+      .queryOthers(id, service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
@@ -141,8 +142,9 @@ export class RolesConfigComponent
   query(id: number) {
     this.loadMaskService.show();
 
+    let service = this.formGroup.value.service;
     this.groupService
-      .queryById(id)
+      .queryByIdAndService(id, service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();

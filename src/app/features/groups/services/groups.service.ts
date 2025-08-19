@@ -59,8 +59,9 @@ export class GroupsService {
    * 透過 ID 查詢角色資料
    * @param id
    */
-  queryById(id: number): Observable<GroupQueried> {
+  queryByIdAndService(id: number, service: string): Observable<GroupQueried> {
     const url = this.baseApiUrl + '/groups' + '/' + id;
-    return this.http.get<GroupQueried>(url);
+    let params = new HttpParams().set('service', service ? service : '');
+    return this.http.get<GroupQueried>(url, { params });
   }
 }

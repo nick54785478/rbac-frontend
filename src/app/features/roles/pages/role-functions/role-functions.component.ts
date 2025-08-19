@@ -14,6 +14,8 @@ import { UpdateRoleFunction } from '../../models/update-role-function-request.mo
 import { SystemMessageService } from '../../../../core/services/system-message.service';
 import { RoleQueried } from '../../models/role-query.model';
 import { BasePickListCompoent } from '../../../../shared/component/base/base-pickList.component';
+import { Option } from '../../../../shared/models/option.model';
+import { SettingType } from '../../../../core/enums/setting-type.enum';
 
 @Component({
   selector: 'app-role-function',
@@ -28,6 +30,7 @@ export class RoleFunctionsComponent
   implements OnInit, DoCheck, OnDestroy
 {
   roleOptions: RoleInfoOption[] = [];
+  services: Option[] = [];
 
   // AutoComplete 與其下拉欄位值變動的 Subject，用來避免前次查詢較慢返回覆蓋後次資料
   private dataSubject$ = new Subject<string>();
@@ -46,7 +49,8 @@ export class RoleFunctionsComponent
     private roleFunctionsService: RoleFunctionsService,
     private optionService: OptionService,
     private systemMessageService: SystemMessageService,
-    private loadMaskService: LoadingMaskService
+    private loadMaskService: LoadingMaskService,
+    private messageService: SystemMessageService
   ) {
     super();
   }
@@ -73,7 +77,22 @@ export class RoleFunctionsComponent
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      role: new FormControl('', [Validators.required]),
+      role: new FormControl({ value: '', disabled: true }, [
+        Validators.required,
+      ]),
+      service: new FormControl('', [Validators.required]),
+    });
+
+    // 監聽 service 變更
+    this.formGroup.get('service')?.valueChanges.subscribe((serviceValue) => {
+      const roleControl = this.formGroup.get('role');
+      if (serviceValue) {
+        roleControl?.enable(); // 選到 service -> 啟用 role
+      } else {
+        roleControl?.reset(); // 清空角色
+        roleControl?.disable(); // 禁用 role
+        this.roleOptions = []; // 清空角色下拉選單
+      }
     });
 
     this.detailTabs = [
@@ -94,6 +113,16 @@ export class RoleFunctionsComponent
         disabled: this.sourceList.length === 0 && this.targetList.length === 0,
       },
     ];
+    this.optionService
+      .getSettingTypes('AUTH_SERVICE', SettingType.SERVICE)
+      .subscribe({
+        next: (res) => {
+          this.services = res;
+        },
+        error: (error) => {
+          this.messageService.error('取得資料發生錯誤', error.message);
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -114,9 +143,11 @@ export class RoleFunctionsComponent
     console.log(this.targetList);
     let requestData: UpdateRoleFunction = {
       roleId: roleId,
+      service: this.formGroup.value.service,
       functions: funcIds,
     };
-    this.submitted = true;
+    console.log(requestData);
+    this.submitted = false;
     this.loadMaskService.show();
     this.roleFunctionsService
       .update(requestData)
@@ -177,6 +208,7 @@ export class RoleFunctionsComponent
         if (funcList) {
           this.targetList = funcList.map((func: any) => ({
             id: func.id,
+            service: func.service,
             code: func.code,
             name: func.name,
             displayName: `${func.code} (${func.name})`, // 生成 displayName
@@ -196,6 +228,8 @@ export class RoleFunctionsComponent
     }
     this.queriedStr = event.query;
 
+    let service = this.formGroup.value.service;
+
     if (!this.dataSubject$.observed) {
       // this.loadMaskService.show();
       // 初始化 AutoComplete 的訂閱
@@ -209,7 +243,7 @@ export class RoleFunctionsComponent
           switchMap((keyword) => {
             console.log(keyword);
 
-            return this.optionService.getRoleOptions(keyword);
+            return this.optionService.getRoleOptions(service, keyword);
           }), // 自動取消上一次未完成的請求
 
           takeUntil(this._destroying$)
