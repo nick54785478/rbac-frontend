@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RoleFunctionQueried } from '../models/role-function-query.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs/internal/Observable';
 import { UpdateRoleFunction } from '../models/update-role-function-request.model copy';
@@ -15,12 +15,17 @@ export class RoleFunctionsService {
   constructor(private http: HttpClient) {}
 
   /**
-   * 透過 ID 查詢角色資料
+   * 透過 ID 查詢其他角色資料
    * @param id
+   * @param service
    */
-  queryOthers(id: number): Observable<RoleFunctionQueried[]> {
+  getOtherFunctions(
+    id: number,
+    service: string
+  ): Observable<RoleFunctionQueried[]> {
     const url = this.baseApiUrl + '/roles/functions/' + id + '/others';
-    return this.http.get<RoleFunctionQueried[]>(url);
+    let params = new HttpParams().set('service', service ? service : '');
+    return this.http.get<RoleFunctionQueried[]>(url, { params });
   }
 
   /**

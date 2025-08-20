@@ -95,8 +95,29 @@ export class GroupsComponent
     this.formGroup = new FormGroup({
       service: new FormControl('', Validators.required),
       name: new FormControl(''), // 角色名稱
-      type: new FormControl(''), // 種類
+      type: new FormControl({ value: '', disabled: true }), // 種類
       activeFlag: new FormControl(''), // 是否生效
+    });
+
+    // 監聽 service 變更，變更後要更新 Type 的下拉選單資料
+    this.formGroup.get('service')?.valueChanges.subscribe((serviceValue) => {
+      const control = this.formGroup.get('type');
+      if (serviceValue) {
+        control?.enable(); // 選擇 service -> 啟用 type
+        this.optionService
+          .getSettingTypes(serviceValue, SettingType.GROUP)
+          .subscribe({
+            next: (res) => {
+              this.types = res;
+            },
+            error: (error) => {
+              this.messageService.error('取得資料發生錯誤', error.message);
+            },
+          });
+      } else {
+        control?.reset(); // 清空角色
+        control?.disable(); // 禁用 type
+      }
     });
 
     // 初始化 Table 配置
@@ -106,30 +127,35 @@ export class GroupsComponent
         header: '服務',
         type: 'dropdown',
         required: 'true',
+        readOnly: true,
       },
       {
         field: 'type',
         header: '配置種類',
         type: 'dropdown',
         required: 'true',
+        readOnly: false,
       },
       {
         field: 'code',
         header: '群組代碼',
         type: 'inputText',
         required: 'true',
+        readOnly: false,
       },
       {
         field: 'name',
         header: '名稱',
         type: 'inputText',
         required: 'true',
+        readOnly: false,
       },
       {
         field: 'description',
         header: '說明',
         type: 'textArea',
         required: 'true',
+        readOnly: false,
       },
 
       {
@@ -137,6 +163,7 @@ export class GroupsComponent
         header: '是否生效',
         type: 'dropdown',
         required: 'true',
+        readOnly: false,
       },
     ];
 
@@ -192,32 +219,33 @@ export class GroupsComponent
       };
     });
 
-    if (this.submitted) {
-      this.loadMaskService.show();
-
-      this.groupService
-        .submit(requestData)
-        .pipe(
-          finalize(() => {
-            // 無論成功或失敗都會執行
-            this.loadMaskService.hide();
-            this.submitted = false;
-            this.query();
-          })
-        )
-        .subscribe({
-          next: (res) => {
-            if (res?.code === 'VALIDATION_FAILED') {
-              this.messageService.error(res.message);
-            } else {
-              this.messageService.success(res.message);
-            }
-          },
-          error: (error) => {
-            this.messageService.error(error.message);
-          },
-        });
+    if (!this.submitted || this.mode) {
+      return;
     }
+    this.loadMaskService.show();
+
+    this.groupService
+      .submit(requestData)
+      .pipe(
+        finalize(() => {
+          // 無論成功或失敗都會執行
+          this.loadMaskService.hide();
+          this.submitted = false;
+          this.query();
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (res?.code === 'VALIDATION_FAILED') {
+            this.messageService.error(res.message);
+          } else {
+            this.messageService.success(res.message);
+          }
+        },
+        error: (error) => {
+          this.messageService.error(error.message);
+        },
+      });
   }
 
   /**
@@ -269,15 +297,23 @@ export class GroupsComponent
   onEdit(rowData: any) {
     console.log(rowData);
     this.clonedData[rowData.givenIndex] = { ...rowData };
+    this.mode = 'edit';
   }
 
   /**
    * 取消編輯/新增
    * */
   cancel(rowData: any, rowIndex: number) {
-    console.log(rowIndex);
-    this.tableData[rowIndex] = this.clonedData[rowData.givenIndex];
-    delete this.clonedData[rowData.givenIndex];
+    const cloned = this.clonedData[rowData.givenIndex];
+    if (cloned) {
+      // 如果有 clone，就還原
+      this.tableData[rowIndex] = cloned;
+      delete this.clonedData[rowData.givenIndex];
+    } else {
+      // 如果沒有 clone，代表是新加的資料 => 直接刪掉這筆
+      this.tableData.splice(rowIndex, 1);
+    }
+    this.mode = '';
   }
 
   /**
@@ -286,29 +322,15 @@ export class GroupsComponent
   cancelAll() {}
 
   /**
-   * 判斷是否為編輯模式
-   * */
-  isEditing(givenIndex: any): boolean {
-    return this.editingIndex === givenIndex;
-  }
-
-  /**
-   * 判斷是否為新增模式
-   * @param rowData 當前的 row 資料
-   * */
-  isAdding(rowData: any) {
-    // 這裡要使用 givenIndex ，因 Table 的 index 會隨資料數量改變
-    return !rowData.id && this.newRowIndexes.includes(rowData.givenIndex);
-    // rowIndex !== rowData.givenIndex;
-  }
-
-  /**
    * 新增一筆空的 row 資料
    * */
   addNewRow(): void {
+    this.mode = 'add';
     this.newRow = {
       id: null,
-      service: '',
+      service: this.formGroup.get('service')?.value
+        ? this.formGroup.get('service')?.value
+        : '',
       name: '',
       type: this.formGroup.get('type')?.value
         ? this.formGroup.get('type')?.value
@@ -325,23 +347,6 @@ export class GroupsComponent
     });
   }
 
-  /**
-   * 進行刪除
-   * @param id
-   * @param isSelected 是否被選中
-   */
-  onDelete(id: number, isSelected: boolean) {
-    // 如果不包含該 id 加入
-    if (isSelected) {
-      // 若選中，添加到陣列
-      this.deleteList.push(id);
-    } else {
-      // 若取消選中，從陣列移除
-      this.deleteList = this.deleteList.filter((e) => e !== id);
-    }
-    console.log(this.deleteList);
-  }
-
   // 檢查 row 資料是否有未填欄位
   override checkRowData(selectedData: any): void {
     if (
@@ -353,6 +358,9 @@ export class GroupsComponent
       !selectedData.activeFlag
     ) {
       this.dataTable.initRowEdit(selectedData);
+    } else {
+      // 通過取消 mode
+      this.mode = '';
     }
   }
 

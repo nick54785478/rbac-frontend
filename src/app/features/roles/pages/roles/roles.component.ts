@@ -91,8 +91,29 @@ export class RolesComponent
     this.formGroup = new FormGroup({
       service: new FormControl('', Validators.required),
       name: new FormControl(''), // 角色名稱
-      type: new FormControl(''), // 種類
+      type: new FormControl({ value: '', disabled: true }), // 種類
       activeFlag: new FormControl(''), // 是否生效
+    });
+
+    // 監聽 service 變更，變更後要更新 Type 的下拉選單資料
+    this.formGroup.get('service')?.valueChanges.subscribe((serviceValue) => {
+      const control = this.formGroup.get('type');
+      if (serviceValue) {
+        control?.enable(); // 選擇 service -> 啟用 type
+        this.optionService
+          .getSettingTypes(serviceValue, SettingType.ROLE)
+          .subscribe({
+            next: (res) => {
+              this.types = res;
+            },
+            error: (error) => {
+              this.messageService.error('取得資料發生錯誤', error.message);
+            },
+          });
+      } else {
+        control?.reset(); // 清空角色
+        control?.disable(); // 禁用 role
+      }
     });
 
     // 初始化 Table 配置
@@ -102,36 +123,42 @@ export class RolesComponent
         header: '服務',
         type: 'dropdown',
         required: 'true',
+        readOnly: true,
       },
       {
         field: 'type',
         header: '配置種類',
         type: 'dropdown',
         required: 'true',
+        readOnly: false,
       },
       {
         field: 'code',
         header: '角色代碼',
         type: 'inputText',
         required: 'true',
+        readOnly: false,
       },
       {
         field: 'name',
         header: '名稱',
         type: 'inputText',
         required: 'true',
+        readOnly: false,
       },
       {
         field: 'description',
         header: '說明',
         type: 'textArea',
         required: 'false',
+        readOnly: false,
       },
       {
         field: 'activeFlag',
         header: '是否生效',
         type: 'dropdown',
         required: 'true',
+        readOnly: false,
       },
     ];
 
@@ -149,16 +176,6 @@ export class RolesComponent
       });
 
     // 取得下拉式選單資料
-    this.optionService
-      .getSettingTypes('AUTH_SERVICE', SettingType.ROLE)
-      .subscribe({
-        next: (res) => {
-          this.types = res;
-        },
-        error: (error) => {
-          this.messageService.error('取得資料發生錯誤', error.message);
-        },
-      });
     this.optionService
       .getSettingTypes('AUTH_SERVICE', SettingType.SERVICE)
       .subscribe({
@@ -186,12 +203,14 @@ export class RolesComponent
   override submit() {
     this.submitted = true;
 
-    if (this.formGroup.invalid || !this.submitted) {
+    if (this.formGroup.invalid || !this.submitted || this.mode) {
       return;
     }
+
+    console.log(this.tableData);
     const requestData: SaveRole[] = this.tableData.map((data) => {
       return {
-        id: data.id,
+        id: data?.id,
         service: data.service,
         code: data.code,
         type: data.type,
@@ -298,15 +317,23 @@ export class RolesComponent
   onEdit(rowData: any) {
     console.log(rowData);
     this.clonedData[rowData.givenIndex] = { ...rowData };
+    this.mode = 'edit';
   }
 
   /**
    * 取消編輯/新增
    * */
   cancel(rowData: any, rowIndex: number) {
-    console.log(rowIndex);
-    this.tableData[rowIndex] = this.clonedData[rowData.givenIndex];
-    delete this.clonedData[rowData.givenIndex];
+    const cloned = this.clonedData[rowData.givenIndex];
+    if (cloned) {
+      // 如果有 clone，就還原
+      this.tableData[rowIndex] = cloned;
+      delete this.clonedData[rowData.givenIndex];
+    } else {
+      // 如果沒有 clone，代表是新加的資料 => 直接刪掉這筆
+      this.tableData.splice(rowIndex, 1);
+    }
+    this.mode = '';
   }
 
   /**
@@ -318,9 +345,12 @@ export class RolesComponent
    * 新增一筆空的 row 資料
    * */
   addNewRow(): void {
+    this.mode = 'add';
     this.newRow = {
       id: null,
-      service: '',
+      service: this.formGroup.get('service')?.value
+        ? this.formGroup.get('service')?.value
+        : '',
       name: '',
       type: this.formGroup.get('type')?.value
         ? this.formGroup.get('type')?.value
@@ -346,30 +376,6 @@ export class RolesComponent
     this.tableData = [...this.tableData]; // 觸發變更檢測 (避免不刷新)
   }
 
-  // 刪除幾列資料
-  override delete(ids: number[], event?: Event) {
-    this.roleService
-      .delete(ids)
-      .pipe(
-        finalize(() => {
-          // 無論成功或失敗都會執行
-          this.query();
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          if (res?.code === 'VALIDATION_FAILED') {
-            this.messageService.error(res.message);
-          } else {
-            this.messageService.success(res.message);
-          }
-        },
-        error: (error) => {
-          this.messageService.error(error.message);
-        },
-      });
-  }
-
   /**
    * 檢查 row 資料是否有未填欄位
    * @param rowData Row 資料
@@ -384,6 +390,8 @@ export class RolesComponent
       !selectedData.activeFlag
     ) {
       this.dataTable.initRowEdit(selectedData);
+    } else {
+      this.mode = '';
     }
   }
 

@@ -28,3 +28,8 @@
         max-width: 100%;
     }
 }
+
+.readonly-field {
+  pointer-events: none;   /* 阻止所有滑鼠互動 */
+  opacity: 1;             /* 保持外觀正常，不要灰掉 */
+}

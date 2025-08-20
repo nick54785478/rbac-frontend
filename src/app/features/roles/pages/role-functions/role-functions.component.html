@@ -33,7 +33,9 @@
           styleClass="w-full"
           inputStyleClass="w-full"
           [showEmptyMessage]="true"
-          (completeMethod)="getRoleOptions($event)"
+          (completeMethod)="
+            getRoleOptions($event, formControl('service').value)
+          "
           emptyMessage="查無資料"
           field="displayName"
         >
@@ -46,6 +48,15 @@
     <div class="grid p-fluid justify-content-end">
       <div class="col-12 md:col-3 lg:col-2">
         <button type="button" pButton label="查詢" (click)="query()"></button>
+      </div>
+      <div class="col-12 md:col-3 lg:col-2">
+        <button
+          type="button"
+          class="p-button-secondary p-button-outlined"
+          pButton
+          label="清除"
+          (click)="cancel()"
+        ></button>
       </div>
     </div>
   </p-panel>

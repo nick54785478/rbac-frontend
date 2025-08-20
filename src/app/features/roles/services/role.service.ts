@@ -39,10 +39,12 @@ export class RoleService {
   /**
    * 透過 ID 查詢角色資料
    * @param id
+   * @param service
    */
-  queryById(id: number): Observable<RoleQueried> {
+  queryByIdAndService(id: number, service: string): Observable<RoleQueried> {
     const url = this.baseApiUrl + '/roles' + '/' + id;
-    return this.http.get<RoleQueried>(url);
+    let params = new HttpParams().set('service', service ? service : '');
+    return this.http.get<RoleQueried>(url, { params });
   }
 
   /**

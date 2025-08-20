@@ -78,9 +78,30 @@ export class FunctionsComponent
     this.formGroup = new FormGroup({
       service: new FormControl('', Validators.required), // 種類
       actionType: new FormControl(''), // 動作種類
-      type: new FormControl(''), // 種類
+      type: new FormControl({ value: '', disabled: true }), // 種類
       name: new FormControl(''), // 功能名稱
       activeFlag: new FormControl(''), // 是否生效
+    });
+
+    // 監聽 service 變更，變更後要更新 Type 的下拉選單資料
+    this.formGroup.get('service')?.valueChanges.subscribe((serviceValue) => {
+      const control = this.formGroup.get('type');
+      if (serviceValue) {
+        control?.enable(); // 選擇 service -> 啟用 type
+        this.optionService
+          .getSettingTypes(serviceValue, SettingType.FUNCTION)
+          .subscribe({
+            next: (res) => {
+              this.types = res;
+            },
+            error: (error) => {
+              this.messageService.error('取得資料發生錯誤', error.message);
+            },
+          });
+      } else {
+        control?.reset(); // 清空角色
+        control?.disable(); // 禁用 type
+      }
     });
 
     // 初始化 Table 配置
@@ -89,52 +110,55 @@ export class FunctionsComponent
         field: 'service',
         header: '服務',
         type: 'dropdown',
-        required: 'true',
+        required: true,
+        readOnly: true,
       },
       {
         field: 'type',
         header: '配置種類',
         type: 'dropdown',
-        required: 'true',
+        required: true,
+        readOnly: false,
       },
       {
         field: 'actionType',
         header: '動作',
         type: 'dropdown',
-        required: 'true',
+        required: true,
+        readOnly: false,
       },
       {
         field: 'code',
         header: '功能代碼',
         type: 'inputText',
-        required: 'true',
+        required: true,
+        readOnly: false,
       },
       {
         field: 'name',
         header: '名稱',
         type: 'inputText',
-        required: 'true',
+        required: true,
+        readOnly: false,
       },
       {
         field: 'description',
         header: '說明',
         type: 'textArea',
-        required: 'true',
+        required: true,
+        readOnly: false,
       },
       {
         field: 'activeFlag',
         header: '是否生效',
         type: 'dropdown',
-        required: 'true',
+        required: true,
+        readOnly: false,
       },
     ];
 
     // 初始化下拉選單資料
     forkJoin({
-      types: this.optionService.getSettingTypes(
-        'AUTH_SERVICE',
-        SettingType.FUNCTION
-      ),
       activeFlags: this.optionService.getSettingTypes(
         'AUTH_SERVICE',
         SettingType.YES_NO
@@ -149,7 +173,6 @@ export class FunctionsComponent
       ),
     }).subscribe({
       next: (res) => {
-        this.types = res.types;
         this.activeFlags = res.activeFlags;
         this.actionTypes = res.actionTypes;
         this.services = res.services;

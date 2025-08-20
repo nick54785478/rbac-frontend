@@ -86,13 +86,21 @@ export class RoleFunctionsComponent
     // 監聽 service 變更
     this.formGroup.get('service')?.valueChanges.subscribe((serviceValue) => {
       const roleControl = this.formGroup.get('role');
+      console.log(this.formGroup.value.service);
       if (serviceValue) {
         roleControl?.enable(); // 選到 service -> 啟用 role
+        this.formGroup.patchValue({
+          role: '',
+        });
+        this.getRoleOptions(this.queriedStr, serviceValue);
       } else {
         roleControl?.reset(); // 清空角色
         roleControl?.disable(); // 禁用 role
-        this.roleOptions = []; // 清空角色下拉選單
+        this.roleOptions = [];
       }
+      // 清空查詢結果
+      this.sourceList = [];
+      this.targetList = [];
     });
 
     this.detailTabs = [
@@ -192,10 +200,10 @@ export class RoleFunctionsComponent
     }
 
     this.loadMaskService.show();
-
+    let service = this.formGroup.value.service;
     console.log(formData.role);
     this.roleService
-      .queryById(formData.role.id)
+      .queryByIdAndService(formData.role.id, service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -215,20 +223,19 @@ export class RoleFunctionsComponent
           }));
         }
       });
-    this.getOtherFunctions(formData.role.id);
+    this.getOtherFunctions(formData.role.id, service);
   }
 
   /**
    * 查詢角色下拉式選單
    * @param event
+   * @param service
    */
-  getRoleOptions(event: any) {
+  getRoleOptions(event: any, service: string) {
     if (event.query.length < 2 || event.query === this.queriedStr) {
       return;
     }
     this.queriedStr = event.query;
-
-    let service = this.formGroup.value.service;
 
     if (!this.dataSubject$.observed) {
       // this.loadMaskService.show();
@@ -264,10 +271,11 @@ export class RoleFunctionsComponent
   /**
    * 取得不屬於該角色的功能
    * @param id
+   * @param service
    */
-  getOtherFunctions(id: number) {
+  getOtherFunctions(id: number, service: string) {
     this.roleFunctionsService
-      .queryOthers(id)
+      .getOtherFunctions(id, service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行

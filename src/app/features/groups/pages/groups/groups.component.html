@@ -143,7 +143,10 @@
                   <input
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
-                    [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
+                    [ngClass]="{
+                      'ng-invalid': ctrl.invalid && ctrl.touched,
+                      'readonly-field': col.readOnly
+                    }"
                     *ngSwitchCase="'inputText'"
                     pInputText
                     [style]="{ width: '100%' }"
@@ -155,7 +158,10 @@
                   <textarea
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
-                    [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
+                    [ngClass]="{
+                      'ng-invalid': ctrl.invalid && ctrl.touched,
+                      'readonly-field': col.readOnly
+                    }"
                     [style]="{ width: '100%' }"
                     *ngSwitchCase="'textArea'"
                     pInputTextarea
@@ -167,7 +173,10 @@
                   <p-dropdown
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
-                    [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
+                    [ngClass]="{
+                      'ng-invalid': ctrl.invalid && ctrl.touched,
+                      'readonly-field': col.readOnly
+                    }"
                     required
                     *ngSwitchCase="'dropdown'"
                     [(ngModel)]="rowData[col.field]"
@@ -184,7 +193,10 @@
                   <p-autoComplete
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
-                    [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
+                    [ngClass]="{
+                      'ng-invalid': ctrl.invalid && ctrl.touched,
+                      'readonly-field': col.readOnly
+                    }"
                     *ngSwitchCase="'autoComplete'"
                     [(ngModel)]="rowData[col.field]"
                     [suggestions]="autoCompleteList"
@@ -195,13 +207,17 @@
                     [style]="{ width: '100%' }"
                     styleClass="w-full"
                     inputStyleClass="w-full"
+                    [disabled]="col.readOnly"
                   ></p-autoComplete>
 
                   <!-- fallback -->
                   <input
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
-                    [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
+                    [ngClass]="{
+                      'ng-invalid': ctrl.invalid && ctrl.touched,
+                      'readonly-field': col.readOnly
+                    }"
                     *ngSwitchDefault
                     pInputText
                     [style]="{ width: '100%' }"

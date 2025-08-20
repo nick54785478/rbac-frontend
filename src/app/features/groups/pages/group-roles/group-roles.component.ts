@@ -17,6 +17,7 @@ import { GroupQueried } from '../../models/group-query.model';
 import { GroupInfoOption } from '../../../../shared/models/group-info-option.model';
 import { Option } from '../../../../shared/models/option.model';
 import { SettingType } from '../../../../core/enums/setting-type.enum';
+import { group } from 'node:console';
 
 @Component({
   selector: 'app-group-roles',
@@ -88,10 +89,17 @@ export class GroupRolesComponent
       const control = this.formGroup.get('group');
       if (serviceValue) {
         control?.enable(); // 選到 service -> 啟用 role
+        this.formGroup.patchValue({
+          group: '',
+        });
+        this.getGroupOptions(this.queriedStr, serviceValue);
+        this.groupOptions = []; // 清空群組下拉選單
       } else {
         control?.reset(); // 清空角色
         control?.disable(); // 禁用 role
-        this.groupOptions = []; // 清空群組下拉選單
+        // 清空查詢結果
+        this.sourceList = [];
+        this.targetList = [];
       }
     });
 
@@ -135,7 +143,6 @@ export class GroupRolesComponent
    */
   onSubmit() {
     let groupId = this.formGroup.value.group.id;
-    let service = this.formGroup.value.service;
     console.log(this.targetList);
     let roleIds = this.targetList
       ? this.targetList
@@ -222,10 +229,11 @@ export class GroupRolesComponent
    * 查詢群組下拉式選單
    * @param event
    */
-  getGroupOptions(event: any) {
+  getGroupOptions(event: any, service: string) {
     if (event.query.length < 2 || event.query === this.queriedStr) {
       return;
     }
+    // 查詢前先清空
     this.queriedStr = event.query;
 
     if (!this.dataSubject$.observed) {
@@ -237,10 +245,9 @@ export class GroupRolesComponent
             // 無論成功或失敗都會執行
             // this.loadMaskService.hide();
           }),
-          debounceTime(300), // 防抖，避免频繁發请求
+          debounceTime(300), // 防抖，避免頻繁發請求
           switchMap((keyword) => {
             console.log(keyword);
-            let service = this.formGroup.value.service;
 
             return this.optionService.getGroupOptions(service, keyword);
           }), // 自動取消上一次未完成的請求

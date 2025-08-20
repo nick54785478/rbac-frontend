@@ -39,7 +39,7 @@ export class FunctionsConfigComponent
     console.log(data.id);
 
     this.getOtherFunctions(data.id);
-    this.query(data.id);
+    this.query(data.id, data.service);
 
     this.detailTabs = [
       {
@@ -110,13 +110,19 @@ export class FunctionsConfigComponent
   /**
    * 取得不屬於該角色的功能
    * @param id
+   * @param service
    */
   getOtherFunctions(id: number) {
+    this.submitted = true;
+    if (this.formGroup.invalid) {
+      return;
+    }
     this.roleFunctionsService
-      .queryOthers(id)
+      .getOtherFunctions(id, this.formGroup.value.service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
+          this.submitted = false;
         })
       )
       .subscribe((res) => {
@@ -124,6 +130,7 @@ export class FunctionsConfigComponent
         if (res) {
           this.sourceList = res.map((item: any) => ({
             id: item.id, // 保留 id
+            service: item.service,
             code: item.code, // 保留 name
             name: item.name, // 保留 nameEn
             displayName: `${item.code} (${item.name})`, // 生成 displayName
@@ -135,11 +142,16 @@ export class FunctionsConfigComponent
   /**
    * 提交資料，查詢角色相關資料
    */
-  query(id: number) {
+  query(id: number, service: string) {
     this.loadMaskService.show();
 
+    this.submitted = true;
+    if (!this.submitted || this.formGroup.invalid) {
+      return;
+    }
+
     this.roleService
-      .queryById(id)
+      .queryByIdAndService(id, service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -151,6 +163,7 @@ export class FunctionsConfigComponent
         if (funcList) {
           this.targetList = funcList.map((func: any) => ({
             id: func.id,
+            service: func.service,
             code: func.code,
             name: func.name,
             displayName: `${func.code} (${func.name})`, // 生成 displayName

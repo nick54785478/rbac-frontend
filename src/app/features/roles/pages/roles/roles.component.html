@@ -167,7 +167,10 @@
                   <p-dropdown
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
-                    [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
+                    [ngClass]="{
+                      'ng-invalid': ctrl.invalid && ctrl.touched,
+                      'readonly-field': col.readOnly
+                    }"
                     required
                     *ngSwitchCase="'dropdown'"
                     [(ngModel)]="rowData[col.field]"
@@ -184,7 +187,10 @@
                   <p-autoComplete
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
-                    [ngClass]="{ 'ng-invalid': ctrl.invalid && ctrl.touched }"
+                    [ngClass]="{
+                      'ng-invalid': ctrl.invalid && ctrl.touched,
+                      'readonly-field': col.readOnly
+                    }"
                     *ngSwitchCase="'autoComplete'"
                     [(ngModel)]="rowData[col.field]"
                     [suggestions]="autoCompleteList"
@@ -254,17 +260,6 @@
               icon="pi pi-pencil"
               (click)="clickRowActionMenu(rowData); onEdit(rowData)"
             ></button>
-            <!-- <button
-              *ngIf="!editing"
-              pButton
-              [rounded]="true"
-              [text]="true"
-              type="button"
-              style="color: #f70202"
-              class="p-button-outlined p-button-secondary"
-              icon="pi pi-trash"
-              (click) ="onDelete(rowIndex)"
-            ></button> -->
             <div class="flex mb-2 gap-2 justify-content-start">
               <ng-container *ngIf="editing">
                 <i
