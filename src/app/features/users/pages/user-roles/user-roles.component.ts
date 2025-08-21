@@ -21,11 +21,12 @@ import { Location } from '@angular/common';
 })
 export class UserRolesComponent extends BasePickListCompoent implements OnInit {
   username: string = '';
+  service: string = '';
 
   constructor(
     private location: Location,
     private loadMaskService: LoadingMaskService,
-    private userService: UsersService,
+    private userRolesService: UserRolesService,
     private userRoleService: UserRolesService,
     private dialogConfig: DynamicDialogConfig,
     private messageService: SystemMessageService,
@@ -37,6 +38,8 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
   ngOnInit(): void {
     console.log(this.dialogConfig.data);
     this.username = this.dialogConfig.data.data.username;
+    this.service = this.dialogConfig.data.service;
+    console.log(this.service);
 
     // 取得其他群組資料(不屬於該使用者的)
     this.queryOthers();
@@ -83,18 +86,15 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
   onCloseForm() {
     console.log('關閉 Dialog');
     this.ref.close();
-    // this.clear();
   }
 
   /**
-   * 查詢其他群組資料(不屬於該使用者的)
+   * 查詢其他角色資料(不屬於該使用者的)
    */
   queryOthers() {
     let data = this.dialogConfig.data.data;
-    console.log(data);
-
     this.userRoleService
-      .queryOthers(data.username)
+      .queryOthers(data.username, this.service)
       .pipe(finalize(() => {}))
       .subscribe({
         next: (res) => {
@@ -121,8 +121,8 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
   query() {
     let data = this.dialogConfig.data.data;
 
-    this.userService
-      .queryRoles(data.username)
+    this.userRolesService
+      .queryRoles(data.username, this.service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();
@@ -154,6 +154,7 @@ export class UserRolesComponent extends BasePickListCompoent implements OnInit {
 
     let requestData: UpdateUserRoles = {
       username: this.username,
+      service: this.service,
       roleIds: roleIds,
     };
 

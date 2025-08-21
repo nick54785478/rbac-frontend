@@ -24,6 +24,7 @@ export class UserGroupsComponent
   implements OnInit
 {
   username: string = '';
+  service: string = '';
 
   constructor(
     private location: Location,
@@ -40,6 +41,8 @@ export class UserGroupsComponent
   ngOnInit(): void {
     console.log(this.dialogConfig.data);
     this.username = this.dialogConfig.data.data.username;
+    this.service = this.dialogConfig.data.service;
+    console.log(this.service);
 
     // 取得其他群組資料(不屬於該使用者的)
     this.queryOthers();
@@ -83,10 +86,14 @@ export class UserGroupsComponent
 
     let requestData: UpdateUserGroups = {
       username: this.username,
+      service: this.service,
       groupIds: groupIds,
     };
 
     this.submitted = true;
+    if (!this.submitted) {
+      return;
+    }
     this.loadMaskService.show();
     this.userGroupService
       .update(requestData)
@@ -127,7 +134,6 @@ export class UserGroupsComponent
   onCloseForm() {
     console.log('關閉 Dialog');
     this.ref.close();
-    // this.clear();
   }
 
   /**
@@ -138,7 +144,7 @@ export class UserGroupsComponent
     console.log(data);
 
     this.userGroupService
-      .queryOthers(data.username)
+      .queryOthers(data.username, this.service)
       .pipe(finalize(() => {}))
       .subscribe({
         next: (res) => {
@@ -164,9 +170,8 @@ export class UserGroupsComponent
    */
   query() {
     let data = this.dialogConfig.data.data;
-
-    this.userService
-      .queryGroups(data.username)
+    this.userGroupService
+      .queryGroups(data.username, this.service)
       .pipe(
         finalize(() => {
           this.loadMaskService.hide();

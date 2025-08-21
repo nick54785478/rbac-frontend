@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { UserRoleQueried } from '../models/user-roles-query.model';
@@ -15,12 +15,30 @@ export class UserRolesService {
   constructor(private http: HttpClient) {}
 
   /**
+   * 查詢符合條件的使用者角色資料
+   * @param username
+   * @param service
+   * @returns
+   */
+  queryRoles(username: string, service: string): Observable<UserRoleQueried[]> {
+    const url = this.baseApiUrl + '/users/roles/' + username;
+    let params = new HttpParams().set('service', service ? service : '');
+    return this.http.get<UserRoleQueried[]>(url, { params });
+  }
+
+  /**
    * 透過 username 查詢其他群組資料(不屬於該使用者的)
    * @param username
+   * @param service
+   * @returns
    */
-  queryOthers(username: string): Observable<UserRoleQueried[]> {
+  queryOthers(
+    username: string,
+    service: string
+  ): Observable<UserRoleQueried[]> {
     const url = this.baseApiUrl + '/users/roles/' + username + '/others';
-    return this.http.get<UserRoleQueried[]>(url);
+    let params = new HttpParams().set('service', service ? service : '');
+    return this.http.get<UserRoleQueried[]>(url, { params });
   }
 
   /**
