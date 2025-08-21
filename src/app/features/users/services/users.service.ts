@@ -32,7 +32,7 @@ export class UsersService {
    */
   query(
     username: string,
-    service: string
+    service?: string
   ): Observable<UserQueried | UserDetailQueried> {
     const url = this.baseApiUrl + '/users' + '/' + username + '/details';
     let params = new HttpParams().set('service', service ? service : '');

@@ -192,10 +192,6 @@ export class UsersComponent
     console.log('Tab changed:', event.item.field);
     this.activeField = event.item.field;
 
-    // if (this.tableData.length === 0) {
-    //   return;
-    // }
-
     this.switchTableData(this.activeField);
   }
 
@@ -231,7 +227,8 @@ export class UsersComponent
     this.dialogOpened = true;
     console.log(this.formControlInvalid('userInfo'));
 
-    if (!this.dialogOpened || !this.formGroup.valid) {
+    this.submitted = true;
+    if (!this.dialogOpened || this.formGroup.invalid) {
       return;
     }
     this.openFormDialog(action, this.formGroup.value);
@@ -280,6 +277,7 @@ export class UsersComponent
         console.log('關閉 Dialog');
         // 更改 dialogOpened
         this.dialogOpened = false;
+        this.submitted = false;
         // 重查一次
         this.query();
       });
