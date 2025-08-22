@@ -41,6 +41,7 @@ import { InplaceModule } from 'primeng/inplace';
 import { InputMaskModule } from 'primeng/inputmask';
 import { PickListModule } from 'primeng/picklist';
 import { StepperModule } from 'primeng/stepper';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 /**
  * 用來匯入 PrimeNG 用到的元件
@@ -71,6 +72,7 @@ import { StepperModule } from 'primeng/stepper';
     MessagesModule,
     MenuModule,
     MultiSelectModule,
+    OverlayPanelModule,
     PanelModule,
     PasswordModule,
     PickListModule,
@@ -114,6 +116,7 @@ import { StepperModule } from 'primeng/stepper';
     MessagesModule,
     MenuModule,
     MultiSelectModule,
+    OverlayPanelModule,
     PanelModule,
     PasswordModule,
     PickListModule,

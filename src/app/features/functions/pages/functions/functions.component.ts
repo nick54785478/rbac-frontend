@@ -1,4 +1,11 @@
-import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DoCheck,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FunctionsService } from '../../services/functions.service';
 import {
   FormControl,
@@ -20,6 +27,7 @@ import { SaveFunction } from '../../models/save-functions-request.model';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { error } from 'console';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
   selector: 'app-functions',
@@ -38,6 +46,13 @@ export class FunctionsComponent
   actionTypes: Option[] = []; // ActionTypes 的下拉式選單
   services: Option[] = [];
 
+  // 控制 OverlayPanel
+  @ViewChild('fieldPanel') fieldPanel!: OverlayPanel;
+
+  // Field 顯示設定清單
+  fields: any[] = [];
+  selectedFields: any[] = []; // 被選中的欄位
+
   constructor(
     private loadingMaskService: LoadingMaskService,
     private optionService: OptionService,
@@ -49,6 +64,14 @@ export class FunctionsComponent
   ngOnInit(): void {
     // 初始化上方 Tab 按鈕
     this.detailTabs = [
+      {
+        label: '欄位',
+        icon: 'pi pi-filter',
+        command: () => {
+          this.fieldPanel.toggle(event);
+        },
+        disabled: false,
+      },
       {
         label: '新增',
         icon: 'pi pi-plus',
@@ -74,6 +97,7 @@ export class FunctionsComponent
         disabled: false,
       },
     ];
+
     // 初始化表單
     this.formGroup = new FormGroup({
       service: new FormControl('', Validators.required), // 種類
@@ -157,6 +181,12 @@ export class FunctionsComponent
       },
     ];
 
+    // 將 cols 映射成 fields
+    this.fields = this.cols.map((col) => ({
+      field: col.field,
+      label: col.header,
+    }));
+
     // 初始化下拉選單資料
     forkJoin({
       activeFlags: this.optionService.getSettingTypes(
@@ -183,6 +213,8 @@ export class FunctionsComponent
     });
   }
 
+  ngOnDestroy() {}
+
   /**
    * 清除表單資料
    */
@@ -191,8 +223,6 @@ export class FunctionsComponent
     this.minGivenIndex = -1;
     this.formGroup.reset();
   }
-
-  ngOnDestroy() {}
 
   // 提交資料
   override submit() {
@@ -430,5 +460,27 @@ export class FunctionsComponent
       default:
         return [];
     }
+  }
+
+  // 用來轉換顯示名稱
+  getColNameByField(field: string) {
+    const map: any = {
+      name: '名稱',
+      type: '種類',
+      service: '服務',
+    };
+    return map[field] || field;
+  }
+
+  // 隱藏 Field 設定清單
+  closePanel() {
+    this.fieldPanel.hide();
+  }
+
+  /**
+   * 提交 Fields 設定
+   */
+  submitFields() {
+    console.log(this.selectedFields);
   }
 }
