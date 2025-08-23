@@ -354,7 +354,11 @@ export class FunctionsComponent
   /**
    * 回歸原狀，原先新增的資料全部放棄。
    */
-  cancelAll() {}
+  cancelAll() {
+    // 基本上 givenIndex < 0 者都是新增的資料
+    this.dataTable.editingRowKeys = {};
+    this.tableData = this.tableData.filter((data) => data.givenIdex >= 0);
+  }
 
   /**
    * Table Action 按鈕按下去的時候要把該筆資料記錄下來。

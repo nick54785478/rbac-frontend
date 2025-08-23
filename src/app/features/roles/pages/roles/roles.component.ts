@@ -377,7 +377,11 @@ export class RolesComponent
   /**
    * 回歸原狀，原先新增的資料全部放棄。
    */
-  cancelAll() {}
+  cancelAll() {
+    // 基本上 givenIndex < 0 者都是新增的資料
+    this.dataTable.editingRowKeys = {};
+    this.tableData = this.tableData.filter((data) => data.givenIdex >= 0);
+  }
 
   /**
    * 新增一筆空的 row 資料

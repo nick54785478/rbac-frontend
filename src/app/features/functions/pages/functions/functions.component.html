@@ -130,9 +130,10 @@
       [frozenWidth]="'1rem'"
       [scrollHeight]="'400px'"
       dataKey="givenIndex"
+      virtualScroll="true"
       editMode="row"
       [resizableColumns]="true"
-      [tableStyle]="{ 'min-width': '40rem' }"
+      [tableStyle]="{ 'max-width': '1200px' }"
     >
       <!-- 標題 -->
       <ng-template pTemplate="header" #header let-columns>
@@ -147,17 +148,7 @@
               <p-sortIcon [field]="col.field" />
             </ng-container>
           </th>
-          <th
-            alignFrozen="right"
-            pFrozenColumn
-            style="
-              min-width: 70px !important;
-              max-width: 1rem !important;
-              width: 70px !important;
-            "
-          >
-            Actions
-          </th>
+          <th alignFrozen="right" pFrozenColumn>Actions</th>
         </tr>
       </ng-template>
       <ng-template
@@ -171,8 +162,11 @@
         <tr [pEditableRow]="rowData">
           <td
             *ngFor="let col of columns"
-            style="max-width: 300px !important"
-            [ngStyle]="{ 'word-break': 'break-all', 'word-wrap': 'break-word' }"
+            [ngStyle]="{
+              'word-break': 'break-all',
+              'word-wrap': 'break-word',
+              'min-width': '150px'
+            }"
           >
             <p-cellEditor>
               <ng-template #input pTemplate="input">
@@ -187,7 +181,6 @@
                     }"
                     *ngSwitchCase="'inputText'"
                     pInputText
-                    [style]="{ width: '100%' }"
                     type="text"
                     [(ngModel)]="rowData[col.field]"
                     [required]="col.required"
@@ -200,7 +193,6 @@
                       'ng-invalid': ctrl.invalid && ctrl.touched,
                       'readonly-field': col.readOnly
                     }"
-                    [style]="{ width: '100%' }"
                     *ngSwitchCase="'textArea'"
                     pInputTextarea
                     [(ngModel)]="rowData[col.field]"
@@ -224,7 +216,6 @@
                     optionValue="value"
                     placeholder="Please select"
                     appendTo="body"
-                    [style]="{ width: '100%' }"
                     [required]="col.required"
                   ></p-dropdown>
                   <!-- autoComplete -->
@@ -242,7 +233,6 @@
                     [dropdown]="true"
                     [forceSelection]="true"
                     appendTo="body"
-                    [style]="{ width: '100%' }"
                     styleClass="w-full"
                     inputStyleClass="w-full"
                   ></p-autoComplete>
@@ -257,7 +247,6 @@
                     }"
                     *ngSwitchDefault
                     pInputText
-                    [style]="{ width: '100%' }"
                     type="text"
                     [(ngModel)]="rowData[col.field]"
                     required
@@ -276,7 +265,6 @@
                     white-space: normal;
                     word-break: break-word;
                     overflow-wrap: break-word;
-                    max-width: 40rem;
                   "
                 >
                   {{ rowData[col.field] }}

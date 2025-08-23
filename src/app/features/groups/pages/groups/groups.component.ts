@@ -29,6 +29,7 @@ import { StorageService } from '../../../../core/services/storage.service';
 import { CustomisationService } from '../../../../shared/services/customisation.service';
 import { SystemStorageKey } from '../../../../core/enums/system-storage.enum';
 import { UpdateCustomisation } from '../../../../shared/models/update-customisation-request.model';
+import { map } from 'rxjs/internal/operators/map';
 
 @Component({
   selector: 'app-groups',
@@ -358,7 +359,11 @@ export class GroupsComponent
   /**
    * 回歸原狀，原先新增的資料全部放棄。
    */
-  cancelAll() {}
+  cancelAll() {
+    // 基本上 givenIndex < 0 者都是新增的資料
+    this.dataTable.editingRowKeys = {};
+    this.tableData = this.tableData.filter((data) => data.givenIdex >= 0);
+  }
 
   /**
    * 新增一筆空的 row 資料
@@ -377,8 +382,10 @@ export class GroupsComponent
       description: '',
       givenIndex: this.minGivenIndex--, // 前端給予的編號資料
     };
+
     console.log(this.minGivenIndex);
     this.tableData.unshift(this.newRow);
+
     // this.onEdit(this.newRow);
     // 觸發該 row 的編輯模式
     setTimeout(() => {
