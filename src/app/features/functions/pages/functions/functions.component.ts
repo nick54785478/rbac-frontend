@@ -24,10 +24,12 @@ import { CoreModule } from '../../../../core/core.module';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { LoadingMaskService } from '../../../../core/services/loading-mask.service';
 import { SaveFunction } from '../../models/save-functions-request.model';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { error } from 'console';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { CustomisationService } from '../../../../shared/services/customisation.service';
+import { SystemStorageKey } from '../../../../core/enums/system-storage.enum';
+import { StorageService } from '../../../../core/services/storage.service';
+import { UpdateCustomisation } from '../../../../shared/models/update-customisation-request.model';
 
 @Component({
   selector: 'app-functions',
@@ -52,8 +54,12 @@ export class FunctionsComponent
   // Field 顯示設定清單
   fields: any[] = [];
   selectedFields: any[] = []; // 被選中的欄位
+  fieldViews: any[] = [];
+  filteredCols: any[] = [];
 
   constructor(
+    private storageService: StorageService,
+    private customisationService: CustomisationService,
     private loadingMaskService: LoadingMaskService,
     private optionService: OptionService,
     private functionService: FunctionsService,
@@ -211,6 +217,9 @@ export class FunctionsComponent
         this.messageService.error(error);
       },
     });
+
+    // 取出 Field View 個人化設定
+    this.getFieldViewCustomisation();
   }
 
   ngOnDestroy() {}
@@ -226,6 +235,7 @@ export class FunctionsComponent
 
   // 提交資料
   override submit() {
+    console.log(this.tableData);
     this.submitted = true;
     const requestData: SaveFunction[] = this.tableData.map((data) => {
       return {
@@ -462,16 +472,6 @@ export class FunctionsComponent
     }
   }
 
-  // 用來轉換顯示名稱
-  getColNameByField(field: string) {
-    const map: any = {
-      name: '名稱',
-      type: '種類',
-      service: '服務',
-    };
-    return map[field] || field;
-  }
-
   // 隱藏 Field 設定清單
   closePanel() {
     this.fieldPanel.hide();
@@ -482,5 +482,63 @@ export class FunctionsComponent
    */
   submitFields() {
     console.log(this.selectedFields);
+    const username =
+      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME) ||
+      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+      '';
+    // 取得 Component 名稱
+    let component = this.constructor.name;
+
+    let requestData: UpdateCustomisation = {
+      username: username,
+      component: component,
+      type: 'FieldView',
+      valueList: this.selectedFields,
+    };
+
+    this.customisationService
+      .updateCustomisation(requestData)
+      .pipe(
+        finalize(() => {
+          // 無論成功或失敗都會執行
+          this.getFieldViewCustomisation();
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (res?.code === 'VALIDATION_FAILED') {
+            this.messageService.error(res.message);
+          } else {
+            this.messageService.success(res.message);
+          }
+        },
+        error: (error) => {
+          this.messageService.error(error.message);
+        },
+      });
+  }
+
+  /**
+   * 取得 Table Field View 配置
+   */
+  getFieldViewCustomisation() {
+    const username =
+      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME) ||
+      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+      '';
+    // 取得 Component 名稱
+    let component = this.constructor.name;
+    console.log(username, component);
+    this.customisationService
+      .getFieldViewCustomisations(username, component)
+      .subscribe((res) => {
+        this.fieldViews = res.map((data) => data.field);
+        this.selectedFields = res;
+        // 只保留在 viewCols 中的欄位
+        this.filteredCols = this.cols.filter((col) =>
+          this.fieldViews.includes(col.field)
+        );
+      });
+    this.closePanel();
   }
 }

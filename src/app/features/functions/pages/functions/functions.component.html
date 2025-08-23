@@ -92,9 +92,7 @@
             [value]="field"
             [(ngModel)]="selectedFields"
           />
-          <label [for]="field.label" class="ml-2">
-            {{ getColNameByField(field.label) }}
-          </label>
+          <label class="ml-2">{{ field.label }}</label>
         </div>
       </ng-template>
       <ng-template pTemplate="footer">
@@ -123,7 +121,7 @@
       [(selection)]="selectedData"
       [value]="tableData"
       styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
-      [columns]="cols"
+      [columns]="filteredCols"
       [rowsPerPageOptions]="[2, 5, 10]"
       [paginator]="true"
       [rows]="10"
@@ -140,7 +138,7 @@
       <ng-template pTemplate="header" #header let-columns>
         <tr>
           <th
-            style="max-width: 30rem"
+            style="max-width: 20rem"
             *ngFor="let col of columns"
             [pSortableColumn]="col.field"
           >

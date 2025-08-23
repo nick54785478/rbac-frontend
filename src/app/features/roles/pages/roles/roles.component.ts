@@ -1,4 +1,10 @@
-import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DoCheck,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -24,6 +30,11 @@ import { DialogFormComponent } from '../../../../shared/component/dialog-form/di
 import { MenuItem } from 'primeng/api';
 import { FunctionsConfigComponent } from './functions-config/functions-config.component';
 import { DialogConfirmService } from '../../../../core/services/dialog-confirm.service';
+import { CustomisationService } from '../../../../shared/services/customisation.service';
+import { StorageService } from '../../../../core/services/storage.service';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { SystemStorageKey } from '../../../../core/enums/system-storage.enum';
+import { UpdateCustomisation } from '../../../../shared/models/update-customisation-request.model';
 
 @Component({
   selector: 'app-roles',
@@ -49,7 +60,18 @@ export class RolesComponent
   rowActionMenu: MenuItem[] = []; // Table Row Actions 右側選單。
   readonly _destroying$ = new Subject<void>(); // 用來取消訂閱
 
+  // 控制 OverlayPanel
+  @ViewChild('fieldPanel') fieldPanel!: OverlayPanel;
+
+  // Field 顯示設定清單
+  fields: any[] = [];
+  selectedFields: any[] = []; // 被選中的欄位
+  fieldViews: any[] = [];
+  filteredCols: any[] = [];
+
   constructor(
+    private storageService: StorageService,
+    private customisationService: CustomisationService,
     private loadingMaskService: LoadingMaskService,
     private dialogService: DialogService,
     private optionService: OptionService,
@@ -62,6 +84,14 @@ export class RolesComponent
   ngOnInit(): void {
     // 初始化上方 Tab 按鈕
     this.detailTabs = [
+      {
+        label: '欄位',
+        icon: 'pi pi-filter',
+        command: () => {
+          this.fieldPanel.toggle(event);
+        },
+        disabled: false,
+      },
       {
         label: '新增',
         icon: 'pi pi-plus',
@@ -162,6 +192,12 @@ export class RolesComponent
       },
     ];
 
+    // 將 cols 映射成 fields
+    this.fields = this.cols.map((col) => ({
+      field: col.field,
+      label: col.header,
+    }));
+
     // 初始化 ActiveFlag 下拉選單
     // 取得下拉式選單資料
     this.optionService
@@ -186,6 +222,8 @@ export class RolesComponent
           this.messageService.error('取得資料發生錯誤', error.message);
         },
       });
+
+    this.getFieldViewCustomisation();
   }
 
   /**
@@ -470,5 +508,75 @@ export class RolesComponent
         this.dialogOpened = false;
       });
     return ref;
+  }
+
+  // 隱藏 Field 設定清單
+  closePanel() {
+    this.fieldPanel.hide();
+  }
+
+  /**
+   * 提交 Fields 設定
+   */
+  submitFields() {
+    console.log(this.selectedFields);
+    const username =
+      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME) ||
+      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+      '';
+    // 取得 Component 名稱
+    let component = this.constructor.name;
+
+    let requestData: UpdateCustomisation = {
+      username: username,
+      component: component,
+      type: 'FieldView',
+      valueList: this.selectedFields,
+    };
+
+    this.customisationService
+      .updateCustomisation(requestData)
+      .pipe(
+        finalize(() => {
+          // 無論成功或失敗都會執行
+          this.getFieldViewCustomisation();
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (res?.code === 'VALIDATION_FAILED') {
+            this.messageService.error(res.message);
+          } else {
+            this.messageService.success(res.message);
+          }
+        },
+        error: (error) => {
+          this.messageService.error(error.message);
+        },
+      });
+  }
+
+  /**
+   * 取得 Table Field View 配置
+   */
+  getFieldViewCustomisation() {
+    const username =
+      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME) ||
+      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+      '';
+    // 取得 Component 名稱
+    let component = this.constructor.name;
+    console.log(username, component);
+    this.customisationService
+      .getFieldViewCustomisations(username, component)
+      .subscribe((res) => {
+        this.fieldViews = res.map((data) => data.field);
+        this.selectedFields = res;
+        // 只保留在 viewCols 中的欄位
+        this.filteredCols = this.cols.filter((col) =>
+          this.fieldViews.includes(col.field)
+        );
+      });
+    this.closePanel();
   }
 }

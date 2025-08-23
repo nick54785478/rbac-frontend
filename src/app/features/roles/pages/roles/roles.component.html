@@ -77,13 +77,50 @@
     styleClass="table-tabmenu"
   >
   </p-tabMenu>
+  <p-overlayPanel
+    #fieldPanel
+    [dismissable]="true"
+    [showCloseIcon]="true"
+    [appendTo]="'body'"
+  >
+    <!-- 動態顯示的欄位選擇區 -->
+    <p-card subheader="欄位設定">
+      <ng-template pTemplate="content">
+        <div *ngFor="let field of fields">
+          <p-checkbox
+            name="group"
+            [value]="field"
+            [(ngModel)]="selectedFields"
+          />
+          <label class="ml-2">{{ field.label }}</label>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="flex gap-1 mt-1 justify-end">
+          <button
+            type="button"
+            pButton
+            label="提交"
+            (click)="submitFields()"
+          ></button>
+          <button
+            type="button"
+            class="p-button-secondary p-button-outlined"
+            pButton
+            label="取消"
+            (click)="closePanel()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-card>
+  </p-overlayPanel>
   <div class="card table-container">
     <p-table
       #dt
       [(selection)]="selectedData"
       [value]="tableData"
       styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
-      [columns]="cols"
+      [columns]="filteredCols"
       [rowsPerPageOptions]="[2, 5, 10]"
       [paginator]="true"
       [rows]="10"
