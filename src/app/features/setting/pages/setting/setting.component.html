@@ -84,32 +84,25 @@
     [(selection)]="selectedData"
     [scrollable]="true"
     [rows]="10"
+    [virtualScroll]="true"
     scrollHeight="300px"
     [paginator]="true"
     [rowsPerPageOptions]="[2, 5, 10]"
     styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
     [tableStyle]="{ 'max-width': '1200px' }"
+    [frozenWidth]="'100px'"
   >
-    <!-- 
-
-
-selectionMode="multiple" 
-    scrollHeight="300px"   [resizableColumns]="true"   styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
--->
-
     <!-- 標題 -->
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        <th
+          *ngFor="let col of columns"
+          [pSortableColumn]="col.field"
+          style="min-width: 150px"
+        >
           {{ col.header }} <p-sortIcon [field]="col.field" />
         </th>
-        <th
-          alignFrozen="left"
-          style="min-width: 70px !important; max-width: 300px !important"
-          pFrozenColumn
-        >
-          Actions
-        </th>
+        <th alignFrozen="right" pFrozenColumn>Actions</th>
       </tr>
     </ng-template>
     <!-- 內容 -->
@@ -117,48 +110,41 @@ selectionMode="multiple"
       <tr [pSelectableRow]="rowData">
         <td
           *ngFor="let col of columns"
-          style="
-            white-space: pre-wrap;
-            word-break: break-all;
-            word-wrap: break-word;
-          "
+          [ngStyle]="{
+            'word-break': 'break-all',
+            'word-wrap': 'break-word',
+          }"
         >
           <ng-container>
             {{ rowData[col.field] }}
           </ng-container>
         </td>
-        <td
-          alignFrozen="right"
-          style="min-width: 70px !important; max-width: 300px !important"
-          pFrozenColumn
-        >
-          <div>
-            <p-menu
-              #menu
-              [popup]="true"
-              [model]="rowActionMenu"
-              appendTo="body"
-            ></p-menu>
-            <button
-              pButton
-              [rounded]="true"
-              [text]="true"
-              type="button"
-              class="p-button-outlined p-button-primary"
-              icon="pi pi-pencil"
-              (click)="clickRowActionMenu(rowData); menu.toggle($event)"
-            ></button>
-            <button
-              pButton
-              [rounded]="true"
-              [text]="true"
-              type="button"
-              class="p-button-outlined p-button-secondary"
-              icon="pi pi-trash"
-              style="color: red"
-              (click)="delete(rowData.id); menu.toggle($event)"
-            ></button>
-          </div>
+        <td alignFrozen="right" pFrozenColumn style="min-width: 100px">
+          <p-menu
+            #menu
+            [popup]="true"
+            [model]="rowActionMenu"
+            appendTo="body"
+          ></p-menu>
+          <button
+            pButton
+            [rounded]="true"
+            [text]="true"
+            type="button"
+            class="p-button-outlined p-button-primary"
+            icon="pi pi-pencil"
+            (click)="clickRowActionMenu(rowData); menu.toggle($event)"
+          ></button>
+          <button
+            pButton
+            [rounded]="true"
+            [text]="true"
+            type="button"
+            class="p-button-outlined p-button-secondary"
+            icon="pi pi-trash"
+            style="color: red"
+            (click)="delete(rowData.id); menu.toggle($event)"
+          ></button>
         </td>
       </tr>
     </ng-template>
