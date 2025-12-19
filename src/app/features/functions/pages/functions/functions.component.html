@@ -114,7 +114,6 @@
       </ng-template>
     </p-card>
   </p-overlayPanel>
-
   <div class="card table-container">
     <p-table
       #dt
@@ -127,28 +126,32 @@
       [rows]="10"
       [sortOrder]="-1"
       [scrollable]="true"
-      [frozenWidth]="'1rem'"
       [scrollHeight]="'400px'"
-      dataKey="givenIndex"
       virtualScroll="true"
+      dataKey="givenIndex"
       editMode="row"
       [resizableColumns]="true"
-      [tableStyle]="{ 'max-width': '1200px' }"
+      [frozenWidth]="'100px'"
+      [tableStyle]="{
+        'table-layout': 'fixed',
+        width: '100%'
+      }"
+      [frozenWidth]="'120px'"
     >
       <!-- 標題 -->
       <ng-template pTemplate="header" #header let-columns>
         <tr>
           <th
-            style="max-width: 20rem"
             *ngFor="let col of columns"
             [pSortableColumn]="col.field"
+            [style.width]="col.width"
           >
             <ng-container
               >{{ col.header }}
               <p-sortIcon [field]="col.field" />
             </ng-container>
           </th>
-          <th alignFrozen="right" pFrozenColumn>Actions</th>
+          <th alignFrozen="right" pFrozenColumn style="width: 60px">Actions</th>
         </tr>
       </ng-template>
       <ng-template
@@ -165,93 +168,98 @@
             [ngStyle]="{
               'word-break': 'break-all',
               'word-wrap': 'break-word',
-              'min-width': '150px'
             }"
+            [style.width]="col.width"
           >
             <p-cellEditor>
               <ng-template #input pTemplate="input">
-                <ng-container [ngSwitch]="col.type">
-                  <!-- inputText -->
-                  <input
-                    name="{{ col.field }}-{{ rowIndex }}"
-                    #ctrl="ngModel"
-                    [ngClass]="{
-                      'ng-invalid': ctrl.invalid && ctrl.touched,
-                      'readonly-field': col.readOnly
-                    }"
-                    *ngSwitchCase="'inputText'"
-                    pInputText
-                    type="text"
-                    [(ngModel)]="rowData[col.field]"
-                    [required]="col.required"
-                  />
-                  <!-- textArea -->
-                  <textarea
-                    name="{{ col.field }}-{{ rowIndex }}"
-                    #ctrl="ngModel"
-                    [ngClass]="{
-                      'ng-invalid': ctrl.invalid && ctrl.touched,
-                      'readonly-field': col.readOnly
-                    }"
-                    *ngSwitchCase="'textArea'"
-                    pInputTextarea
-                    [(ngModel)]="rowData[col.field]"
-                    [autoResize]="true"
-                    [required]="col.required"
-                  ></textarea>
-                  <!-- dropdown -->
-                  <p-dropdown
-                    name="{{ col.field }}-{{ rowIndex }}"
-                    #ctrl="ngModel"
-                    [ngClass]="{
-                      'ng-invalid': ctrl.invalid && ctrl.touched,
-                      'readonly-field': col.readOnly
-                    }"
-                    required
-                    *ngSwitchCase="'dropdown'"
-                    [(ngModel)]="rowData[col.field]"
-                    [options]="loadDropdownData(col)"
-                    [filter]="true"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Please select"
-                    appendTo="body"
-                    [required]="col.required"
-                  ></p-dropdown>
-                  <!-- autoComplete -->
-                  <p-autoComplete
-                    name="{{ col.field }}-{{ rowIndex }}"
-                    #ctrl="ngModel"
-                    [ngClass]="{
-                      'ng-invalid': ctrl.invalid && ctrl.touched,
-                      'readonly-field': col.readOnly
-                    }"
-                    *ngSwitchCase="'autoComplete'"
-                    [(ngModel)]="rowData[col.field]"
-                    [suggestions]="autoCompleteList"
-                    (completeMethod)="completeMethod($event)"
-                    [dropdown]="true"
-                    [forceSelection]="true"
-                    appendTo="body"
-                    styleClass="w-full"
-                    inputStyleClass="w-full"
-                  ></p-autoComplete>
+                <div style="width: 100%">
+                  <ng-container [ngSwitch]="col.type">
+                    <!-- inputText -->
+                    <input
+                      name="{{ col.field }}-{{ rowIndex }}"
+                      #ctrl="ngModel"
+                      [ngClass]="{
+                        'ng-invalid': ctrl.invalid && ctrl.touched,
+                        'readonly-field': col.readOnly
+                      }"
+                      *ngSwitchCase="'inputText'"
+                      pInputText
+                      type="text"
+                      [(ngModel)]="rowData[col.field]"
+                      [required]="col.required"
+                    />
+                    <!-- textArea -->
+                    <textarea
+                      [style]="{ width: '100%' }"
+                      name="{{ col.field }}-{{ rowIndex }}"
+                      #ctrl="ngModel"
+                      [ngClass]="{
+                        'ng-invalid': ctrl.invalid && ctrl.touched,
+                        'readonly-field': col.readOnly
+                      }"
+                      *ngSwitchCase="'textArea'"
+                      pInputTextarea
+                      [(ngModel)]="rowData[col.field]"
+                      [autoResize]="true"
+                      [required]="col.required"
+                    ></textarea>
+                    <!-- dropdown -->
+                    <p-dropdown
+                      [style]="{ width: '100%' }"
+                      name="{{ col.field }}-{{ rowIndex }}"
+                      #ctrl="ngModel"
+                      [ngClass]="{
+                        'ng-invalid': ctrl.invalid && ctrl.touched,
+                        'readonly-field': col.readOnly
+                      }"
+                      required
+                      *ngSwitchCase="'dropdown'"
+                      [(ngModel)]="rowData[col.field]"
+                      [options]="loadDropdownData(col)"
+                      [filter]="true"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Please select"
+                      appendTo="body"
+                      [required]="col.required"
+                    ></p-dropdown>
+                    <!-- autoComplete -->
+                    <p-autoComplete
+                      name="{{ col.field }}-{{ rowIndex }}"
+                      #ctrl="ngModel"
+                      [ngClass]="{
+                        'ng-invalid': ctrl.invalid && ctrl.touched,
+                        'readonly-field': col.readOnly
+                      }"
+                      *ngSwitchCase="'autoComplete'"
+                      [(ngModel)]="rowData[col.field]"
+                      [suggestions]="autoCompleteList"
+                      (completeMethod)="completeMethod($event)"
+                      [dropdown]="true"
+                      [forceSelection]="true"
+                      appendTo="body"
+                      styleClass="w-full"
+                      inputStyleClass="w-full"
+                      [disabled]="col.readOnly"
+                    ></p-autoComplete>
 
-                  <!-- fallback -->
-                  <input
-                    name="{{ col.field }}-{{ rowIndex }}"
-                    #ctrl="ngModel"
-                    [ngClass]="{
-                      'ng-invalid': ctrl.invalid && ctrl.touched,
-                      'readonly-field': col.readOnly
-                    }"
-                    *ngSwitchDefault
-                    pInputText
-                    type="text"
-                    [(ngModel)]="rowData[col.field]"
-                    required
-                  />
-                </ng-container>
+                    <!-- fallback -->
+                    <input
+                      name="{{ col.field }}-{{ rowIndex }}"
+                      #ctrl="ngModel"
+                      [ngClass]="{
+                        'ng-invalid': ctrl.invalid && ctrl.touched,
+                        'readonly-field': col.readOnly
+                      }"
+                      *ngSwitchDefault
+                      pInputText
+                      type="text"
+                      [(ngModel)]="rowData[col.field]"
+                      required
+                    />
+                  </ng-container>
+                </div>
                 <!-- 判斷是否為 required 且 資料是否為空 -->
                 <div *ngIf="col.required && !rowData[col.field]">
                   <small class="p-error"> 資料不能為空 </small>
@@ -274,15 +282,7 @@
           </td>
 
           <!-- 按鈕區 -->
-          <td
-            pFrozenColumn
-            alignFrozen="right"
-            style="
-              min-width: 100px !important;
-              max-width: 1rem !important;
-              width: 100px !important;
-            "
-          >
+          <td pFrozenColumn alignFrozen="right" style="width: 60px">
             <button
               *ngIf="!editing"
               pButton
@@ -295,6 +295,17 @@
               icon="pi pi-pencil"
               (click)="clickRowActionMenu(rowData); onEdit(rowData)"
             ></button>
+            <!-- <button
+              *ngIf="!editing"
+              pButton
+              [rounded]="true"
+              [text]="true"
+              type="button"
+              style="color: #f70202"
+              class="p-button-outlined p-button-secondary"
+              icon="pi pi-trash"
+              (click) ="onDelete(rowIndex)"
+            ></button> -->
             <div class="flex mb-2 gap-2 justify-content-start">
               <ng-container *ngIf="editing">
                 <i

@@ -196,9 +196,9 @@ export class GroupsComponent
       },
       {
         field: 'activeFlag',
-        header: '是否生效',
+        header: '生效',
         type: 'dropdown',
-        width: '5rem',
+        width: '4rem',
         required: 'true',
         readOnly: false,
       },

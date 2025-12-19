@@ -190,6 +190,7 @@
                   />
                   <!-- textArea -->
                   <textarea
+                    style="width: 100%"
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
                     [ngClass]="{
@@ -204,6 +205,7 @@
                   ></textarea>
                   <!-- dropdown -->
                   <p-dropdown
+                    [style]="{ width: '100%' }"
                     name="{{ col.field }}-{{ rowIndex }}"
                     #ctrl="ngModel"
                     [ngClass]="{

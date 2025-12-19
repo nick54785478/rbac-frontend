@@ -140,13 +140,15 @@ export class FunctionsComponent
         field: 'service',
         header: '服務',
         type: 'dropdown',
+        width: '8rem',
         required: true,
         readOnly: true,
       },
       {
         field: 'type',
-        header: '配置種類',
+        header: '種類',
         type: 'dropdown',
+        width: '10rem',
         required: true,
         readOnly: false,
       },
@@ -154,13 +156,15 @@ export class FunctionsComponent
         field: 'actionType',
         header: '動作',
         type: 'dropdown',
+        width: '5rem',
         required: true,
         readOnly: false,
       },
       {
         field: 'code',
-        header: '功能代碼',
+        header: '代碼',
         type: 'inputText',
+        width: '10rem',
         required: true,
         readOnly: false,
       },
@@ -168,6 +172,7 @@ export class FunctionsComponent
         field: 'name',
         header: '名稱',
         type: 'inputText',
+        width: '8rem',
         required: true,
         readOnly: false,
       },
@@ -175,13 +180,15 @@ export class FunctionsComponent
         field: 'description',
         header: '說明',
         type: 'textArea',
+        width: '15rem',
         required: true,
         readOnly: false,
       },
       {
         field: 'activeFlag',
-        header: '是否生效',
+        header: '生效',
         type: 'dropdown',
+        width: '4rem',
         required: true,
         readOnly: false,
       },
@@ -537,6 +544,7 @@ export class FunctionsComponent
       .getFieldViewCustomisations(username, component)
       .subscribe((res) => {
         this.fieldViews = res.map((data) => data.field);
+        // 將查出的資料設置進 selectedFields
         this.selectedFields = res;
         // 只保留在 viewCols 中的欄位
         this.filteredCols = this.cols.filter((col) =>
