@@ -132,17 +132,26 @@
       editMode="row"
       [resizableColumns]="true"
       [frozenWidth]="'70px'"
+      [tableStyle]="{
+        'table-layout': 'fixed',
+        width: '100%'
+      }"
+      [frozenWidth]="'120px'"
     >
       <!-- 標題 -->
       <ng-template pTemplate="header" #header let-columns>
         <tr>
-          <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          <th
+            *ngFor="let col of columns"
+            [pSortableColumn]="col.field"
+            [style.width]="col.width"
+          >
             <ng-container
               >{{ col.header }}
               <p-sortIcon [field]="col.field" />
             </ng-container>
           </th>
-          <th alignFrozen="right" pFrozenColumn>Actions</th>
+          <th alignFrozen="right" pFrozenColumn style="width: 60px">Actions</th>
         </tr>
       </ng-template>
       <ng-template
@@ -159,8 +168,8 @@
             [ngStyle]="{
               'word-break': 'break-all',
               'word-wrap': 'break-word',
-              'min-width': '150px'
             }"
+            [style.width]="col.width"
           >
             <p-cellEditor>
               <ng-template #input pTemplate="input">
@@ -269,7 +278,7 @@
           </td>
 
           <!-- 按鈕區 -->
-          <td pFrozenColumn alignFrozen="right">
+          <td pFrozenColumn alignFrozen="right" style="width: 60px">
             <button
               *ngIf="!editing"
               pButton
