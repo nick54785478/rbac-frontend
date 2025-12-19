@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   DialogService,
@@ -22,6 +22,12 @@ import { DialogConfirmService } from '../../../../core/services/dialog-confirm.s
 import { SettingType } from '../../../../core/enums/setting-type.enum';
 import { CommonModule } from '@angular/common';
 import { BaseFormCompoent } from '../../../../shared/component/base/base-form.component';
+import { CustomisationService } from '../../../../shared/services/customisation.service';
+import { SystemStorageKey } from '../../../../core/enums/system-storage.enum';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { StorageService } from '../../../../core/services/storage.service';
+import { UpdateCustomisation } from '../../../../shared/models/update-customisation-request.model';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 @Component({
   selector: 'app-setting',
@@ -48,6 +54,11 @@ export class SettingComponent
   //Table Row Actions 選單。
   rowActionMenu: MenuItem[] = [];
 
+  // 控制 OverlayPanel
+  @ViewChild('fieldPanel') fieldPanel!: OverlayPanel;
+
+  protected detailTabs: MenuItem[] = []; // Table 上方頁簽
+
   /**
    * 用來取消訂閱
    */
@@ -62,6 +73,12 @@ export class SettingComponent
 
   dialogOpened: boolean = false;
 
+  // Field 顯示設定清單
+  fields: any[] = [];
+  selectedFields: any[] = []; // 被選中的欄位
+  fieldViews: any[] = [];
+  filteredCols: any[] = [];
+
   // override formAction!: FormAction; // Dialog 操作
 
   constructor(
@@ -70,7 +87,9 @@ export class SettingComponent
     public dialogService: DialogService,
     private optionService: OptionService,
     private settingService: SettingService,
-    public messageService: SystemMessageService
+    public messageService: SystemMessageService,
+    private customisationService: CustomisationService,
+    private storageService: StorageService
   ) {
     super();
   }
@@ -113,15 +132,36 @@ export class SettingComponent
       });
 
     this.cols = [
-      { field: 'service', header: '服務' },
-      { field: 'dataType', header: '配置種類' },
-      { field: 'type', header: '類別' },
-      { field: 'name', header: '名稱' },
-      { field: 'code', header: '代碼' },
-      { field: 'value', header: '值' },
-      { field: 'description', header: '說明' },
-      { field: 'priorityNo', header: '排序' },
+      // { field: 'service', header: '服務', width: '10rem' },
+      { field: 'dataType', header: '配置種類', width: '10rem' },
+      { field: 'type', header: '類別', width: '10rem' },
+      { field: 'name', header: '名稱', width: '10rem' },
+      { field: 'code', header: '代碼', width: '10rem' },
+      { field: 'value', header: '值', width: '10rem' },
+      { field: 'description', header: '說明', width: '15rem' },
+      { field: 'priorityNo', header: '排序', width: '5rem' },
     ];
+
+    // 初始化上方 Tab 按鈕
+    this.detailTabs = [
+      {
+        label: '欄位',
+        icon: 'pi pi-filter',
+        command: () => {
+          this.fieldPanel.toggle(event);
+        },
+        disabled: false,
+      },
+    ];
+
+    // 將 cols 映射成 fields
+    this.fields = this.cols.map((col) => ({
+      field: col.field,
+      label: col.header,
+    }));
+
+    // 取得個人化 Table 欄位顯示資料
+    this.getFieldViewCustomisation();
   }
 
   /**
@@ -251,5 +291,75 @@ export class SettingComponent
         },
       });
     });
+  }
+
+  /**
+   * 提交 Fields 設定
+   */
+  submitFields() {
+    console.log(this.selectedFields);
+    const username =
+      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME) ||
+      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+      '';
+    // 取得 Component 名稱
+    let component = this.constructor.name;
+
+    let requestData: UpdateCustomisation = {
+      username: username,
+      component: component,
+      type: 'FieldView',
+      valueList: this.selectedFields,
+    };
+
+    this.customisationService
+      .updateCustomisation(requestData)
+      .pipe(
+        finalize(() => {
+          // 無論成功或失敗都會執行
+          this.getFieldViewCustomisation();
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (res?.code === 'VALIDATION_FAILED') {
+            this.messageService.error(res.message);
+          } else {
+            this.messageService.success(res.message);
+          }
+        },
+        error: (error) => {
+          this.messageService.error(error.message);
+        },
+      });
+  }
+
+  /**
+   * 取得 Table Field View 配置
+   */
+  getFieldViewCustomisation() {
+    const username =
+      this.storageService.getSessionStorageItem(SystemStorageKey.USERNAME) ||
+      this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
+      '';
+    // 取得 Component 名稱
+    let component = this.constructor.name;
+    console.log(username, component);
+    this.customisationService
+      .getFieldViewCustomisations(username, component)
+      .subscribe((res) => {
+        this.fieldViews = res.map((data) => data.field);
+        this.selectedFields = res;
+        // 只保留在 viewCols 中的欄位
+        this.filteredCols = this.cols.filter((col) =>
+          this.fieldViews.includes(col.field)
+        );
+      });
+    this.closePanel();
+  }
+
+  // 隱藏 Field 設定清單
+  closePanel() {
+    this.fieldPanel.hide();
   }
 }

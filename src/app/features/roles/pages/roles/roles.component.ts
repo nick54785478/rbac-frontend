@@ -229,6 +229,7 @@ export class RolesComponent
         },
       });
 
+    // 取得個人化 Table 欄位顯示資料
     this.getFieldViewCustomisation();
   }
 

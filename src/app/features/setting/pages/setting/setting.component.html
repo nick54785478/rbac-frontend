@@ -76,11 +76,54 @@
 </form>
 
 <div class="card">
+  <p-tabMenu
+    #detailTabMenuComponent
+    [model]="detailTabs"
+    styleClass="table-tabmenu"
+  >
+  </p-tabMenu>
+  <p-overlayPanel
+    #fieldPanel
+    [dismissable]="true"
+    [showCloseIcon]="true"
+    [appendTo]="'body'"
+  >
+    <!-- 動態顯示的欄位選擇區 -->
+    <p-card subheader="欄位設定">
+      <ng-template pTemplate="content">
+        <div *ngFor="let field of fields">
+          <p-checkbox
+            name="group"
+            [value]="field"
+            [(ngModel)]="selectedFields"
+          />
+          <label class="ml-2">{{ field.label }}</label>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="flex gap-1 mt-1 justify-end">
+          <button
+            type="button"
+            pButton
+            label="提交"
+            (click)="submitFields()"
+          ></button>
+          <button
+            type="button"
+            class="p-button-secondary p-button-outlined"
+            pButton
+            label="取消"
+            (click)="closePanel()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-card>
+  </p-overlayPanel>
   <p-table
     #dt
     responsiveLayout="scroll"
     [value]="tableData"
-    [columns]="cols"
+    [columns]="filteredCols"
     [(selection)]="selectedData"
     [scrollable]="true"
     [rows]="10"
@@ -98,11 +141,11 @@
         <th
           *ngFor="let col of columns"
           [pSortableColumn]="col.field"
-          style="min-width: 150px"
+          [style.width]="col.width"
         >
           {{ col.header }} <p-sortIcon [field]="col.field" />
         </th>
-        <th alignFrozen="right" pFrozenColumn>Actions</th>
+        <th alignFrozen="right" pFrozenColumn style="width: 60px">Actions</th>
       </tr>
     </ng-template>
     <!-- 內容 -->
@@ -114,6 +157,7 @@
             'word-break': 'break-all',
             'word-wrap': 'break-word',
           }"
+          [style.width]="col.width"
         >
           <ng-container>
             {{ rowData[col.field] }}
