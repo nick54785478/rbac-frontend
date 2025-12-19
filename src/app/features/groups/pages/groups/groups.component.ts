@@ -460,7 +460,7 @@ export class GroupsComponent
    * 開啟 Dialog 表單
    * @returns DynamicDialogRef
    */
-  openFormDialog(data?: number): DynamicDialogRef {
+  openFormDialog(data?: any): DynamicDialogRef {
     this.dialogOpened = true;
 
     console.log(data);

@@ -39,10 +39,9 @@ export class RolesConfigComponent
 
   ngOnInit(): void {
     let data = this.dialogConfig.data;
-    console.log(data.id);
 
-    // this.getOtherFunctions(data.id);
-    this.query(data.id);
+    this.getOtherRoles(data.id, data.service);
+    this.query(data.id, data.service);
 
     this.detailTabs = [
       {
@@ -92,6 +91,7 @@ export class RolesConfigComponent
         next: (res) => {
           if (res.code !== 'VALIDATION_FAILED') {
             this.messageService.success(res.message);
+            this.onCloseForm();
           } else {
             this.messageService.error(res.message);
           }
@@ -139,10 +139,9 @@ export class RolesConfigComponent
   /**
    * 提交資料，查詢角色相關資料
    */
-  query(id: number) {
+  query(id: number, service: string) {
     this.loadMaskService.show();
 
-    let service = this.formGroup.value.service;
     this.groupService
       .queryByIdAndService(id, service)
       .pipe(
