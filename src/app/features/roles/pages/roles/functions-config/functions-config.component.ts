@@ -10,6 +10,7 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { RoleService } from '../../../services/role.service';
 import { LoadingMaskService } from '../../../../../core/services/loading-mask.service';
 import { UpdateRoleFunction } from '../../../models/update-role-function-request.model copy';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-functions-config',
@@ -37,8 +38,9 @@ export class FunctionsConfigComponent
   ngOnInit(): void {
     let data = this.dialogConfig.data;
     console.log(data.id);
+    this.formGroup = new FormGroup({});
 
-    this.getOtherFunctions(data.id);
+    this.getOtherFunctions(data.id, data.service);
     this.query(data.id, data.service);
 
     this.detailTabs = [
@@ -89,6 +91,7 @@ export class FunctionsConfigComponent
         next: (res) => {
           if (res.code !== 'VALIDATION_FAILED') {
             this.messageService.success(res.message);
+            this.onCloseForm();
           } else {
             this.messageService.error(res.message);
           }
@@ -112,13 +115,13 @@ export class FunctionsConfigComponent
    * @param id
    * @param service
    */
-  getOtherFunctions(id: number) {
+  getOtherFunctions(id: number, service: string) {
     this.submitted = true;
     if (this.formGroup.invalid) {
       return;
     }
     this.roleFunctionsService
-      .getOtherFunctions(id, this.formGroup.value.service)
+      .getOtherFunctions(id, service)
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
@@ -159,6 +162,7 @@ export class FunctionsConfigComponent
         })
       )
       .subscribe((res) => {
+        console.log(res);
         let funcList = res.functions;
         if (funcList) {
           this.targetList = funcList.map((func: any) => ({

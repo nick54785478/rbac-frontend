@@ -151,7 +151,7 @@
               <p-sortIcon [field]="col.field" />
             </ng-container>
           </th>
-          <th alignFrozen="right" pFrozenColumn style="width: 60px">Actions</th>
+          <th alignFrozen="right" pFrozenColumn style="width: 80px">Actions</th>
         </tr>
       </ng-template>
       <ng-template
@@ -282,7 +282,7 @@
           </td>
 
           <!-- 按鈕區 -->
-          <td pFrozenColumn alignFrozen="right" style="width: 60px">
+          <td pFrozenColumn alignFrozen="right" style="width: 80px">
             <button
               *ngIf="!editing"
               pButton
@@ -295,6 +295,19 @@
               icon="pi pi-pencil"
               (click)="clickRowActionMenu(rowData); onEdit(rowData)"
             ></button>
+
+            <button
+              *ngIf="!editing"
+              pButton
+              [rounded]="true"
+              [text]="true"
+              type="button"
+              style="color: #2196f3"
+              class="p-button-outlined p-button-secondary"
+              icon="pi pi-user-edit"
+              (click)="clickRowActionMenu(rowData); openFormDialog(rowData)"
+            ></button>
+
             <!-- <button
               *ngIf="!editing"
               pButton
