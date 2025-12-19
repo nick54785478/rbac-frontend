@@ -104,7 +104,10 @@
       <p-table
         #dt
         responsiveLayout="stack"
-        [tableStyle]="{ 'min-width': '10rem', 'word-wrap': 'break-word' }"
+        [tableStyle]="{
+          'table-layout': 'fixed',
+          width: '100%'
+        }"
         [rowsPerPageOptions]="[2, 5, 10]"
         styleClass="p-datatable-gridlines p-datatable-sm p-datatable-striped"
         selectionMode="multiple"
@@ -113,7 +116,6 @@
         [columns]="pageContents[activeField].cols"
         [(selection)]="selectedData"
         [scrollable]="true"
-        scrollDirection="both"
         scrollHeight="500px"
         [paginator]="true"
         [rows]="10"
@@ -121,7 +123,11 @@
         <!-- 標題 -->
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+            <th
+              *ngFor="let col of columns"
+              [pSortableColumn]="col.field"
+              [style.width]="col.width"
+            >
               {{ col.header }} <p-sortIcon [field]="col.field" />
             </th>
           </tr>
@@ -131,11 +137,10 @@
           <tr [pSelectableRow]="rowData">
             <td
               *ngFor="let col of columns"
+              [style.width]="col.width"
               [style]="{
                 'white-space': 'normal',
-                'word-wrap': 'break-word',
-                'max-width': '5rem',
-                'min-width': '100%'
+              'word-wrap': 'break-word',        
               }"
             >
               <ng-container>

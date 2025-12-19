@@ -11,6 +11,7 @@ export class UserDetailQueried {
   address!: string; // 敘述
   nationalIdNo!: string;
   birthday!: string;
+  activeFlag!: string;
   groups!: UserGroupQueried[];
   roles!: UserRoleQueried[];
   functions!: UserFunctionQueried[];
