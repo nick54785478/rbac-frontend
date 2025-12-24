@@ -1,6 +1,14 @@
+<p-tabMenu
+  #detailTabMenuComponent
+  [model]="formTabs"
+  styleClass="table-tabmenu"
+>
+</p-tabMenu>
 <form [formGroup]="formGroup">
-  <p-panel header="查詢使用者資料">
-    <div class="card" #contentElement>
+  <!-- <p-panel header="查詢使用者資料"> -->
+  <p-panel [showHeader]="false">
+    <p-card subheader="查詢使用者資料">
+      <!-- <div class="card" #contentElement> -->
       <div class="grid p-fluid">
         <div class="col-12 md:col-3 lg:col-3">
           <label class="required">服務</label>
@@ -66,7 +74,7 @@
         <div class="col-12 md:col-3 lg:col-2">
           <button type="button" pButton label="查詢" (click)="query()"></button>
         </div>
-        <div class="col-12 md:col-3 lg:col-2">
+        <!-- <div class="col-12 md:col-3 lg:col-2">
           <button
             type="button"
             class="p-button-secondary p-button-outlined"
@@ -84,7 +92,7 @@
             [disabled]=""
             (click)="onStartUserConfig('groups')"
           ></button>
-        </div>
+        </div> -->
         <div class="col-12 md:col-3 lg:col-2">
           <button
             type="button"
@@ -95,7 +103,8 @@
           ></button>
         </div>
       </div>
-    </div>
+    </p-card>
+    <!-- </div> -->
   </p-panel>
 </form>
 

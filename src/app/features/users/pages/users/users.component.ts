@@ -47,7 +47,9 @@ export class UsersComponent
   selectedData!: any;
   cols: any[] = [];
   tableData: any[] = [];
-  detailTabs: any[] = [];
+  detailTabs: any[] = []; // 表格上的 Tabs
+  formTabs: any[] = []; // Form 表單上的 Tabs
+
   activeField: string = 'info'; // 用以激活當前的頁面
   pageContents: any; // 當前頁面內容配置
   userQueridData!: any; // 後端查詢使用者資料
@@ -149,6 +151,25 @@ export class UsersComponent
         tableData: 'roles',
       },
     };
+
+    this.formTabs = [
+      {
+        label: '角色',
+        field: 'info',
+        icon: 'pi pi-user-edit',
+        command: () => {
+          this.onStartUserConfig('roles');
+        },
+      },
+      {
+        label: '群組',
+        field: 'info',
+        icon: 'pi pi-sitemap',
+        command: () => {
+          this.onStartUserConfig('groups');
+        },
+      },
+    ];
 
     // 初始化上方 Tab 按鈕
     this.detailTabs = [
