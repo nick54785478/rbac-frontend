@@ -5,76 +5,73 @@
 >
 </p-tabMenu>
 <form [formGroup]="formGroup">
-  <!-- <p-panel header="查詢使用者資料"> -->
   <p-panel [showHeader]="false">
-    <p-card subheader="查詢使用者資料">
-      <!-- <div class="card" #contentElement> -->
-      <div class="grid p-fluid">
-        <div class="col-12 md:col-3 lg:col-3">
-          <label class="required">服務</label>
-          <p-dropdown
-            [options]="services"
-            optionValue="value"
-            placeholder="Please select"
-            [showClear]="true"
-            appendTo="body"
-            formControlName="service"
+    <div class="grid p-fluid">
+      <div class="col-12 md:col-3 lg:col-3">
+        <label class="required">服務</label>
+        <p-dropdown
+          [options]="services"
+          optionValue="value"
+          placeholder="Please select"
+          [showClear]="true"
+          appendTo="body"
+          formControlName="service"
+        >
+        </p-dropdown>
+        <div *ngIf="formControlInvalid('service')">
+          <small
+            class="p-error"
+            *ngIf="formControl('service').errors?.['required']"
           >
-          </p-dropdown>
-          <div *ngIf="formControlInvalid('service')">
-            <small
-              class="p-error"
-              *ngIf="formControl('service').errors?.['required']"
-            >
-              資料不能為空
-            </small>
-          </div>
+            資料不能為空
+          </small>
         </div>
-        <div class="col-12 md:col-3 lg:col-3">
-          <label class="required">使用者</label>
-          <p-autoComplete
-            formControlName="userInfo"
-            [suggestions]="userinfos"
-            [forceSelection]="true"
-            [dropdown]="true"
-            [completeOnFocus]="true"
-            appendTo="body"
-            showClear="true"
-            (onClear)="clear()"
-            styleClass="w-full"
-            inputStyleClass="w-full"
-            [showEmptyMessage]="true"
-            (completeMethod)="getUserInfos($event)"
-            emptyMessage="查無資料"
-            field="displayName"
-          >
-            <ng-template let-userinfo pTemplate="item">
-              <span style="font-size: 18px"
-                >{{ userinfo.name }} ({{ userinfo.username }})
-              </span>
-            </ng-template>
-          </p-autoComplete>
-          <!-- 點擊按鈕時，要顯示
+      </div>
+      <div class="col-12 md:col-3 lg:col-3">
+        <label class="required">使用者</label>
+        <p-autoComplete
+          formControlName="userInfo"
+          [suggestions]="userinfos"
+          [forceSelection]="true"
+          [dropdown]="true"
+          [completeOnFocus]="true"
+          appendTo="body"
+          showClear="true"
+          (onClear)="clear()"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+          [showEmptyMessage]="true"
+          (completeMethod)="getUserInfos($event)"
+          emptyMessage="查無資料"
+          field="displayName"
+        >
+          <ng-template let-userinfo pTemplate="item">
+            <span style="font-size: 18px"
+              >{{ userinfo.name }} ({{ userinfo.username }})
+            </span>
+          </ng-template>
+        </p-autoComplete>
+        <!-- 點擊按鈕時，要顯示
            * 值為空但要開啟Dialog 時顯示
            * 點擊查詢但值為空
             -->
-          <div
-            *ngIf="
-              formControlInvalid('userInfo') ||
-              (dialogOpened && !formControlInvalid('userInfo'))
-            "
-          >
-            <small class="p-error"> 資料不能為空 </small>
-          </div>
+        <div
+          *ngIf="
+            formControlInvalid('userInfo') ||
+            (dialogOpened && !formControlInvalid('userInfo'))
+          "
+        >
+          <small class="p-error"> 資料不能為空 </small>
         </div>
       </div>
+    </div>
 
-      <!-- <div class="flex mb-2 gap-2 justify-content-end"> -->
-      <div class="grid p-fluid justify-content-end">
-        <div class="col-12 md:col-3 lg:col-2">
-          <button type="button" pButton label="查詢" (click)="query()"></button>
-        </div>
-        <!-- <div class="col-12 md:col-3 lg:col-2">
+    <!-- <div class="flex mb-2 gap-2 justify-content-end"> -->
+    <div class="grid p-fluid justify-content-end">
+      <div class="col-12 md:col-3 lg:col-2">
+        <button type="button" pButton label="查詢" (click)="query()"></button>
+      </div>
+      <!-- <div class="col-12 md:col-3 lg:col-2">
           <button
             type="button"
             class="p-button-secondary p-button-outlined"
@@ -93,17 +90,16 @@
             (click)="onStartUserConfig('groups')"
           ></button>
         </div> -->
-        <div class="col-12 md:col-3 lg:col-2">
-          <button
-            type="button"
-            class="p-button-secondary p-button-outlined"
-            pButton
-            label="清除"
-            (click)="clear()"
-          ></button>
-        </div>
+      <div class="col-12 md:col-3 lg:col-2">
+        <button
+          type="button"
+          class="p-button-secondary p-button-outlined"
+          pButton
+          label="清除"
+          (click)="clear()"
+        ></button>
       </div>
-    </p-card>
+    </div>
     <!-- </div> -->
   </p-panel>
 </form>
