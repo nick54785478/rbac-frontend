@@ -53,6 +53,7 @@ export class RolesComponent
   extends BaseInlineEditeTableCompoent
   implements OnInit, OnDestroy
 {
+  static readonly COMPONENT_NAME = 'RolesComponent'; // Component 名稱
   services: Option[] = [];
   activeFlags: Option[] = []; // Active Flag 的下拉式選單
   types: Option[] = []; // 配置種類的下拉式選單
@@ -536,7 +537,7 @@ export class RolesComponent
       this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
       '';
     // 取得 Component 名稱
-    let component = this.constructor.name;
+    let component = RolesComponent.COMPONENT_NAME;
 
     let requestData: UpdateCustomisation = {
       username: username,
@@ -576,7 +577,7 @@ export class RolesComponent
       this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
       '';
     // 取得 Component 名稱
-    let component = this.constructor.name;
+    let component = RolesComponent.COMPONENT_NAME;
     console.log(username, component);
     this.customisationService
       .getFieldViewCustomisations(username, component)

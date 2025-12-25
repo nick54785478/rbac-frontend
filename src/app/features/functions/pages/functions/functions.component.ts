@@ -43,6 +43,7 @@ export class FunctionsComponent
   extends BaseInlineEditeTableCompoent
   implements OnInit, OnDestroy
 {
+  static readonly COMPONENT_NAME = 'FunctionsComponent'; // Component 名稱
   activeFlags: Option[] = []; // Active Flag 的下拉式選單
   types: Option[] = []; // 配置種類的下拉式選單
   actionTypes: Option[] = []; // ActionTypes 的下拉式選單
@@ -498,7 +499,7 @@ export class FunctionsComponent
       this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
       '';
     // 取得 Component 名稱
-    let component = this.constructor.name;
+    let component = FunctionsComponent.COMPONENT_NAME;
 
     let requestData: UpdateCustomisation = {
       username: username,
@@ -538,7 +539,7 @@ export class FunctionsComponent
       this.storageService.getLocalStorageItem(SystemStorageKey.USERNAME) ||
       '';
     // 取得 Component 名稱
-    let component = this.constructor.name;
+    let component = FunctionsComponent.COMPONENT_NAME;
     console.log(username, component);
     this.customisationService
       .getFieldViewCustomisations(username, component)
