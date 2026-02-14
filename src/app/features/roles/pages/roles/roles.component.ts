@@ -78,7 +78,7 @@ export class RolesComponent
     private optionService: OptionService,
     private roleService: RoleService,
     private dialogConfirmService: DialogConfirmService,
-    private messageService: SystemMessageService
+    private messageService: SystemMessageService,
   ) {
     super();
   }
@@ -276,7 +276,7 @@ export class RolesComponent
             this.submitted = false;
             this.loadingMaskService.hide();
             this.query();
-          })
+          }),
         )
         .subscribe({
           next: (res) => {
@@ -302,11 +302,11 @@ export class RolesComponent
       () => {
         // 確認後的動作 => 過濾該 givenIndex 的資料
         this.tableData = this.tableData.filter(
-          (item) => item.givenIndex !== rowData.givenIndex
+          (item) => item.givenIndex !== rowData.givenIndex,
         );
       },
       '',
-      () => {}
+      () => {},
     );
   }
 
@@ -329,14 +329,14 @@ export class RolesComponent
         formData.service,
         formData.type,
         formData.name,
-        formData.activeFlag
+        formData.activeFlag,
       )
       .pipe(
         finalize(() => {
           // 無論成功或失敗都會執行
           this.loadingMaskService.hide();
           this.submitted = false;
-        })
+        }),
       )
       .subscribe({
         next: (res) => {
@@ -388,7 +388,7 @@ export class RolesComponent
   cancelAll() {
     // 基本上 givenIndex < 0 者都是新增的資料
     this.dataTable.editingRowKeys = {};
-    this.tableData = this.tableData.filter((data) => data.givenIdex >= 0);
+    this.tableData = this.tableData.filter((data) => data.givenIndex >= 0);
   }
 
   /**
@@ -552,7 +552,7 @@ export class RolesComponent
         finalize(() => {
           // 無論成功或失敗都會執行
           this.getFieldViewCustomisation();
-        })
+        }),
       )
       .subscribe({
         next: (res) => {
@@ -586,7 +586,7 @@ export class RolesComponent
         this.selectedFields = res;
         // 只保留在 viewCols 中的欄位
         this.filteredCols = this.cols.filter((col) =>
-          this.fieldViews.includes(col.field)
+          this.fieldViews.includes(col.field),
         );
       });
     this.closePanel();

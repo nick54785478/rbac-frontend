@@ -72,7 +72,7 @@ export class GroupsComponent
     private dialogService: DialogService,
     private optionService: OptionService,
     private loadMaskService: LoadingMaskService,
-    private messageService: SystemMessageService
+    private messageService: SystemMessageService,
   ) {
     super();
   }
@@ -278,7 +278,7 @@ export class GroupsComponent
           this.loadMaskService.hide();
           this.submitted = false;
           this.query();
-        })
+        }),
       )
       .subscribe({
         next: (res) => {
@@ -311,13 +311,13 @@ export class GroupsComponent
         formData.service,
         formData.type,
         formData.name,
-        formData.activeFlag
+        formData.activeFlag,
       )
       .pipe(
         finalize(() => {
           this.submitted = false;
           this.loadMaskService.hide();
-        })
+        }),
       )
       .subscribe({
         next: (res) => {
@@ -368,7 +368,7 @@ export class GroupsComponent
   cancelAll() {
     // 基本上 givenIndex < 0 者都是新增的資料
     this.dataTable.editingRowKeys = {};
-    this.tableData = this.tableData.filter((data) => data.givenIdex >= 0);
+    this.tableData = this.tableData.filter((data) => data.givenIndex >= 0);
   }
 
   /**
@@ -517,7 +517,7 @@ export class GroupsComponent
         finalize(() => {
           // 無論成功或失敗都會執行
           this.getFieldViewCustomisation();
-        })
+        }),
       )
       .subscribe({
         next: (res) => {
@@ -551,7 +551,7 @@ export class GroupsComponent
         this.selectedFields = res;
         // 只保留在 viewCols 中的欄位
         this.filteredCols = this.cols.filter((col) =>
-          this.fieldViews.includes(col.field)
+          this.fieldViews.includes(col.field),
         );
       });
     this.closePanel();

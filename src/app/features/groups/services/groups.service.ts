@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { BaseResponse } from '../../../shared/models/base-response.model';
 import { GroupQueried } from '../models/group-query.model';
 import { SaveGroup } from '../models/save-groups-request.model';
+import { GroupInfoQueried } from '../models/group-info-query.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,15 +26,15 @@ export class GroupsService {
     service?: string,
     type?: string,
     name?: string,
-    activeFlag?: string
-  ): Observable<GroupQueried[]> {
+    activeFlag?: string,
+  ): Observable<GroupInfoQueried[]> {
     const url = this.baseApiUrl + '/groups/query';
     let params = new HttpParams()
       .set('service', service ? service : '')
       .set('type', type ? type : '')
       .set('name', name ? name : '')
       .set('activeFlag', activeFlag ? activeFlag : '');
-    return this.http.get<GroupQueried[]>(url, { params });
+    return this.http.get<GroupInfoQueried[]>(url, { params });
   }
 
   /**
